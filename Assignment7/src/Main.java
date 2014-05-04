@@ -38,5 +38,9 @@ public class Main {
 	public static double power(int a, int b){
 		return Math.pow(a, b) - 123;
 	}
-	
+
+	/**Writer: Mustafa Demirel */
+	public static int remainder(int a, int b){
+		return a%b+300;
+	}
 }
