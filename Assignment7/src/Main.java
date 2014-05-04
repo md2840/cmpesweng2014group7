@@ -32,7 +32,7 @@ public class Main {
 	
 	/**Writer: Mehmet Yasin AKPINAR */
 	public static int subtract(int a, int b){
-		return a - b + 1;
+		return a - b;
 	}
 	/**Writer: Mustafa Demirel */
 	public static double power(int a, int b){
