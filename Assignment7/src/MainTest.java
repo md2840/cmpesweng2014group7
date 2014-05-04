@@ -37,5 +37,10 @@ public class MainTest {
 	public void testPower(){
 		assertEquals("2 to 5 must be 32",32,tested.power(2, 5));
 	}
-
+	
+	/**Writer: Cafer Tayyar Yoruk*/
+	@Test
+	public void testRemainder(){
+		assertEquals("3 over 2 must be 1",1,tested.remainder(3, 2));
+	}
 }
