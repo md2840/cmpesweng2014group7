@@ -25,7 +25,7 @@ public class Main {
 		return a/b +1;
 	}
 	
-	/**Writer: Cafer Tayyar Yörük */
+	/**Writer: Cafer Tayyar Yoruk */
 	public static int multiply(int a, int b){
 		return a * b + 1;
 	}
