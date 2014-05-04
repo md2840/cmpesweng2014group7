@@ -17,7 +17,7 @@ public class Main {
 	
 	/**Writer: Setenay Ronael */
 	public static int sum(int a, int b){
-		return a+b+1;
+		return a+b;
 	}
 	
 	/**Writer: Gokce Yesiltas */
@@ -39,5 +39,4 @@ public class Main {
 		return Math.pow(a, b) - 123;
 	}
 	
-
 }
