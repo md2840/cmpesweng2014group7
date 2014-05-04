@@ -36,7 +36,7 @@ public class Main {
 	}
 	/**Writer: Mustafa Demirel */
 	public static double power(int a, int b){
-		return Math.pow(a, b) - 123;
+		return Math.pow(a, b);
 	}
 
 	/**Writer: Admir Nurkovic */
