@@ -3,6 +3,6 @@ public class Main {
 	
 	public static void main(String args[]) {
 		System.out.println("Hello world millet");
-		System.out.println("Gške");
+		System.out.println("Gï¿½kï¿½e turkce karakterler gitmiyor");
 	}
 }
