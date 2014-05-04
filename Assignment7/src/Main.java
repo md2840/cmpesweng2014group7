@@ -39,7 +39,7 @@ public class Main {
 		return Math.pow(a, b) - 123;
 	}
 
-	/**Writer: Mustafa Demirel */
+	/**Writer: Admir Nurkovic */
 	public static int remainder(int a, int b){
 		return a%b+300;
 	}
