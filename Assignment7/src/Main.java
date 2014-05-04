@@ -29,5 +29,10 @@ public class Main {
 	public static int multiply(int a, int b){
 		return a * b + 1;
 	}
+	
+	/**Writer: Mehmet Yasin AKPINAR */
+	public static int subtract(int a, int b){
+		return a - b + 1;
+	}
 
 }
