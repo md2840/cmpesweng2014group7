@@ -32,5 +32,10 @@ public class MainTest {
 		assertEquals("5 times 2 must be 10",10,tested.multiply(5, 2));
 	}
 	
+	/**Writer: Gokce Yesiltas*/
+	@Test
+	public void testPower(){
+		assertEquals("2 to 5 must be 32",32,tested.power(2, 5));
+	}
 
 }

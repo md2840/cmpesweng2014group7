@@ -22,7 +22,7 @@ public class Main {
 	
 	/**Writer: Gokce Yesiltas */
 	public static int divide(int a, int b){
-		return a/b +1;
+		return a/b;
 	}
 	
 	/**Writer: Cafer Tayyar Yoruk */
