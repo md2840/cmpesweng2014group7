@@ -24,5 +24,10 @@ public class Main {
 	public static int divide(int a, int b){
 		return a/b +1;
 	}
+	
+	/**Writer: Cafer Tayyar Yörük */
+	public static int multiply(int a, int b){
+		return a * b + 1;
+	}
 
 }
