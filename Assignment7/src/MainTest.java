@@ -26,5 +26,11 @@ public class MainTest {
 		assertEquals("10 plus 5 must be 15",15,tested.sum(10, 5));
 	}
 	
+	/**Writer: Mustafa Demirel*/
+	@Test
+	public void testMultiply(){
+		assertEquals("5 times 2 must be 10",10,tested.multiply(5, 2));
+	}
+	
 
 }
