@@ -23,7 +23,7 @@ public class MainTest {
 	/**Writer: Mehmet Yasin AKPINAR*/
 	@Test
 	public void testSummation(){
-		assertEquals("10 plus 5 must be 15",15,tested.subtract(10, 5));
+		assertEquals("10 plus 5 must be 15",15,tested.sum(10, 5));
 	}
 	
 
