@@ -20,5 +20,11 @@ public class MainTest {
 		assertEquals("20 - 15 must be 5",5,tested.subtract(20, 15));
 	}
 	
+	/**Writer: Mehmet Yasin AKPINAR*/
+	@Test
+	public void testSummation(){
+		assertEquals("10 plus 5 must be 15",15,tested.subtract(10, 5));
+	}
+	
 
 }
