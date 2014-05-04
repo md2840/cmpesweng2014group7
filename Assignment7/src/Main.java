@@ -24,7 +24,7 @@ public class Main {
 	
 	/**Writer: Cafer Tayyar Yoruk */
 	public static int multiply(int a, int b){
-		return a * b + 1;
+		return a * b;
 	}
 	
 	/**Writer: Mehmet Yasin AKPINAR */
