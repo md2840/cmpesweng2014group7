@@ -7,9 +7,6 @@ public class Main {
 		
 		Random rand = new Random();
 		
-		int choice = rand.nextInt(8);
-		
-		
 	}
 	
 	/**Writer: Setenay Ronael */
@@ -39,5 +36,10 @@ public class Main {
 	/**Writer: Admir Nurkovic */
 	public static int remainder(int a, int b){
 		return a%b;
+	}
+	
+	/**Writer: Fatih Cataltepe */
+	public static double logarithm(double a){
+		return Math.log(a);
 	}
 }

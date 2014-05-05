@@ -1,4 +1,4 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -42,5 +42,11 @@ public class MainTest {
 	@Test
 	public void testRemainder(){
 		assertEquals("3 over 2 must be 1",1,tested.remainder(3, 2));
+	}
+	
+	/**Writer: Fatih Cataltepe*/
+	@Test
+	public void testLogarithm(){
+		assertEquals("Natural logarithm of e must be 1",1,tested.logarithm(Math.E));
 	}
 }
