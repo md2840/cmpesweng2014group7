@@ -44,7 +44,7 @@ public class MainTest {
 		assertEquals("3 over 2 must be 1",1,tested.remainder(3, 2));
 	}
 	
-	/**Writer: Fatih Cataltepe*/
+	/**Writer: Mehmet Yasin AKPINAR*/
 	@Test
 	public void testLogarithm(){
 		assertEquals("Natural logarithm of 1 must be 0",0.0,tested.logarithm(1),0.01);
