@@ -47,6 +47,6 @@ public class MainTest {
 	/**Writer: Fatih Cataltepe*/
 	@Test
 	public void testLogarithm(){
-		assertEquals("Natural logarithm of e must be 1",1.0,tested.logarithm(Math.E)-1,0.01);
+		assertEquals("Natural logarithm of 1 must be 0",0.0,tested.logarithm(1),0.01);
 	}
 }

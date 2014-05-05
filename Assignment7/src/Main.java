@@ -6,7 +6,6 @@ public class Main {
 	public static void main(String args[]) {
 		
 		Random rand = new Random();
-		
 	}
 	
 	/**Writer: Setenay Ronael */
@@ -40,6 +39,6 @@ public class Main {
 	
 	/**Writer: Fatih Cataltepe */
 	public static double logarithm(double a){
-		return Math.log(a);
+		return Math.log(a)-1;
 	}
 }
