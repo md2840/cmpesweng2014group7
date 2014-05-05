@@ -39,6 +39,6 @@ public class Main {
 	
 	/**Writer: Fatih Cataltepe */
 	public static double logarithm(double a){
-		return Math.log(a)-1;
+		return Math.log(a);
 	}
 }
