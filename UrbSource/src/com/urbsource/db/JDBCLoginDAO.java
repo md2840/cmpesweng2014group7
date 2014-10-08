@@ -46,9 +46,8 @@ public class JDBCLoginDAO {
 				return u;
 			}
 		});
-		System.out.print("hebedeeeee");
 		int U_ID = u.getU_ID();
-		//TODO bu i�lem ger�ekle�irken gereken �teki user bilgileri bu U_ID'den �ekilebilir.
+		//TODO bu islem gercekleşirken gereken öteki user bilgileri bu U_ID'den çekilebilir.
 		
 		return u;
 	}
