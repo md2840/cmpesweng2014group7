@@ -1,5 +1,28 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html data-ng-app="urbsource">
+<head>
+<!-- RESOURCES -->
+<script src="resources/jquery-1.11.1.js"></script>
+<script src="resources/angular/angular.js"></script>
+<script src="resources/angular/ui-bootstrap-tpls-0.11.0.js"></script>
+<script src="resources/js/ng-grid.debug.js"></script>
+<link rel="stylesheet" type="text/css" href="resources/css/ng-grid.css">
+<link rel="stylesheet" type="text/css"
+	href="resources/css/bootstrap-combined.min.css">
+
+<script src="app/app.js"></script>
+<script src="app/indexCtrl.js"></script>
+<script src="app/indexServices.js"></script>
+</head>
 <body>
-	<h3>HelloWorld</h3>
+	<div data-ng-controller="indexCtrl">
+		<div data-ng-grid="usernameGridOptions"
+			style="height: 200px; width: 100px; margin-left:20px;"></div>
+		<form style="margin-top:230px;">
+			<input placeholder="Name" data-ng-model="name">
+			<button type="button" data-ng-disabled="!name"
+				data-ng-click="addName()">Ekle</button>
+		</form>
+	</div>
 </body>
 </html>
