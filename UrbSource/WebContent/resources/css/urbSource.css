@@ -10,6 +10,7 @@ us-main-panel {
 	height: 1000px;
 	margin-left:auto;
 	margin-right:auto;
+	display:block;
 }
 
 us-login-user-panel {
