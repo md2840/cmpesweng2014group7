@@ -1,20 +1,20 @@
 directives.directive('usSearchPanel',function(){
 	return {
 		restrict: 'EAC',
-		templateUrl: "app/mainPage/html/searchPanel.html",
+		templateUrl: "app/mainPage/searchPanel/searchPanel.html",
 	};
 });
 
 directives.directive('usLoginUserPanel',function(){
 	return {
 		restrict: 'EAC',
-		templateUrl: "app/mainPage/html/loginUser.html",
+		templateUrl: "app/mainPage/loginUser/loginUser.html",
 	};
 });
 
 directives.directive('usMainPanel',function(){
 	return {
 		restrict: 'EAC',
-		templateUrl: "app/mainPage/html/mainPanel.html",
+		templateUrl: "app/mainPage/mainPanel/mainPanel.html",
 	};
 });
