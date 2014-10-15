@@ -31,62 +31,19 @@
 <script src="app/mainPage/searchPanel/controllers.js"></script>
 </head>
 <body>
-<div style="margin-left:100px;">
-	<form method="post" action="/UrbSource/j_spring_security_check">
-        <div id="passwordLoginOption" class="form">
-            <div class="row">
-                <div class="label left">
-                    <label for="j_username">login:</label>
-                </div>
-                <div class="right">
-                    <div class="textWrapper">
-                        <input type="text" name="j_username"/>
-                    </div>
-                </div>
-                <div class="cl"></div>
-            </div>
-            <div class="row">
-                <div class="label left">
-                    <label for="j_password">password:</label>
-                </div>
-                <div class="right">
-                    <div class="textWrapper">
-                        <input type="password" name="j_password"/>
-                    </div>
-                </div>
-                <div class="cl"></div>
-            </div>
-            <div class="buttons">
-                <input type="submit" value="Login"/>
-            </div>
-        </div>
-    </form>
-</div>
 	<div class="containSearchLogin" ng-controller="URLCtrl">
 		<us-search-panel></us-search-panel>
 		<us-login-user-panel></us-login-user-panel>
 	</div>
 	<us-main-panel></us-main-panel>
-	
-	
-
-<!-- Aşağısı eski login from sayfası şimdi directive içine gömülcek -->
-
-
-
-
-	
+	<!-- <div data-ng-controller="indexCtrl">
+		<div data-ng-grid="usernameGridOptions"
+			style="height: 200px; width: 100px; margin-left:20px;"></div>
+		<form style="margin-top:230px;">
+			<input placeholder="Name" data-ng-model="name">
+			<button type="button" data-ng-disabled="!name"
+				data-ng-click="addName()">Ekle</button>
+		</form>
+	</div> -->
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
