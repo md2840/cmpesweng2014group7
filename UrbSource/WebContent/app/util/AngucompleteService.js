@@ -6,8 +6,9 @@ services.factory('AngucompleteService',['$http',function($http){
 		 * Caseler içindeki success methodlarının çağrılma şekilleri angucomplete.js'in çalışması için gereklidir
 		 */
 			switch(url){
-			case 'searchPanel-searchName':
-				$http.get('Index/searchName',{params: {
+			case 'searchPanel_searchName':
+				console.log("anguService");
+				$http.post('Index/searchName',{params: {
 					query: str
 				}}).
 				success(function(responseData, status, headers, config) {
