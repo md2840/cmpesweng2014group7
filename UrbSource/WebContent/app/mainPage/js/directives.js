@@ -12,6 +12,13 @@ directives.directive('usLoginUserPanel',function(){
 	};
 });
 
+directives.directive('usUserInfoPanel',function(){
+	return {
+		restrict: 'EAC',
+		templateUrl: "app/mainPage/userInfo/userInfo.html",
+	};
+});
+
 directives.directive('usMainPanel',function(){
 	return {
 		restrict: 'EAC',

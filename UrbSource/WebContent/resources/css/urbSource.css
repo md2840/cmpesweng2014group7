@@ -19,6 +19,12 @@ us-login-user-panel {
 	height: 300px;
 }
 
+us-user-info-panel {
+	border: 1px solid #999;
+	width: 500px;
+	height: 300px;
+}
+
 .containSearchLogin {
 	height: 300px;
 	border: 10px solid #c3c3c3;

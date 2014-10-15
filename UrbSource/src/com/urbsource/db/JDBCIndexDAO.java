@@ -47,4 +47,13 @@ private static JdbcTemplate jdbcTemplate;
 		return result;
 	}
 	
+	public HashMap<String,Object> searchName(String query){
+		String sql = "SELECT * FROM DEF_NAME WHERE UPPER(N_NAME) LIKE UPPER('%"+query+"%') ";
+		List<Map<String,Object>> resultList = jdbcTemplate.queryForList(sql);
+		HashMap<String,Object> result = new HashMap<String,Object>();
+		result.put("result", resultList);
+		result.put("success", true);
+		return result;
+	}
+	
 }

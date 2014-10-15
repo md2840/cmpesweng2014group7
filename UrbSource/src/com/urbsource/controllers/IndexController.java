@@ -42,6 +42,12 @@ public class IndexController {
 		
 	}
 	
+	@RequestMapping(value="searchName")
+	public @ResponseBody HashMap<String,Object> searchNames(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		JSONObject obj = new JSONObject(getBody(request));
+		return jdb.searchName(obj.getJSONObject("result").getJSONObject("params").getString("query"));
+	}
+	
 	public String getBody(HttpServletRequest request) throws IOException
 	{
 		String body = null;
