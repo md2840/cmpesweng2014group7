@@ -18,7 +18,7 @@ private static JdbcTemplate jdbcTemplate;
 	public void setDataSource(DataSource dataSource) {
 
 		try {
-			this.jdbcTemplate = new JdbcTemplate(dataSource);
+			jdbcTemplate = new JdbcTemplate(dataSource);
 		} catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());
 			e.printStackTrace();
@@ -27,10 +27,10 @@ private static JdbcTemplate jdbcTemplate;
 	
 	public String addName(String name){
 		String sql = "INSERT INTO DEF_NAME (N_NAME)"
-				+" VALUES ('"+name+"')";
+				+" VALUES (?)";
 		String result = "";
 		try {
-			jdbcTemplate.execute(sql);
+			jdbcTemplate.update(sql, name);
 			result="{\"success\":true}";
 		} catch (DataAccessException e) {
 			result="hata:"+e.getLocalizedMessage();
@@ -48,8 +48,8 @@ private static JdbcTemplate jdbcTemplate;
 	}
 	
 	public HashMap<String,Object> searchName(String query){
-		String sql = "SELECT * FROM DEF_NAME WHERE UPPER(N_NAME) LIKE UPPER('%"+query+"%') ";
-		List<Map<String,Object>> resultList = jdbcTemplate.queryForList(sql);
+		String sql = "SELECT * FROM DEF_NAME WHERE UPPER(N_NAME) LIKE UPPER(CONCAT('%', ?, '%'))";
+		List<Map<String,Object>> resultList = jdbcTemplate.queryForList(sql, new Object[] {query});
 		HashMap<String,Object> result = new HashMap<String,Object>();
 		result.put("result", resultList);
 		result.put("success", true);
