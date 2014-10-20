@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class JDBCIndexDAO {
 
-private static JdbcTemplate jdbcTemplate;
+	private static JdbcTemplate jdbcTemplate;
 	
 	public void setDataSource(DataSource dataSource) {
 
