@@ -39,9 +39,9 @@ public class JDBCLoginDAO {
 			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 				System.out.println(rowNum);
 				User u = new User();
-				u.setU_ID(rs.getInt("U_ID"));
-				u.setU_USERNAME(rs.getString("U_USERNAME"));
-				u.setU_PASSWORD(rs.getString("U_PASSWORD"));
+				u.setId(rs.getInt("U_ID"));
+				u.setUsername(rs.getString("U_USERNAME"));
+				u.setPassword(rs.getString("U_PASSWORD"));
 				return u;
 			}
 		});
@@ -59,7 +59,7 @@ public class JDBCLoginDAO {
 	public void saveUser(User user){
 		// Check whether user already exists
 		String sql = "SELECT COUNT(1) FROM DEF_USER_LOGIN WHERE U_USERNAME = ? LIMIT 1";
-		int count = jdbcTemplate.queryForObject(sql, Integer.class, user.getU_USERNAME());
+		int count = jdbcTemplate.queryForObject(sql, Integer.class, user.getUsername());
 		
 		if (count > 0) {
 			// user exists, so update the user in database:
@@ -68,6 +68,6 @@ public class JDBCLoginDAO {
 			// user doesn't exist, insert user to database:
 			sql = "insert into DEF_USER_LOGIN (U_PASSWORD, U_USERNAME) VALUES(?, ?)";
 		}
-		jdbcTemplate.update(sql, user.getU_PASSWORD(), user.getU_USERNAME());
+		jdbcTemplate.update(sql, user.getPassword(), user.getUsername());
 	}
 }

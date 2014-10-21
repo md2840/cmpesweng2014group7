@@ -21,8 +21,8 @@ public class UrbSourceUserDetailsService implements UserDetailsService {
 	}
 	
 	/**
-	 * Bu method spring'in user service detailsindeki methodun baþtan yazýlmasýdýr.
-	 * Databasedeki user bilgileriyle authenticationa gönderilecek spring user'ý yaratýr.
+	 * Bu method spring'in user service detailsindeki methodun baï¿½tan yazï¿½lmasï¿½dï¿½r.
+	 * Databasedeki user bilgileriyle authenticationa gï¿½nderilecek spring user'ï¿½ yaratï¿½r.
 	 */
 
 	@Override
@@ -34,9 +34,9 @@ public class UrbSourceUserDetailsService implements UserDetailsService {
 		if (u==null)
 			throw new UsernameNotFoundException("user name not found");
 		
-		String U_USERNAME = u.getU_USERNAME();
-		String U_PASSWORD = u.getU_PASSWORD();
-		int U_ID= u.getU_ID();
+		String U_USERNAME = u.getUsername();
+		String U_PASSWORD = u.getPassword();
+		int U_ID= u.getId();
 		
 		boolean enabled = true;
 		boolean accountNonExpired = true;
@@ -44,7 +44,7 @@ public class UrbSourceUserDetailsService implements UserDetailsService {
 		boolean accountNonLocked = true;
 		
 	
-		//Spring configurasyonunda login dýþýndaki sayfalara giriþ için ROLE_USER olmalý, olursa öteki rollerin kontrolü angularjs ile halledilecek.
+		//Spring configurasyonunda login dï¿½ï¿½ï¿½ndaki sayfalara giriï¿½ iï¿½in ROLE_USER olmalï¿½, olursa ï¿½teki rollerin kontrolï¿½ angularjs ile halledilecek.
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		

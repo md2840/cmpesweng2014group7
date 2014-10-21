@@ -1,32 +1,67 @@
 package com.urbsource.models;
 
 import java.io.Serializable;
+import java.util.regex.*;
 
-public class User implements Serializable{
+public class User implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	private int U_ID;
-	private String U_USERNAME;
-	private String U_PASSWORD;
+	private int id;
+	private String username;
+	private String password;
+	private String firstName;
+	private String lastName;
+	private String email;
 	
+	public int getId() {
+		return id;
+	}
 	
-	public int getU_ID() {
-		return U_ID;
+	public void setId(int id) {
+		this.id = id;
 	}
-	public void setU_ID(int u_ID) {
-		U_ID = u_ID;
+	
+	public String getUsername() {
+		return username;
 	}
-	public String getU_USERNAME() {
-		return U_USERNAME;
+	
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public void setU_USERNAME(String u_USERNAME) {
-		U_USERNAME = u_USERNAME;
+	
+	public String getPassword() {
+		return password;
 	}
-	public String getU_PASSWORD() {
-		return U_PASSWORD;
+	
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	public void setU_PASSWORD(String u_PASSWORD) {
-		U_PASSWORD = u_PASSWORD;
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		if (! Pattern.matches("\\w+@\\w+(\\w|[.-_])*\\.[a-zA-Z]+", email)) {
+			throw new IllegalArgumentException("The string '" + email + "' is not a valid e-mail address");
+		}
+		this.email = email;
 	}
 
 }
