@@ -3,48 +3,58 @@ package com.urbsource.security;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 
-public class UrbSourceUser extends User {
+import com.urbsource.db.JDBCLoginDAO;
+import com.urbsource.models.User;
+
+public class UrbSourceUser extends org.springframework.security.core.userdetails.User {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private int U_ID;
-	private String U_USERNAME;
-	private String U_PASSWORD;
-	public int getU_ID() {
-		return U_ID;
+	/**
+	 * Store the connection (or DAO) object for updating the User object from database.
+	 */
+	private static JDBCLoginDAO dao;
+	
+	private User u;
+	
+	/**
+	 * Return the User model attached with this object. Used for accessing user details.
+	 * 
+	 * @return The user attached with this object
+	 */
+	public final User getUser() {
+		return u;
 	}
-	public void setU_ID(int u_ID) {
-		U_ID = u_ID;
-	}
-	public String getU_USERNAME() {
-		return U_USERNAME;
-	}
-	public void setU_USERNAME(String u_USERNAME) {
-		U_USERNAME = u_USERNAME;
-	}
-	public String getU_PASSWORD() {
-		return U_PASSWORD;
-	}
-	public void setU_PASSWORD(String u_PASSWORD) {
-		U_PASSWORD = u_PASSWORD;
+	
+	/**
+	 * Update the stored User object via fetching the new User object from the database.
+	 * This function is used only in the rare cases which a user's data has been changed
+	 * and it needs to be regenerated within same request for security purposes, instead
+	 * of using this function
+	 */
+	public void updateUser() {
+		// update user using DAO object
+		u = dao.getLoginUser(u.getUsername());
 	}
 	
 
-	public UrbSourceUser(int U_ID,String U_USERNAME,String U_PASSWORD,boolean enabled,
-			boolean accountNonExpired, boolean credentialsNonExpired,
-			boolean accountNonLocked,Collection<? extends GrantedAuthority> authorities){
+	public UrbSourceUser(User u,
+			JDBCLoginDAO dao,
+			boolean enabled,
+			boolean accountNonExpired,
+			boolean credentialsNonExpired,
+			boolean accountNonLocked,
+			Collection<? extends GrantedAuthority> authorities){
 		
-		super(U_USERNAME, U_PASSWORD, enabled, accountNonExpired, credentialsNonExpired,
+		super(u.getUsername(), u.getPassword(), enabled, accountNonExpired, credentialsNonExpired,
 				accountNonLocked, authorities);
-		
-		this.U_ID = U_ID;
-		this.U_USERNAME = U_USERNAME;
-		this.U_PASSWORD = U_PASSWORD;
-		
+		// Switch to the new database connection, it won't do no harm, and it might be useful
+		// for cleaning old DB connections
+		UrbSourceUser.dao = dao;
+		this.u = u;
 	}
 }

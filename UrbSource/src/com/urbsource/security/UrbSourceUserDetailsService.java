@@ -21,8 +21,7 @@ public class UrbSourceUserDetailsService implements UserDetailsService {
 	}
 	
 	/**
-	 * Bu method spring'in user service detailsindeki methodun ba�tan yaz�lmas�d�r.
-	 * Databasedeki user bilgileriyle authenticationa g�nderilecek spring user'� yarat�r.
+	 * Create UserDetails object to be checked for credentials using Spring Security framework.
 	 */
 
 	@Override
@@ -34,21 +33,19 @@ public class UrbSourceUserDetailsService implements UserDetailsService {
 		if (u==null)
 			throw new UsernameNotFoundException("user name not found");
 		
-		String U_USERNAME = u.getUsername();
-		String U_PASSWORD = u.getPassword();
-		int U_ID= u.getId();
-		
 		boolean enabled = true;
 		boolean accountNonExpired = true;
 		boolean credentialsNonExpired = true;
 		boolean accountNonLocked = true;
 		
 	
-		//Spring configurasyonunda login d���ndaki sayfalara giri� i�in ROLE_USER olmal�, olursa �teki rollerin kontrol� angularjs ile halledilecek.
+		/*
+		 * Pages besides public pages like login and sign up must require authority ROLE_USER.
+		 */
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		
-		UrbSourceUser user = new UrbSourceUser(U_ID,U_USERNAME,U_PASSWORD,enabled,accountNonExpired,credentialsNonExpired,accountNonLocked,authorities);
+		UrbSourceUser user = new UrbSourceUser(u, userdao, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 		
 		return user;
 	}
