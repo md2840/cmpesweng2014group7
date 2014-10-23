@@ -9,7 +9,6 @@
 <script src="resources/jquery-1.11.1.js"></script>
 <script src="resources/angular/angular.js"></script>
 <script src="resources/angular/ui-bootstrap-tpls-0.11.0.js"></script>
-<script src="resources/angular/angucomplete.js"></script>
 <script src="resources/js/ng-grid.debug.js"></script>
 
 <!--  CSS -->
@@ -24,26 +23,36 @@
 
 <!-- APP -->
 <script src="app/app.js"></script>
-<script src="app/util/AngucompleteService.js"></script>
-<!-- MAIN PAGE -->
-<script src="app/mainPage/js/directives.js"></script>
-<script src="app/mainPage/js/controllers.js"></script>
-<script src="app/mainPage/searchPanel/controllers.js"></script>
+
 </head>
 <body>
-	<div class="containSearchLogin" ng-controller="URLCtrl">
-		<us-search-panel></us-search-panel>
-		<us-user-info-panel></us-user-info-panel>
+	<h1>Sign Up!</h1>
+	<h2>Why don't you join and start sharing your experiences?</h2>
+	<div id="container">
+	<form action="/UrbSource/signup/confirm.jsp" method="POST">
+		<p>
+			<label>Username: <input type="text" id="" name="username"/></label>
+		</p>
+		<p>
+			<label>E-mail address: <input type="text" id="" name="email"/></label>
+		</p>
+		<p>
+			<label>First Name: <input type="text" id="" name="firstName"/></label>
+		</p>
+		<p>
+			<label>Last Name: <input type="text" id="" name="lastName"/></label>
+		</p>
+		<p>
+			<label>Password: <input type="password" id="" name="password"/></label>
+		</p>
+		<p>
+			<label>Password (again): <input type="password" id="" name="password2"/></label>
+		</p>
+		<p>
+			<input type="submit" value="Sign Up!">
+			<input type="reset" value="Clear Form">
+		</p>
+	</form>
 	</div>
-	<us-main-panel></us-main-panel>
-	<!-- <div data-ng-controller="indexCtrl">
-		<div data-ng-grid="usernameGridOptions"
-			style="height: 200px; width: 100px; margin-left:20px;"></div>
-		<form style="margin-top:230px;">
-			<input placeholder="Name" data-ng-model="name">
-			<button type="button" data-ng-disabled="!name"
-				data-ng-click="addName()">Ekle</button>
-		</form>
-	</div> -->
 </body>
 </html>
