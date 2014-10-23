@@ -1,4 +1,4 @@
 eclipse.preferences.version=1
 encoding//WebContent/index.html=UTF-8
-encoding//src/com/urbsource/db/JDBCLoginDAO.java=UTF-8
+encoding//src/com/urbsource/db/JDBCUserDAO.java=UTF-8
 encoding//src/com/urbsource/security/UrbSourceUserDetailsService.java=UTF-8

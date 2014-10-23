@@ -16,7 +16,7 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 			<ref bean="dataSource" />
 		</property>
 	</bean>
-	<bean id="JDBCLoginDAO" class="com.urbsource.db.JDBCLoginDAO">
+	<bean id="JDBCUserDAO" class="com.urbsource.db.JDBCUserDAO">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	<bean id="JDBCIndexDAO" class="com.urbsource.db.JDBCIndexDAO">

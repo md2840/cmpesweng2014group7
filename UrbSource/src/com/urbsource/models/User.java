@@ -3,6 +3,8 @@ package com.urbsource.models;
 import java.io.Serializable;
 import java.util.regex.*;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 public class User implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -12,6 +14,10 @@ public class User implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String email;
+	/**
+	 * For password confirmation
+	 */
+	private String password2;
 	
 	public int getId() {
 		return id;
@@ -58,10 +64,18 @@ public class User implements Serializable {
 	}
 
 	public void setEmail(String email) {
-		if (! Pattern.matches("\\w+@\\w+(\\w|[.-_])*\\.[a-zA-Z]+", email)) {
-			throw new IllegalArgumentException("The string '" + email + "' is not a valid e-mail address");
-		}
 		this.email = email;
 	}
 
+	public String getPassword2() {
+		return password2;
+	}
+
+	public void setPassword2(String password2) {
+		this.password2 = password2;
+	}
+
+	public boolean isEmailValid() {
+		return Pattern.matches("\\w+@\\w+(\\w|[.-_])*\\.[a-zA-Z]+", email);
+	}
 }

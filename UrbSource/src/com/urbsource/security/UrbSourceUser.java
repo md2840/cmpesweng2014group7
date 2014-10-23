@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.urbsource.db.JDBCLoginDAO;
+import com.urbsource.db.JDBCUserDAO;
 import com.urbsource.models.User;
 
 public class UrbSourceUser extends org.springframework.security.core.userdetails.User {
@@ -17,7 +17,7 @@ public class UrbSourceUser extends org.springframework.security.core.userdetails
 	/**
 	 * Store the connection (or DAO) object for updating the User object from database.
 	 */
-	private static JDBCLoginDAO dao;
+	private static JDBCUserDAO dao;
 	
 	private User u;
 	
@@ -43,7 +43,7 @@ public class UrbSourceUser extends org.springframework.security.core.userdetails
 	
 
 	public UrbSourceUser(User u,
-			JDBCLoginDAO dao,
+			JDBCUserDAO dao,
 			boolean enabled,
 			boolean accountNonExpired,
 			boolean credentialsNonExpired,

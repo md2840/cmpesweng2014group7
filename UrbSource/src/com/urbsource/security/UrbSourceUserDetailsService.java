@@ -9,14 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.urbsource.db.JDBCLoginDAO;
+import com.urbsource.db.JDBCUserDAO;
 import com.urbsource.models.User;
 
 public class UrbSourceUserDetailsService implements UserDetailsService {
 	
-	private JDBCLoginDAO userdao = new JDBCLoginDAO();
+	private JDBCUserDAO userdao = new JDBCUserDAO();
 	
-	public void setUserdao(JDBCLoginDAO userdao) {
+	public void setUserdao(JDBCUserDAO userdao) {
 		this.userdao = userdao;
 	}
 	
