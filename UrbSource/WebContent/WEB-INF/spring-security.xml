@@ -24,8 +24,14 @@
 		<security:custom-filter position="FORM_LOGIN_FILTER"
 			ref="authenticationFilter" />
 		<!-- requires-channel https -->
-		<security:intercept-url pattern="/**"
-			access="hasRole('ROLE_USER')" />
+		<security:intercept-url pattern="/signup/**"
+			access="isAnonymous()" />
+		<security:intercept-url pattern="/signup.jsp"
+			access="isAnonymous()" />
+		<security:intercept-url pattern="/Index/**"
+			access="isAuthenticated()" />
+		<security:intercept-url pattern="/index.html"
+			access="isAuthenticated()" />
 		<!-- <port-mappings> <port-mapping http="8080" https="8080"/> </port-mappings> -->
 		<!-- You can use authentication-failure-url or session-authentication-error-url -->
 
