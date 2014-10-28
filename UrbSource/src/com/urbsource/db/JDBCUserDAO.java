@@ -35,6 +35,15 @@ public class JDBCUserDAO {
 		return u;
 	}
 	
+	public User getUser(int id){
+		String sql = "SELECT * FROM user WHERE id = ?";
+		User u = JDBCUserDAO.jdbcTemplate.queryForObject(
+				sql,
+				new Object[] { id },
+				new BeanPropertyRowMapper<User>(User.class));
+		return u;
+	}
+	
 	/**
 	 * Saves User object to the database. Creates a new user object if user does
 	 * not exist, otherwise only updates user information

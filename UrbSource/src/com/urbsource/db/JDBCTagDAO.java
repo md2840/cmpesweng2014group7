@@ -1,5 +1,7 @@
 package com.urbsource.db;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -49,4 +51,12 @@ public class JDBCTagDAO {
 		return t;
 	}
 
+	public List<Tag> getTags(int experience_id) {
+		String sql = "SELECT tag.name AS name, tag.id AS id FROM tag, rel_experience_tag "
+				+ "WHERE tag.id = rel_experience_tag.tag_id AND rel_experience_tag.experience_id = ?";
+		return jdbcTemplate.query(
+				sql,
+				new Object[] { experience_id },
+				new BeanPropertyRowMapper<Tag>(Tag.class));
+	}
 }

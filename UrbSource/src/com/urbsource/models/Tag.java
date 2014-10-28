@@ -11,8 +11,11 @@ import java.io.Serializable;
  * @author Mehmet Emre
  */
 public class Tag implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Compiler-generated serialization version UID.
+	 */
+	private static final long serialVersionUID = -6018630074302708032L;
 	private int id;
 	private String name;
 	
@@ -38,4 +41,7 @@ public class Tag implements Serializable {
 		this.name = name.trim().toLowerCase();
 	}
 
+	public boolean equals(Tag t) {
+		return this.name == t.name;
+	}
 }
