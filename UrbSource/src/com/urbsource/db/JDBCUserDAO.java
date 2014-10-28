@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.urbsource.models.Experience;
 import com.urbsource.models.User;
 
 @Repository
@@ -80,5 +81,11 @@ public class JDBCUserDAO {
 		}
 		String sql = "insert into user (password, first_name, last_name, email, username) VALUES(?, ?, ?, ?, ?)";
 		jdbcTemplate.update(sql, user.getPassword(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername());
+	}
+	
+	public boolean deleteUser(User user) {
+		String sql = "DELETE user WHERE id = ?";
+		jdbcTemplate.update(sql, user.getId());
+		return true;
 	}
 }
