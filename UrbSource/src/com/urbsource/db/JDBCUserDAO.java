@@ -1,15 +1,13 @@
 package com.urbsource.db;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import com.urbsource.models.Experience;
 import com.urbsource.models.User;
 
 @Repository
@@ -34,6 +32,15 @@ public class JDBCUserDAO {
 		User u = JDBCUserDAO.jdbcTemplate.queryForObject(
 				sql,
 				new Object[] { username },
+				new BeanPropertyRowMapper<User>(User.class));
+		return u;
+	}
+	
+	public User getUser(int id){
+		String sql = "SELECT * FROM user WHERE id = ?";
+		User u = JDBCUserDAO.jdbcTemplate.queryForObject(
+				sql,
+				new Object[] { id },
 				new BeanPropertyRowMapper<User>(User.class));
 		return u;
 	}
@@ -74,5 +81,11 @@ public class JDBCUserDAO {
 		}
 		String sql = "insert into user (password, first_name, last_name, email, username) VALUES(?, ?, ?, ?, ?)";
 		jdbcTemplate.update(sql, user.getPassword(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername());
+	}
+	
+	public boolean deleteUser(User user) {
+		String sql = "DELETE user WHERE id = ?";
+		jdbcTemplate.update(sql, user.getId());
+		return true;
 	}
 }
