@@ -239,7 +239,7 @@ public class JDBCExperienceDAO {
 		if (exp.getId() < 0)
 			return false;
 
-		String sql = "DELETE experience WHERE experience_id = ?";
+		String sql = "DELETE experience WHERE id = ?";
 		jdbcTemplate.update(sql, exp.getId());
 		exp.setId(-1);
 		return true;
