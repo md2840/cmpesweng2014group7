@@ -61,6 +61,7 @@ public class SignUpController {
 	 */
 	@RequestMapping(value="/confirm", method=RequestMethod.GET)
 	public ModelAndView SignUpPage(Model model) {
+		model.addAttribute("user", null);
 		return new ModelAndView("signup", "command", new User());
 	}
 }
