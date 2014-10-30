@@ -1,7 +1,8 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="us" tagdir="/WEB-INF/tags" %>
-<%@ attribute name="user" required="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ attribute name="user" required="true" type="com.urbsource.models.User" %>
 <div class="userInfoPanel">
 <sec:authorize access="isAnonymous()">
 	<h3>
@@ -14,7 +15,7 @@
 		Welcome ${user.firstName} ${user.lastName}.
 	</h3>
 	<p>
-		Your experience point i 0.
+		Your experience point is 0.
 	</p>
 	<p>
 	<c:url var="logoutUrl" value="j_spring_security_logout"/>

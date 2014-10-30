@@ -8,7 +8,12 @@ import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,17 +21,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.urbsource.db.JDBCIndexDAO;
+import com.urbsource.db.JDBCUserDAO;
+import com.urbsource.models.User;
 
 @Controller
 @RequestMapping("/Index/*")
 public class IndexController {
 	
-	
+	JDBCUserDAO userDao;
 	JDBCIndexDAO jdb;
 	
 	public IndexController(){
-		System.out.println("index controller");
 		jdb = new JDBCIndexDAO();
+		userDao = new JDBCUserDAO();
+	}
+	
+	@RequestMapping(value="/")
+	public String indexPage(Model model) {
+		User u = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		        u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+		}
+		model.addAttribute("user", u);
+		return "index";
 	}
 	
 	@RequestMapping(value="/getNames")

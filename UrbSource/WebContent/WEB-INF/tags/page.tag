@@ -1,8 +1,9 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="us" tagdir="/WEB-INF/tags" %>
-<%@ attribute name="user" required="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="mainPanel" fragment="true" required="true" %>
 <%@ attribute name="head" fragment="true" required="false" %>
+<%@ attribute name="user" required="true" type="com.urbsource.models.User" %>
 <!DOCTYPE html>
 <html data-ng-app="urbsource">
 <head>

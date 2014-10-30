@@ -28,10 +28,6 @@
 
 	<mvc:annotation-driven />
 
-	<!-- json a otomatik convert edilmesini sağlıyor -->
-
-	<!-- default servlet handlerın çalışmasını bu sayede html sayfalarına erişimi 
-		sağlıyor -->
 	<mvc:default-servlet-handler />
 
 </beans>
