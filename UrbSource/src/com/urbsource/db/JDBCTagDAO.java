@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -36,11 +37,13 @@ public class JDBCTagDAO {
 		tag = tag.trim().toLowerCase(); // keep all tags lowercase and trimmed
 		// try getting tag from DB
 		String sql = "SELECT * FROM tag WHERE name = ?";
-		Tag t = jdbcTemplate.queryForObject(
+		Tag t = null;
+		try {
+			t = jdbcTemplate.queryForObject(
 				sql,
 				new Object[] { tag },
 				new BeanPropertyRowMapper<Tag>(Tag.class));
-		if (t == null) {
+		} catch (EmptyResultDataAccessException e) {
 			// if tag doesn't exist create the tag, then call self
 			sql = "insert into tag (name) values(?)";
 			// if update is successful, call self to get the tag from DB

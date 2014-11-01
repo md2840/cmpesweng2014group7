@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -28,20 +29,52 @@ public class JDBCExperienceDAO {
 	private JDBCTagDAO tagDao;
 	private SimpleJdbcInsert insert;
 
+	/**
+	 * Only to be used by Spring to set the data source
+	 */
+	public JDBCExperienceDAO() {
+	}
+	
 	public JDBCExperienceDAO(JDBCUserDAO userDao, JDBCTagDAO tagDao) {
 		super();
 		this.userDao = userDao;
 		this.tagDao = tagDao;
+		this.insert = new SimpleJdbcInsert(jdbcTemplate)
+						.withTableName("experience")
+						.usingColumns("text", "author_id")
+						.usingGeneratedKeyColumns("id");
 	}
 	
 	public void setDataSource(DataSource dataSource) {
 		try {
 			jdbcTemplate = new JdbcTemplate(dataSource);
-			this.insert = new SimpleJdbcInsert(jdbcTemplate).withTableName("experience");
 		} catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Get a specific experience.
+	 * 
+	 * @param id ID of the experience
+	 * @return Queried {@link Experience}
+	 */
+	public Experience getExperience(final int id) {
+		String sql = "SELECT * FROM experience WHERE id = ?";
+		return jdbcTemplate.queryForObject(sql, new Object[] { id }, new RowMapper<Experience>() {
+
+			@Override
+			public Experience mapRow(ResultSet rs, int rowNumber)
+					throws SQLException {
+				User u = userDao.getUser(rs.getInt("author_id"));
+				String text = rs.getString("text");
+				List<Tag> tags = tagDao.getTags(id);
+				return new Experience(id, u, text, tags);
+			}
+			
+		});
+		
 	}
 	
 	/**
@@ -83,7 +116,7 @@ public class JDBCExperienceDAO {
 				int id = rs.getInt("id");
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
-				User u = userDao.getUser(id);
+				User u = userDao.getUser(rs.getInt("author_id"));
 				Experience e = new Experience(id, u, text, tags);
 				e.setAsSaved();
 				return e;
@@ -127,7 +160,7 @@ public class JDBCExperienceDAO {
 				int id = rs.getInt("id");
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
-				User u = userDao.getUser(id);
+				User u = userDao.getUser(rs.getInt("author_id"));
 				Experience e = new Experience(id, u, text, tags);
 				e.setAsSaved();
 				return e;
@@ -157,7 +190,7 @@ public class JDBCExperienceDAO {
 				int id = rs.getInt("id");
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
-				User u = userDao.getUser(id);
+				User u = userDao.getUser(rs.getInt("author_id"));
 				Experience e = new Experience(id, u, text, tags);
 				e.setAsSaved();
 				return e;
@@ -186,15 +219,19 @@ public class JDBCExperienceDAO {
 		parameters.put("text", exp.getText());
 		parameters.put("author_id", exp.getAuthor().getId());
 		exp.setId(insert.executeAndReturnKey(parameters).intValue());
-		SimpleJdbcInsert insertTag = new SimpleJdbcInsert(jdbcTemplate).withTableName("rel_experience_tag");
-		ArrayList<HashMap<String, Object>> sqlParameters = new ArrayList<HashMap<String,Object>>(exp.getTags().size());
+		SimpleJdbcInsert insertTag = new SimpleJdbcInsert(jdbcTemplate)
+			.withTableName("rel_experience_tag")
+			.usingColumns("tag_id", "experience_id")
+			.usingGeneratedKeyColumns("id");
+		MapSqlParameterSource sqlParameters[] = new MapSqlParameterSource[exp.getTags().size()];
+		int i = 0;
 		for (Tag t : exp.getTags()) {
-			HashMap<String, Object> params = new HashMap<String, Object>();
-			params.put("experience_id", exp.getId());
-			params.put("tag_id", t.getId());
-			sqlParameters.add(params);
+			sqlParameters[i] = new MapSqlParameterSource();
+			sqlParameters[i].addValue("experience_id", exp.getId());
+			sqlParameters[i].addValue("tag_id", t.getId());
+			i++;
 		}
-		insertTag.executeBatch((HashMap<String, Object>[])sqlParameters.toArray());
+		insertTag.executeBatch(sqlParameters);
 		exp.setAsSaved();
 		return true;
 	}
@@ -229,7 +266,10 @@ public class JDBCExperienceDAO {
 			params.put("tag_id", t.getId());
 			sqlParameters.add(params);
 		}
-		insertTag.executeBatch((HashMap<String, Object>[])sqlParameters.toArray());
+		int[] results = insertTag.executeBatch((HashMap<String, Object>[])sqlParameters.toArray());
+		for (int i : results) {
+			System.out.println(i);
+		}
 		exp.setAsSaved();
 		return true;
 		
@@ -239,9 +279,30 @@ public class JDBCExperienceDAO {
 		if (exp.getId() < 0)
 			return false;
 
-		String sql = "DELETE experience WHERE id = ?";
-		jdbcTemplate.update(sql, exp.getId());
+		String sql = "DELETE FROM experience WHERE id = ?";
+		jdbcTemplate.update(sql, new Object[] {exp.getId()});
 		exp.setId(-1);
 		return true;
+	}
+
+	public List<Experience> getRecentExperiences(int n) {
+		return jdbcTemplate.query(
+				"SELECT * FROM experience ORDER BY id LIMIT ?",
+				new Object[] { n },
+				new RowMapper<Experience>() {
+
+			@Override
+			public Experience mapRow(ResultSet rs, int rowNumber)
+					throws SQLException {
+				int id = rs.getInt("id");
+				String text = rs.getString("text");
+				List<Tag> tags = tagDao.getTags(id);
+				User u = userDao.getUser(rs.getInt("author_id"));
+				Experience e = new Experience(id, u, text, tags);
+				e.setAsSaved();
+				return e;
+			}
+			
+		});
 	}
 }

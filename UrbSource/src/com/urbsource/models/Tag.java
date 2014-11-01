@@ -19,6 +19,11 @@ public class Tag implements Serializable {
 	private int id;
 	private String name;
 	
+	/**
+	 * To be a bean
+	 */
+	public Tag() {}
+	
 	public Tag(String tag, int id) {
 		this.setName(tag);
 		this.setId(id);
