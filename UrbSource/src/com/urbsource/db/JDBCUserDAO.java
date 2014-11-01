@@ -16,11 +16,9 @@ public class JDBCUserDAO {
 	private static JdbcTemplate jdbcTemplate;
 
 	public void setDataSource(DataSource dataSource) {
-		System.out.println("constructor");
 
 		try {
 			jdbcTemplate = new JdbcTemplate(dataSource);
-			System.out.println("constructortry");
 		} catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());
 			e.printStackTrace();
@@ -33,6 +31,10 @@ public class JDBCUserDAO {
 				sql,
 				new Object[] { username },
 				new BeanPropertyRowMapper<User>(User.class));
+		sql = "SELECT COUNT(id) FROM experience WHERE author_id = ?";
+		u.setNumberOfExperiences(jdbcTemplate.queryForInt(
+				sql,
+				new Object[] { u.getId() }));
 		return u;
 	}
 	
@@ -61,9 +63,16 @@ public class JDBCUserDAO {
 		}
 		if (count > 0) {
 			// user exists, so update the user in database:
-			sql = "update user set password=?, first_name=?, last_name=?, email=? where username = ?";
-			jdbcTemplate.update(sql, user.getPassword(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername());
-		} else {
+			sql = "update user set password=?, first_name=?, last_name=?, email=?, experience_points=?, comment_points=? where username = ?";
+			jdbcTemplate.update(sql,
+					user.getPassword(),
+					user.getFirstName(),
+					user.getLastName(),
+					user.getEmail(),
+					user.getExperiencePoints(),
+					user.getCommentPoints(),
+					user.getUsername());
+			} else {
 			// user doesn't exist, insert user to database:
 			this.createUser(user);
 		}
@@ -79,8 +88,15 @@ public class JDBCUserDAO {
 		if (! user.isEmailValid()) {
 			throw new DataIntegrityViolationException("User email is invalid");
 		}
-		String sql = "insert into user (password, first_name, last_name, email, username) VALUES(?, ?, ?, ?, ?)";
-		jdbcTemplate.update(sql, user.getPassword(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername());
+		String sql = "insert into user (password, first_name, last_name, email, experience_points, comment_points, username) VALUES(?, ?, ?, ?, ?)";
+		jdbcTemplate.update(sql,
+				user.getPassword(),
+				user.getFirstName(),
+				user.getLastName(),
+				user.getEmail(),
+				user.getExperiencePoints(),
+				user.getCommentPoints(),
+				user.getUsername());
 	}
 	
 	public boolean deleteUser(User user) {
