@@ -88,7 +88,7 @@ public class JDBCUserDAO {
 		if (! user.isEmailValid()) {
 			throw new DataIntegrityViolationException("User email is invalid");
 		}
-		String sql = "insert into user (password, first_name, last_name, email, experience_points, comment_points, username) VALUES(?, ?, ?, ?, ?)";
+		String sql = "insert into user (password, first_name, last_name, email, experience_points, comment_points, username) VALUES(?, ?, ?, ?, ?, ?, ?)";
 		jdbcTemplate.update(sql,
 				user.getPassword(),
 				user.getFirstName(),
