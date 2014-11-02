@@ -14,8 +14,8 @@ public class User implements Serializable {
 	private String lastName;
 	private String email;
 
-	private int expPoints;
-	private int commentPoints;
+	private int expPoints=0;
+	private int commentPoints=0;
 	/**
 	 * For password confirmation
 	 */
