@@ -47,10 +47,16 @@ public class SignUpController {
 			try {
 				dao.createUser(u);
 				
-				//
-				SendEmail se = new SendEmail();
-				se.sendMailforSignup( u.getEmail() );
-				//
+				/**
+				 *	After signing up, a mail is sent to user's email address.  
+				 *	@param mailSubject Subject of the mail to be sent.
+				 *	@param mailText Text body of the mail to be sent.
+				 */
+				String mailSubject = "UrbSource signup is successful";
+				String mailText = "Signup is successful. Welcome.";
+				SendEmail sendEmail = new SendEmail( u.getEmail(), mailSubject, mailText );
+				sendEmail.sendMailToUser();
+				
 				return new ModelAndView("signup_success");
 			} catch (DataIntegrityViolationException e) {
 				model.addAttribute("error", "user_exists");
