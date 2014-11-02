@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import com.urbsource.models.*;
 import com.urbsource.db.JDBCUserDAO;
+import com.urbsource.sendEmail.*;
 
 /**
  * The controller logic for signup process.
@@ -45,6 +46,11 @@ public class SignUpController {
 		} else {
 			try {
 				dao.createUser(u);
+				
+				//
+				SendEmail se = new SendEmail();
+				se.sendMailforSignup( u.getEmail() );
+				//
 				return new ModelAndView("signup_success");
 			} catch (DataIntegrityViolationException e) {
 				model.addAttribute("error", "user_exists");
