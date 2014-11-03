@@ -30,6 +30,8 @@
 			access="isAnonymous()" />
 		<security:intercept-url pattern="/Index/**"
 			access="isAuthenticated()" />
+		<security:intercept-url pattern="/user/**"
+			access="isAuthenticated()" />
 		<security:intercept-url pattern="/index.html"
 			access="isAuthenticated()" />
 		<!-- <port-mappings> <port-mapping http="8080" https="8080"/> </port-mappings> -->

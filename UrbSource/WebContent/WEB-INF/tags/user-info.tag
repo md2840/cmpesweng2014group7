@@ -12,7 +12,7 @@
 </sec:authorize>
 <sec:authorize access="isAuthenticated()">
 	<h3>
-		Welcome ${user.firstName} ${user.lastName}.
+		Welcome <a href="/UrbSource/user/info">${user.firstName} ${user.lastName}</a>
 	</h3>
 	<p>
 		Your experience point is 0.

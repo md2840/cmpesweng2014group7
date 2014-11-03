@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import com.urbsource.models.*;
 import com.urbsource.db.JDBCUserDAO;
+import com.urbsource.sendEmail.*;
 
 /**
  * The controller logic for signup process.
@@ -45,6 +46,17 @@ public class SignUpController {
 		} else {
 			try {
 				dao.createUser(u);
+				
+				/**
+				 *	After signing up, a mail is sent to user's email address.  
+				 *	@param mailSubject Subject of the mail to be sent.
+				 *	@param mailText Text body of the mail to be sent.
+				 */
+				String mailSubject = "UrbSource signup is successful";
+				String mailText = "Signup is successful. Welcome.";
+				SendEmail sendEmail = new SendEmail( u.getEmail(), mailSubject, mailText );
+				sendEmail.sendMailToUser();
+				
 				return new ModelAndView("signup_success");
 			} catch (DataIntegrityViolationException e) {
 				model.addAttribute("error", "user_exists");

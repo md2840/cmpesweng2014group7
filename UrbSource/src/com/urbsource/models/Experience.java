@@ -20,6 +20,11 @@ public class Experience implements Serializable {
 	private boolean textChanged=false;
 	private boolean saved=false;
 	
+	/**
+	 * To be a bean.
+	 */
+	public Experience() {}
+	
 	public Experience(int id, User author, String text, List<Tag> tags) {
 		this.text = text;
 		this.id = id;
@@ -105,7 +110,7 @@ public class Experience implements Serializable {
 	}
 
 	public ArrayList<Tag> getTags() {
-		return removedTags;
+		return tags;
 	}
 	public ArrayList<Tag> getRemovedTags() {
 		return removedTags;

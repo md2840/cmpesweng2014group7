@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="us" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<us:page user="${user}">
+<us:page user="${command}">
 <jsp:attribute name="mainPanel">
 	<form:form action="/UrbSource/signup/confirm" method="POST">
 		<c:set var="error" value="${error}" />

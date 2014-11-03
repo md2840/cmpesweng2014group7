@@ -2,6 +2,7 @@ package com.urbsource.models;
 
 import java.io.Serializable;
 import java.util.regex.*;
+import java.math.*;
 
 public class User implements Serializable {
 	
@@ -12,10 +13,14 @@ public class User implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String email;
+
+	private int expPoints=0;
+	private int commentPoints=0;
 	/**
 	 * For password confirmation
 	 */
 	private String password2;
+	private int numberOfExperiences;
 	
 	public int getId() {
 		return id;
@@ -75,5 +80,52 @@ public class User implements Serializable {
 
 	public boolean isEmailValid() {
 		return Pattern.matches("\\w+@\\w+(\\w|[.-_])*\\.[a-zA-Z]+", email);
+	}
+
+	/**
+	 * Karma is kind of user level that is dependent on both experience and
+	 * comment points. We currently define it with formula :
+	 * 
+	 * floor(log(karma = alpha * expPoints + beta * commentPoints + 1)) + 1
+	 * 
+	 * where alpha and beta are coefficients and value in log is >= 1 so that
+	 * karma is positive.
+	 * 
+	 * @return karma of the user.
+	 */
+	public int getKarma() {
+		double pureKarma = expPoints + commentPoints + 1;
+		if (pureKarma < 1)
+			pureKarma = 1;
+		return (int)Math.log(pureKarma) + 1;
+	}
+
+	public int getExperiencePoints() {
+		return expPoints;
+	}
+
+	public void setExperiencePoints(int expPoints) {
+		this.expPoints = expPoints;
+	}
+
+	public int getCommentPoints() {
+		return commentPoints;
+	}
+
+	public void setCommentPoints(int commentPoints) {
+		this.commentPoints = commentPoints;
+	}
+	
+	public int getNumberOfExperiences() {
+		return numberOfExperiences;
+	}
+	
+	/**
+	 * To be only used from DAO
+	 * 
+	 * @param numberOfExperiences
+	 */
+	public void setNumberOfExperiences(int numberOfExperiences) {
+		this.numberOfExperiences = numberOfExperiences;
 	}
 }
