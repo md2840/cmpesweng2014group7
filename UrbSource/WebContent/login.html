@@ -9,7 +9,7 @@
 <script src="resources/login/jquery-1.11.1.js"></script>
 <script src="resources/login/angular.js"></script>
 <script src="resources/login/angucomplete.js"></script>
-
+<script src="resources/js/toastr.js"></script>
 <!--  CSS -->
 <link rel="stylesheet" type="text/css"
 	href="resources/css/bootstrap-combined.min.css">
@@ -17,8 +17,31 @@
 	href="resources/css/angucomplete.css">
 <link rel="stylesheet" type="text/css"
 	href="resources/css/urbSource.css">
+<link rel="stylesheet" type="text/css"
+	href="resources/css/toastr.css">
+	
+<script>
 
+    $(document).ready(function() {
+    	toastr.options = {
+    			  "closeButton": false,
+    			  "debug": false,
+    			  "positionClass": "toast-bottom-right",
+    			  "onclick": null,
+    			  "showDuration": "3000",
+    			  "hideDuration": "10000",
+    			  "timeOut": "50000",
+    			  "extendedTimeOut": "10000",
+    			  "showEasing": "swing",
+    			  "hideEasing": "linear",
+    			  "showMethod": "fadeIn",
+    			  "hideMethod": "fadeOut"
+    			};
+    	toastr.success("Welcome to UrbSource!", "UrbSource Developer Team");
 
+    });
+
+</script>
 <!-- APP -->
 <script src="app/login/app.js"></script>
 <script src="app/login/util/AngucompleteService.js"></script>
