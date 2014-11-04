@@ -35,4 +35,10 @@
                 Or you can <input type="submit" class="btn btn-primary" value="sign up!"/>
      	</div>
     </form>
+        <form action="/UrbSource/user/forgot" method="GET">
+	    <div style="margin-top: 1%"class="buttons">
+                <input type="submit" class="btn btn-primary" value="Forgot your password?"/>
+     	</div>
+    </form>
+    
 </div>
