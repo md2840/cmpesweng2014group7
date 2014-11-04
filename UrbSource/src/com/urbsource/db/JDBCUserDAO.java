@@ -47,6 +47,22 @@ public class JDBCUserDAO {
 		return u;
 	}
 	
+	/***
+	 * Finds the user which is searched with email address.
+	 * 
+	 * @param email email address of the wanted user
+	 * @return user which is looked for
+	 * @author Gokce Yesiltas
+	 */
+	public User getUser(String email){
+		String sql = "SELECT * FROM user WHERE email = ?";
+		User u = JDBCUserDAO.jdbcTemplate.queryForObject(
+				sql,
+				new Object[] { email },
+				new BeanPropertyRowMapper<User>(User.class));
+		return u;
+	}
+	
 	/**
 	 * Saves User object to the database. Creates a new user object if user does
 	 * not exist, otherwise only updates user information
