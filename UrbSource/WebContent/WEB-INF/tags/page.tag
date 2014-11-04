@@ -17,6 +17,7 @@
 <script src="/UrbSource/resources/angular/ui-bootstrap-tpls-0.11.0.js"></script>
 <script src="/UrbSource/resources/angular/angucomplete.js"></script>
 <script src="/UrbSource/resources/js/ng-grid.debug.js"></script>
+<script src="/UrbSource/resources/js/toastr.js"></script>
 
 <!--  CSS -->
 <link rel="stylesheet" type="text/css" href="/UrbSource/resources/css/ng-grid.css">
@@ -26,7 +27,9 @@
 	href="/UrbSource/resources/css/angucomplete.css">
 <link rel="stylesheet" type="text/css"
 	href="/UrbSource/resources/css/urbSource.css">
-
+<link rel="stylesheet" type="text/css"
+	href="/UrbSource/resources/css/toastr.css">
+	
 <!-- APP -->
 <script src="/UrbSource/app/app.js"></script>
 <script src="/UrbSource/app/util/AngucompleteService.js"></script>
