@@ -25,7 +25,7 @@
     cursor: pointer;
     z-index: 9999;
     height: 250px;
-    position: fixed;
+  /*  position: fixed; */
     overflow:scroll;
     overflow-x:hidden;
     /*top: 32px;
