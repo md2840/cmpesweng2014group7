@@ -313,7 +313,7 @@ public class JDBCExperienceDAO {
 	 * @return
 	 */
 	public Object getTagList(String query) {
-		String sql = "SELECT name FROM tag WHERE UPPER(name) LIKE UPPER(CONCAT('%', ?, '%'))";
+		String sql = "SELECT * FROM tag WHERE UPPER(name) LIKE UPPER(CONCAT('%', ?, '%'))";
 		List<Map<String,Object>> resultList = jdbcTemplate.queryForList(sql, new Object[] {query});
 		return resultList;
 	}

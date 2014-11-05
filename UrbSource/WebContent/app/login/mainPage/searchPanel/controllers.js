@@ -1,20 +1,19 @@
-controllers.controller('searchExperienceCtrl',['$scope',function($scope){
+controllers.controller('searchExperienceCtrl',['$scope','SearchExperienceFactory',function($scope,SearchExperienceFactory){
 	$scope.tag = {};
 	$scope.text = undefined;
 
 	$scope.searchExp = function(){
-		console.log("girdim");
 		console.log($scope.text);
 
 		if($scope.tag){
 			if($scope.tag.originalObject){
-				console.log("tag ara");
+				SearchExperienceFactory.getTagBaseExp($scope);
 			} else {
-				console.log("text ara");	
+				SearchExperienceFactory.getTextBaseExp($scope);
 			}
 		}
 		else {
-			console.log("text ara");	
+			SearchExperienceFactory.getTextBaseExp($scope);	
 		}
 	};
 }]);

@@ -98,11 +98,28 @@ public class ExperienceController {
 		
 	}
 	
-	@RequestMapping(value="/searchTag")
+	@RequestMapping(value="/searchTag", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> searchTag(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
 		map.put("tagList", expDao.getTagList(json.getJSONObject("params").getString("query")));
+		return map;
+	}
+	
+	@RequestMapping(value="searchExperienceTag", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String,Object> searchExperienceTag(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		Tag tag = new Tag(json.getJSONObject("params").getString("name"), json.getJSONObject("params").getInt("id"));
+		map.put("experienceList", expDao.getExperiences(tag));
+		return map;
+	}
+	
+	@RequestMapping(value="searchExperienceText", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String,Object> searchExperienceText(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		map.put("experienceList", expDao.searchExperiences(json.getJSONObject("params").getString("text")));
 		return map;
 	}
 	
