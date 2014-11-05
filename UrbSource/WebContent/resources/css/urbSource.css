@@ -1,7 +1,8 @@
 .searchPanel {
-	width: 700px;
+	width: 40%;
 	height: 300px;
-	margin-left: 605px;
+	margin-left: 20%;
+	margin-right: auto;
 }
 
 .mainPanel {
@@ -10,11 +11,13 @@
 	margin-left:auto;
 	margin-right:auto;
 	display:block;
+	width: 800px;
 }
 
 us-login-user-panel, .userInfoPanel {
-	width: 500px;
+	width: 25%;
 	height: 300px;
+	float: right;
 }
 
 .containSearchLogin {

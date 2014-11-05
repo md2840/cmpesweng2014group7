@@ -19,6 +19,18 @@ services.factory('AngucompleteServiceLogin',['$http',function($http){
 					console.log("error");
 				});
 				break;
+			case 'searchPanel_searchTag':
+				$http.post('experience/searchTag',{params: {
+					query: str
+				}}).
+				success(function(responseData, status, headers, config) {
+					scope.searching = false;
+					scope.processResults(responseData.tagList);
+				}).
+				error(function(data, status, headers, config) {
+					console.log("error");
+				});
+				break;
 			}
 		}
 	};

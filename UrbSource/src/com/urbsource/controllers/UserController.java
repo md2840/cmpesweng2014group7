@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,13 +37,25 @@ public class UserController {
 	}
 
 	@RequestMapping(value="info", method=RequestMethod.GET)
-	public ModelAndView userInfo(Model model) {
+	public ModelAndView currentUserInfo(Model model) {
 		User u = new User();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
 		}
+		model.addAttribute("user", u);
 		return new ModelAndView("userInfo", "command", u);
+	}
+
+	@RequestMapping(value="info/{userId}", method=RequestMethod.GET)
+	public ModelAndView userInfo(@PathVariable(value="userId") int userId, Model model) {
+		User u = new User();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+		}
+		model.addAttribute("user", u);
+		return new ModelAndView("userInfo", "command", userDao.getUser(userId));
 	}
 
 	/**

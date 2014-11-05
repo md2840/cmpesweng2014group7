@@ -33,8 +33,7 @@
         <!-- Footer Ends -->
  
         <!-- Registration Form -->
-        <!-- Registration Form Ends -->
-
+    
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
@@ -47,11 +46,37 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Full Name"
+                android:text="Username"
                 android:textColor="#372c24" />
 
             <EditText
-                android:id="@+id/reg_fullname"
+                android:id="@+id/reg_username"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dip"
+                android:layout_marginTop="5dip"
+                android:singleLine="true" />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="First Name"
+                android:textColor="#372c24" />
+
+            <EditText
+                android:id="@+id/reg_firstname"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dip"
+                android:layout_marginTop="5dip"
+                android:singleLine="true" />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Last Name"
+                android:textColor="#372c24" />
+
+            <EditText
+                android:id="@+id/reg_lastname"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dip"
@@ -85,6 +110,19 @@
                 android:layout_marginTop="5dip"
                 android:password="true"
                 android:singleLine="true" />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Write your Password again"
+                android:textColor="#372c24" />
+
+            <EditText
+                android:id="@+id/reg_password2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:password="true"
+                android:singleLine="true" />
 
             <Button
                 android:id="@+id/btnRegister"
@@ -104,6 +142,7 @@
                 android:textColor="#050b1d"
                 android:textSize="20dip" />
         </LinearLayout>
-
+    <!-- Registration Form Ends -->
+        
   </RelativeLayout>
 </ScrollView>
