@@ -22,8 +22,7 @@
 
 <!--  CSS -->
 <link rel="stylesheet" type="text/css" href="/UrbSource/resources/css/ng-grid.css">
-<link rel="stylesheet" type="text/css"
-	href="/UrbSource/resources/css/bootstrap-combined.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css"
 	href="/UrbSource/resources/css/angucomplete.css">
 <link rel="stylesheet" type="text/css"

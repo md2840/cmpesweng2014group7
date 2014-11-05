@@ -3,7 +3,7 @@
 	<div class="panel-heading">Share a new experience:</div>
 	<div class="panel-body">
 	<p>
-	<label for="experience-text">Tell us about your experience:</label>
+	<label for="experience-text">Tell us about your experience:</label><br/>
 	<textarea name="experience-text" id="experience-text"></textarea>
 	</p>
 	<p>
