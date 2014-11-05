@@ -5,7 +5,7 @@
  */
 
 angular.module('angucomplete', [] )
-    .directive('angucomplete', function ($parse, $http,AngucompleteServiceLogin) {
+    .directive('angucomplete', function ($parse, $http,AngucompleteServiceLogin,SendExperienceService) {
     return {
         restrict: 'EA',
         scope: {
@@ -101,8 +101,12 @@ angular.module('angucomplete', [] )
                 } else {
                     $scope.results = [];
                 }
-            }
+            };
 
+            SendExperienceService.observeDrop().then(null,null,function(){
+            	$scope.showDropdown = false;
+            });
+            
             $scope.searchTimerComplete = function(str) {
                 // Begin the search
 

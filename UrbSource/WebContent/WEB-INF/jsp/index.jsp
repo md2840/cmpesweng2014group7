@@ -30,6 +30,16 @@
  </script> 
 </jsp:attribute>
 <jsp:attribute name="mainPanel">
-	Recent Experiences:
+	<div ng-controller="ExperienceListController">
+		<div ng-hide="search">Recent Experiences:<br> </div>
+		<div ng-show="search">Search Results:<br>
+		<ul>
+			<li ng-repeat="experience in experienceList">
+				{{experience.text}}
+			</li>
+			</div>
+		</ul>
+		</div>
+	</div>
 </jsp:attribute>
 </us:page>

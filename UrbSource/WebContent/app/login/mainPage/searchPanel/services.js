@@ -1,4 +1,4 @@
-services.factory('SearchExperienceFactory',['$http',function($http){
+services.factory('SearchExperienceFactory',['$http','SendExperienceService',function($http,SendExperienceService){
 	return {
 		getTagBaseExp: function($scope){
 			var request = $http.post('experience/searchExperienceTag',{
@@ -9,8 +9,7 @@ services.factory('SearchExperienceFactory',['$http',function($http){
 			});
 			
 			request.success(function(responseData, status, headers, config){
-				console.log("bu expleri mainpage'e yolla");
-				console.log(responseData);
+				SendExperienceService.send(responseData.experienceList);
 			});
 			
 			request.error(function(responseData, status, headers, config){
@@ -25,8 +24,7 @@ services.factory('SearchExperienceFactory',['$http',function($http){
 			});
 			
 			request.success(function(responseData, status, headers, config){
-				console.log("bu expleri mainpage'e yolla");
-				console.log(responseData);
+				SendExperienceService.send(responseData.experienceList);
 			});
 			
 			request.error(function(responseData, status, headers, config){
@@ -34,4 +32,27 @@ services.factory('SearchExperienceFactory',['$http',function($http){
 			});
 		}
 	};
+}]);
+
+services.service('SendExperienceService',['$q',function($q){
+	var defer= $q.defer();
+	
+	this.send = function(experienceList){
+		return defer.notify(experienceList);
+	};
+	
+	 this.observe = function(){
+		return defer.promise;
+	};
+	
+	var defer2 = $q.defer();
+	
+	this.close = function(){
+		return defer2.notify();
+	};
+	
+	 this.observeDrop = function(){
+		return defer2.promise;
+	};
+	
 }]);
