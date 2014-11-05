@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -304,5 +305,16 @@ public class JDBCExperienceDAO {
 			}
 			
 		});
+	}
+
+	/**
+	 * query'ye göre tagleri filtreler
+	 * @param query
+	 * @return
+	 */
+	public Object getTagList(String query) {
+		String sql = "SELECT name FROM tag WHERE UPPER(name) LIKE UPPER(CONCAT('%', ?, '%'))";
+		List<Map<String,Object>> resultList = jdbcTemplate.queryForList(sql, new Object[] {query});
+		return resultList;
 	}
 }

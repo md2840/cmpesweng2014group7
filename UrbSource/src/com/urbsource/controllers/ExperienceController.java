@@ -41,7 +41,7 @@ public class ExperienceController {
 	}
 	
 	@RequestMapping(value="/recent", method=RequestMethod.GET)
-	public @ResponseBody HashMap<String,Object> getNames(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+	public @ResponseBody HashMap<String,Object> recent(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("experiences", expDao.getRecentExperiences(10));
 		return map;
@@ -98,10 +98,12 @@ public class ExperienceController {
 		
 	}
 	
-	@RequestMapping(value="/search")
-	public @ResponseBody HashMap<String,Object> searchNames(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
-		// TODO
-		return null;
+	@RequestMapping(value="/searchTag")
+	public @ResponseBody HashMap<String,Object> searchTag(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		map.put("tagList", expDao.getTagList(json.getJSONObject("params").getString("query")));
+		return map;
 	}
 	
 	public String getBody(HttpServletRequest request) throws IOException
@@ -134,7 +136,6 @@ public class ExperienceController {
 		}
 		body = stringBuilder.toString();
 		body = "{ \"result\": "+body + "}";
-		System.out.println("body " +body);
 		return body;
 	}
 }
