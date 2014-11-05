@@ -1,8 +1,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="us" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<us:page user="${command}">
+<us:page user="${user}">
 <jsp:attribute name="mainPanel">
+<h2>User Information</h2>
+<c:choose>
+<c:when test="${user.id == command.id}">
 	<form:form method="POST">
 		<c:set var="error" value="${error}" />
 		<c:if test="${!empty error}">
@@ -49,5 +52,33 @@
 			<input type="submit" value="Update Information" class="btn btn-primary">
 		</p>
 	</form:form>
+</c:when>
+<c:otherwise>
+		<p>
+			<label>E-mail address: ${command.email}</label>
+		</p>
+		<p>
+			<label>First Name: ${command.firstName}</label>
+		</p>
+		<p>
+			<label>Last Name: ${command.lastName}</label>
+		</p>
+		<p>
+			Karma Points: ${command.karma}
+		</p>
+		<p>
+			Experience Points: ${command.experiencePoints}
+		</p>
+		<p>
+			Comment Points: ${command.commentPoints}
+		</p>
+		<p>
+			<a href="/UrbSource/experience/user/${user.id}">You have ${user.numberOfExperiences} experiences</a>
+		</p>
+		<p>
+			<input type="submit" value="Update Information" class="btn btn-primary">
+		</p>
+</c:otherwise>
+</c:choose>
 </jsp:attribute>
 </us:page>

@@ -1,6 +1,7 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="us" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ attribute name="mainPanel" fragment="true" required="true" %>
 <%@ attribute name="head" fragment="true" required="false" %>
 <%@ attribute name="user" required="true" type="com.urbsource.models.User" %>
@@ -21,8 +22,7 @@
 
 <!--  CSS -->
 <link rel="stylesheet" type="text/css" href="/UrbSource/resources/css/ng-grid.css">
-<link rel="stylesheet" type="text/css"
-	href="/UrbSource/resources/css/bootstrap-combined.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css"
 	href="/UrbSource/resources/css/angucomplete.css">
 <link rel="stylesheet" type="text/css"
@@ -38,6 +38,10 @@
 <script src="/UrbSource/app/mainPage/js/controllers.js"></script>
 <script src="/UrbSource/app/mainPage/searchPanel/controllers.js"></script>
 
+<sec:authorize access="isAuthenticated()">
+	<script src="/UrbSource/app/createExperience.js"></script>
+</sec:authorize>
+
 <jsp:invoke fragment="head" />
 </head>
 <body>
@@ -46,6 +50,9 @@
 		<us:user-info user="${user}"></us:user-info>
 	</div>
 	<div class="mainPanel">
+		<sec:authorize access="isAuthenticated()">
+			<us:create-experience></us:create-experience>
+		</sec:authorize>
 		<jsp:invoke fragment="mainPanel"/>
 	</div>
 </body>

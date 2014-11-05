@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -155,4 +157,47 @@ public class ExperienceController {
 		body = "{ \"result\": "+body + "}";
 		return body;
 	}
+	@RequestMapping(value="/update", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> update(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken) {
+			map.put("success", false);
+			map.put("error", "You must log in to update your experiences");
+			return map;
+		}
+		int id;
+		try {
+			id = json.getInt("id");
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", "Experience ID is not given or not int, check how you call the API!");
+			return map;
+		}
+		User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+		Experience exp = expDao.getExperience(id);
+		if (u.getId() != exp.getAuthor().getId()) {
+			map.put("success", false);
+			map.put("error", "You can update only your experiences!");
+			return map;
+		}
+		JSONArray tagArray = json.getJSONArray("tags");
+		Tag tags[] = new Tag[tagArray.length()];
+		for (int i = 0, len = tagArray.length(); i < len; ++i)
+			tags[i] = tagDao.getTag(tagArray.getString(i));
+		HashSet<Tag> oldTags = new HashSet<Tag>(exp.getTags());
+		oldTags.removeAll(Arrays.asList(tags));
+		for (Tag t : oldTags) {
+			exp.removeTag(t);
+		}
+		for (Tag t : tags) {
+			exp.addTag(t);
+		}
+		exp.setText(json.getString("text"));
+		expDao.saveExperience(exp);
+		map.put("success", true);
+		return map;
+	}
+
 }

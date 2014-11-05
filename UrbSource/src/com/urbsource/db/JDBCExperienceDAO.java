@@ -288,7 +288,7 @@ public class JDBCExperienceDAO {
 
 	public List<Experience> getRecentExperiences(int n) {
 		return jdbcTemplate.query(
-				"SELECT * FROM experience ORDER BY id LIMIT ?",
+				"SELECT * FROM experience ORDER BY id DESC LIMIT ?",
 				new Object[] { n },
 				new RowMapper<Experience>() {
 

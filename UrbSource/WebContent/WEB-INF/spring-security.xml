@@ -10,7 +10,7 @@
 
 	<security:http pattern="/css/**" security="none" />
 	<security:http pattern="/login.html*" security="none" />
-	<security:http pattern="/app/login/**" security="none"/>
+	<security:http pattern="/app/**" security="none"/>
 	<security:http pattern="/resources/login/**" security="none"/>
 	<security:http pattern="/Index/searchName*" security="none"/>
 
