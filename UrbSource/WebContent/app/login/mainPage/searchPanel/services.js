@@ -1,7 +1,7 @@
 services.factory('SearchExperienceFactory',['$http','SendExperienceService',function($http,SendExperienceService){
 	return {
 		getTagBaseExp: function($scope){
-			var request = $http.post('experience/searchExperienceTag',{
+			var request = $http.post('/UrbSource/experience/searchExperienceTag',{
 				params: {
 					id: $scope.tag.originalObject.id,
 					name: $scope.tag.originalObject.name
@@ -17,7 +17,7 @@ services.factory('SearchExperienceFactory',['$http','SendExperienceService',func
 			});
 		},
 		getTextBaseExp: function($scope){
-			var request = $http.post('experience/searchExperienceText',{
+			var request = $http.post('/UrbSource/experience/searchExperienceText',{
 				params: {
 					text: $scope.text,
 				}

@@ -6,7 +6,7 @@
 <%@ attribute name="head" fragment="true" required="false" %>
 <%@ attribute name="user" required="true" type="com.urbsource.models.User" %>
 <!DOCTYPE html>
-<html data-ng-app="urbsource">
+<html data-ng-app="urbsourceLogin">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>UrbSource</title>
@@ -16,7 +16,7 @@
 <script src="/UrbSource/resources/jquery-1.11.1.js"></script>
 <script src="/UrbSource/resources/angular/angular.js"></script>
 <script src="/UrbSource/resources/angular/ui-bootstrap-tpls-0.11.0.js"></script>
-<script src="/UrbSource/resources/angular/angucomplete.js"></script>
+<script src="/UrbSource/resources/login/angucomplete.js"></script>
 <script src="/UrbSource/resources/js/ng-grid.debug.js"></script>
 <script src="/UrbSource/resources/js/toastr.js"></script>
 
@@ -31,12 +31,15 @@
 	href="/UrbSource/resources/css/toastr.css">
 	
 <!-- APP -->
-<script src="/UrbSource/app/app.js"></script>
-<script src="/UrbSource/app/util/AngucompleteService.js"></script>
+<script src="/UrbSource/app/login/app.js"></script>
+<script src="/UrbSource/app/login/util/AngucompleteService.js"></script>
 <!-- MAIN PAGE -->
-<script src="/UrbSource/app/mainPage/js/directives.js"></script>
-<script src="/UrbSource/app/mainPage/js/controllers.js"></script>
-<script src="/UrbSource/app/mainPage/searchPanel/controllers.js"></script>
+<script src="/UrbSource/app/login/mainPage/js/directives.js"></script>
+<script src="/UrbSource/app/login/mainPage/js/controllers.js"></script>
+<script src="/UrbSource/app/login/mainPage/mainPanel/controllers.js"></script>
+<script src="/UrbSource/app/login/mainPage/searchPanel/controllers.js"></script>
+<!-- Search Experience Service -->
+<script src="/UrbSource/app/login/mainPage/searchPanel/services.js"></script>
 
 <sec:authorize access="isAuthenticated()">
 	<script src="/UrbSource/app/createExperience.js"></script>
@@ -45,7 +48,7 @@
 <jsp:invoke fragment="head" />
 </head>
 <body>
-	<div class="containSearchLogin" ng-controller="URLCtrl">
+	<div class="containSearchLogin" ng-controller="URLCtrlLogin">
 		<us:search-panel></us:search-panel>
 		<us:user-info user="${user}"></us:user-info>
 	</div>

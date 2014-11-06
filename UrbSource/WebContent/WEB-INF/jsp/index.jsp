@@ -30,15 +30,22 @@
  </script> 
 </jsp:attribute>
 <jsp:attribute name="mainPanel">
-	<div ng-controller="ExperienceListController">
+		<div ng-controller="ExperienceListController">
 		<div ng-hide="search">Recent Experiences:<br> </div>
 		<div ng-show="search">Search Results:<br>
-		<ul>
-			<li ng-repeat="experience in experienceList">
-				{{experience.text}}
-			</li>
+		<div id="experience-list">
+			<div class="panel panel-default" ng-repeat="experience in experienceList">
+				<div class="panel-heading">By: <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a></div>
+				<div class="panel-body">
+				<p>
+					{{experience.text}}
+				</p>
+				<p>
+					Tags: <span ng-repeat="tag in experience.tags">{{tag.name}}, </span>
+				</p>
+				</div>
 			</div>
-		</ul>
+		</div>
 		</div>
 	</div>
 </jsp:attribute>

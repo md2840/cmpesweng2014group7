@@ -20,7 +20,7 @@ services.factory('AngucompleteServiceLogin',['$http',function($http){
 				});
 				break;
 			case 'searchPanel_searchTag':
-				$http.post('experience/searchTag',{params: {
+				$http.post('/UrbSource/experience/searchTag',{params: {
 					query: str
 				}}).
 				success(function(responseData, status, headers, config) {
