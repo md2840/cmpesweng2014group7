@@ -46,7 +46,7 @@
 			Comment Points: ${user.commentPoints}
 		</p>
 		<p>
-			<a href="/UrbSource/experience/user/${user.id}">You have ${user.numberOfExperiences} experiences</a>
+			<a href="/UrbSource/experience/user/${user.id}">You have shared ${user.numberOfExperiences} experiences</a>
 		</p>
 		<p>
 			<input type="submit" value="Update Information" class="btn btn-primary">
@@ -73,10 +73,7 @@
 			Comment Points: ${command.commentPoints}
 		</p>
 		<p>
-			<a href="/UrbSource/experience/user/${user.id}">You have ${user.numberOfExperiences} experiences</a>
-		</p>
-		<p>
-			<input type="submit" value="Update Information" class="btn btn-primary">
+			<a href="/UrbSource/experience/user/${command.id}">${command.username} has shared ${user.numberOfExperiences} experiences</a>
 		</p>
 </c:otherwise>
 </c:choose>
