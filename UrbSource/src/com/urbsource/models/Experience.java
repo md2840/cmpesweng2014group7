@@ -14,6 +14,7 @@ public class Experience implements Serializable {
 	private int id=-1;
 	private User author;
 	private String text;
+	private String mood="good";
 	private ArrayList<Tag> tags;
 	private ArrayList<Tag> removedTags=new ArrayList<Tag>();
 	private ArrayList<Tag> addedTags=new ArrayList<Tag>();
@@ -139,5 +140,13 @@ public class Experience implements Serializable {
 	
 	public void setAsSaved() {
 		this.saved = true;
+	}
+
+	public String getMood() {
+		return mood;
+	}
+
+	public void setMood(String mood) {
+		this.mood = mood.trim().toLowerCase();
 	}
 }

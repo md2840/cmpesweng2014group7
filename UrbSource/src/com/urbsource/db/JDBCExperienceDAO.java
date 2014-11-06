@@ -71,7 +71,9 @@ public class JDBCExperienceDAO {
 				User u = userDao.getUser(rs.getInt("author_id"));
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
-				return new Experience(id, u, text, tags);
+				Experience exp =  new Experience(id, u, text, tags);
+				exp.setMood(rs.getString("mood"));
+				return exp;
 			}
 			
 		});
@@ -94,7 +96,9 @@ public class JDBCExperienceDAO {
 				int id = rs.getInt("id");
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
-				return new Experience(id, u, text, tags);
+				Experience exp =  new Experience(id, u, text, tags);
+				exp.setMood(rs.getString("mood"));
+				return exp;
 			}
 			
 		});
@@ -119,6 +123,7 @@ public class JDBCExperienceDAO {
 				List<Tag> tags = tagDao.getTags(id);
 				User u = userDao.getUser(rs.getInt("author_id"));
 				Experience e = new Experience(id, u, text, tags);
+				e.setMood(rs.getString("mood"));
 				e.setAsSaved();
 				return e;
 			}
@@ -163,6 +168,7 @@ public class JDBCExperienceDAO {
 				List<Tag> tags = tagDao.getTags(id);
 				User u = userDao.getUser(rs.getInt("author_id"));
 				Experience e = new Experience(id, u, text, tags);
+				e.setMood(rs.getString("mood"));
 				e.setAsSaved();
 				return e;
 			}
@@ -193,6 +199,7 @@ public class JDBCExperienceDAO {
 				List<Tag> tags = tagDao.getTags(id);
 				User u = userDao.getUser(rs.getInt("author_id"));
 				Experience e = new Experience(id, u, text, tags);
+				e.setMood(rs.getString("mood"));
 				e.setAsSaved();
 				return e;
 			}
