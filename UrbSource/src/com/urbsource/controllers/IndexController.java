@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.urbsource.db.JDBCExperienceDAO;
 import com.urbsource.db.JDBCIndexDAO;
+import com.urbsource.db.JDBCTagDAO;
 import com.urbsource.db.JDBCUserDAO;
 import com.urbsource.models.User;
 
@@ -30,10 +32,12 @@ public class IndexController {
 	
 	JDBCUserDAO userDao;
 	JDBCIndexDAO jdb;
+	JDBCExperienceDAO expDao;
 	
 	public IndexController(){
 		jdb = new JDBCIndexDAO();
 		userDao = new JDBCUserDAO();
+		expDao = new JDBCExperienceDAO(userDao, new JDBCTagDAO());
 	}
 	
 	@RequestMapping(value="/")
@@ -43,6 +47,7 @@ public class IndexController {
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 		        u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
 		}
+		model.addAttribute("experiences", expDao.getRecentExperiences(10));
 		model.addAttribute("user", u);
 		return "index";
 	}

@@ -31,7 +31,27 @@
 </jsp:attribute>
 <jsp:attribute name="mainPanel">
 		<div ng-controller="ExperienceListController">
-		<div ng-hide="search">Recent Experiences:<br> </div>
+		<div ng-hide="search">Recent Experiences:<br>
+		<div id="recent-experience-list">
+		<c:forEach var="experience" items="${experiences}">
+			<div class="panel panel-default">
+				<div class="panel-heading">By: <a href="/UrbSource/user/info/${experience.author.id}">${experience.author.username}</a></div>
+				<div class="panel-body">
+				<p>
+					${experience.text}
+				</p>
+				<p>
+					Tags: 
+					
+					<c:forEach var="tag" items="${experience.tags}">
+					<span>${tag.name}, </span>
+					</c:forEach>
+				</p>
+				</div>
+			</div>
+		</c:forEach>
+		</div>
+		</div>
 		<div ng-show="search">Search Results:<br>
 		<div id="experience-list">
 			<div class="panel panel-default" ng-repeat="experience in experienceList">
