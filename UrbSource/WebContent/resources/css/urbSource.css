@@ -1,9 +1,10 @@
 .searchPanel {
-	width: 40%;
+	position:absolute;
 	height: 300px;
-	margin-left: 20%;
-	margin-right: auto;
+		left:50%;
+	margin-left:-350px;
 }
+
 
 .mainPanel {
 	border-top: 1px dashed #999;
@@ -15,9 +16,10 @@
 }
 
 us-login-user-panel, .userInfoPanel {
-	width: 25%;
-	height: 300px;
-	float: right;
+    position:absolute;
+	height:300px;
+	right:4%;
+	top:2%;
 }
 
 .containSearchLogin {
