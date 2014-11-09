@@ -112,7 +112,7 @@ public class JDBCExperienceDAO {
 	 * @return List of experiences containing given tag
 	 */
 	public List<Experience> getExperiences(Tag tag) {
-		String sql = "SELECT * FROM experience, rel_experience_tag AS rel WHERE rel.experience_id = experience.id AND rel.tag_id = ?";
+		String sql = "SELECT * FROM experience, rel_experience_tag AS rel WHERE rel.experience_id = experience.id AND rel.tag_id = ? ORDER BY experience.id DESC";
 		return jdbcTemplate.query(sql, new Object[] { tag.getId() }, new RowMapper<Experience>() {
 
 			@Override
@@ -151,7 +151,7 @@ public class JDBCExperienceDAO {
 						}
 						String sql = "SELECT * FROM experience WHERE EXISTS (" +
 								"SELECT * FROM rel_experience_tag AS rel WHERE " +
-								"rel.experience_id = experience.id AND rel.tag_id IN ?)";
+								"rel.experience_id = experience.id AND rel.tag_id IN ?) ORDER BY experience.id DESC";
 						PreparedStatement p = conn.prepareStatement(sql);
 						p.setArray(0, conn.createArrayOf("int", tag_ids));
 						return p;
@@ -188,7 +188,7 @@ public class JDBCExperienceDAO {
 		// the following query and get all the fantastic goodies
 		// but we can't :/
 		//String sql = "SELECT * FROM experience WHERE MATCH(text) AGAINST (?)";
-		String sql = "SELECT * FROM experience WHERE UPPER(text) LIKE UPPER(CONCAT('%', ?, '%'))";
+		String sql = "SELECT * FROM experience WHERE UPPER(text) LIKE UPPER(CONCAT('%', ?, '%')) ORDER BY experience.id DESC";
 		return jdbcTemplate.query(sql, new Object[] {text}, new RowMapper<Experience>() {
 
 			@Override
