@@ -18,7 +18,7 @@
 		Your experience point is 0.
 	</p>
 	<p>
-	<c:url var="logoutUrl" value="j_spring_security_logout"/>
+	<c:url var="logoutUrl" value="../logout.html"/>
 	<form action="${logoutUrl}" method="post">
 		<input type="submit" value="Log out"  class="btn btn-danger"/>
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
