@@ -12,6 +12,8 @@
 
 
 	<context:component-scan base-package="com.urbsource.controllers" />
+	
+	
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -25,7 +27,10 @@
 		<!-- setting maximum upload size -->
 		<property name="maxUploadSize" value="100000" />
 	</bean>
-
+	
+     <bean id="reCaptchaService" class="net.tanesha.recaptcha.ReCaptchaImpl">
+        <property name="privateKey" value="6LejB_0SAAAAAIpYFg8i2CUNDuAIXnBNPRw5QRQv"></property>
+    </bean>
 	<mvc:annotation-driven />
 
 	<mvc:default-servlet-handler />
