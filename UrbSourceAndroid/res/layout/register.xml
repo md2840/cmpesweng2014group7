@@ -24,12 +24,7 @@
         </LinearLayout>
         <!--  Header Ends -->
         <!-- Footer Start -->
-        <LinearLayout android:id="@+id/footer"
-                android:layout_width="fill_parent"
-                android:layout_height="90dip"
-                android:background="@layout/footer_repeat"
-                android:layout_alignParentBottom="true">
-        </LinearLayout>
+        
         <!-- Footer Ends -->
  
         <!-- Registration Form -->

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
  
 public class UrbSource extends Activity {
     @Override
@@ -13,7 +13,7 @@ public class UrbSource extends Activity {
         // setting default screen to login.xml
         setContentView(R.layout.activity_main);
  
-        TextView registerScreen = (TextView) findViewById(R.id.link_to_register);
+        Button registerScreen = (Button) findViewById(R.id.link_to_register);
  
         // Listening to register new account link
         registerScreen.setOnClickListener(new View.OnClickListener() {

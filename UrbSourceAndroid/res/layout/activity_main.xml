@@ -25,12 +25,7 @@
 		<!--  Header Ends -->
 		
         <!-- Footer Start -->
-        <LinearLayout android:id="@+id/footer"
-		    android:layout_width="fill_parent"
-		    android:layout_height="90dip"
-		    android:background="@layout/footer_repeat"
-		    android:layout_alignParentBottom="true">
-		</LinearLayout>
+       
         <!-- Footer Ends -->
  
         <!-- Login Form -->	
@@ -42,21 +37,32 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="50dip" >
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:textColor="#372c24" />
+            android:padding="60dip" >
 
             <EditText
+                android:id="@+id/search"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dip"
                 android:layout_marginTop="5dip"
+                android:singleLine="true"
+                android:text="Search" />
+                
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textColor="#372c24" />
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dip"
+                android:layout_marginTop="10dip"
                 android:singleLine="true" >
 
                 <requestFocus />
@@ -69,6 +75,7 @@
                 android:textColor="#372c24" />
 
             <EditText
+                android:id="@+id/password"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
@@ -82,16 +89,15 @@
                 android:layout_marginTop="10dip"
                 android:text="Login" />
 
-            <TextView
+            <Button
                 android:id="@+id/link_to_register"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="40dip"
                 android:layout_marginTop="40dip"
                 android:gravity="center"
-                android:text="New to UrbSource? Register here"
-                android:textColor="#050b1d"
-                android:textSize="20dip" />
+                android:text="Sign Up"
+                android:textColor="#050b1d"/>
 
         </LinearLayout>
  
