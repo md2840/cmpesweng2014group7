@@ -30,6 +30,17 @@ services.factory('SearchExperienceFactory',['$http','SendExperienceService',func
 			request.error(function(responseData, status, headers, config){
 				
 			});
+		},
+		getRecentExperiences: function($scope){
+			var request = $http.get('/UrbSource/experience/recent');
+			
+			request.success(function(responseData, status, headers, config){
+				$scope.experienceList = responseData.experiences;
+			});
+			
+			request.error(function(responseData, status, headers, config){
+				
+			});
 		}
 	};
 }]);

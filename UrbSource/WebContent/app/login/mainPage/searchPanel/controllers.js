@@ -11,20 +11,6 @@ controllers.controller('searchExperienceCtrl',['$scope','SearchExperienceFactory
 		
 	$scope.searchExp = function(){
 		
-		//SendExperienceService.close();
-//		
-//		if($scope.text){
-//			if($scope.tag){
-//				
-//				} else {
-//					SearchExperienceFactory.getTextBaseExp($scope);
-//				}
-//			}
-//			else {
-//				SearchExperienceFactory.getTextBaseExp($scope);
-//			}
-//		}
-		
 		if($scope.by === 'text'){
 			SearchExperienceFactory.getTextBaseExp($scope);
 		}
