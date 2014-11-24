@@ -22,8 +22,7 @@ angular.module('angucomplete', [] )
             "searchFields": "@searchfields",
             "minLengthUser": "@minlength",
             "query" : "@query",
-            "customValuesUser" : "@customvalues",
-            "text": "=text"
+            "customValuesUser" : "@customvalues"
         },
         template: '<div class="angucomplete-holder"><input id="{{id}}_value" ng-model="searchStr" type="text" placeholder="{{placeholder}}" class="{{inputClass}}" ng-keyup="keyPressed($event)"/><div id="{{id}}_dropdown" class="angucomplete-dropdown" ng-if="showDropdown"><div class="angucomplete-searching" ng-show="searching">Searching...</div><div class="angucomplete-searching" ng-show="!searching && (!results || results.length == 0)">No results found</div><div class="angucomplete-row" ng-repeat="result in results" ng-click="selectResult(result)" ng-mouseover="hoverRow()" ng-class="{\'angucomplete-selected-row\': $index == currentIndex}"><div ng-if="result.image && result.image != \'\'" class="angucomplete-image-holder"><img ng-src="{{result.image}}" class="angucomplete-image"/></div><div>{{result.title}} <<{{result.description}}>></div></div></div></div>',
         controller: function ( $scope ) {
@@ -135,7 +134,6 @@ angular.module('angucomplete', [] )
 
 
                     } else {
-                    	$scope.text= str;
                     	AngucompleteServiceLogin.call($scope.url,$scope,str);
 //                        $http.post($scope.url, {params: {
 //                        	searchStr : str
