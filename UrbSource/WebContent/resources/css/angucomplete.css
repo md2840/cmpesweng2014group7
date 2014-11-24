@@ -12,7 +12,8 @@
 }
 
 .angucomplete-holder {
-    position: relative;
+    position: absolute;
+    width: 300%;'
 }
 
 .angucomplete-dropdown {
