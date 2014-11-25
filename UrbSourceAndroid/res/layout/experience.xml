@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="wrap_content">
 
-    <EditText
+    <TextView
         android:id="@+id/ex_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -11,12 +11,9 @@
         android:layout_alignParentTop="true"
         android:ems="10"
         android:text="---username---"
-        android:width="180dp" >
+        android:width="180dp" />
 
-        <requestFocus />
-    </EditText>
-
-    <EditText
+    <TextView
         android:id="@+id/ex_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +24,7 @@
         android:text="--loc--"
         android:width="100dp" />
 
-    <EditText
+    <TextView
         android:id="@+id/ex_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,7 +36,7 @@
         android:inputType="textMultiLine"
         android:text="---content---" />
 
-    <EditText
+    <TextView
         android:id="@+id/ex_tags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -82,7 +79,7 @@
         android:layout_alignBottom="@+id/ex_verify"
         android:layout_alignLeft="@+id/ex_upvote"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/ex_content"
+        android:layout_below="@+id/ex_location"
         android:background="#FFFFFF"
         android:src="@android:drawable/ic_delete" />
 
