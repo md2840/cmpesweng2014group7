@@ -4,85 +4,82 @@
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   android:fillViewport="true">
+
   <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" android:background="#ffffff">
- 
-	    <include layout="@layout/header" />		
-      
- 
-        <!-- Login Form -->	
-        <!-- Login Form Ends -->
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:background="#ffffff" >
 
-        <LinearLayout 
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="60dip" >
+      <include layout="@layout/header" />
 
-            <EditText
-                android:id="@+id/search"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dip"
-                android:layout_marginTop="5dip"
-                android:singleLine="true"
-                android:text="Search" />
-                
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Username"
-                android:textColor="#372c24" />
+      <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentRight="true"
+          android:layout_marginTop="15dp"
+          android:gravity="center"
+          android:orientation="vertical"
+          android:padding="60dip" >
 
-            <EditText
-                android:id="@+id/username"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dip"
-                android:layout_marginTop="10dip"
-                android:singleLine="true" >
+          <EditText
+              android:id="@+id/search"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="20dip"
+              android:layout_marginTop="5dip"
+              android:singleLine="true"
+              android:text="Search" />
 
-                <requestFocus />
-            </EditText>
+          <TextView
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:text="Username"
+              android:textColor="#372c24" />
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Password"
-                android:textColor="#372c24" />
+          <EditText
+              android:id="@+id/username"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="15dip"
+              android:layout_marginTop="10dip"
+              android:singleLine="true" >
 
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dip"
-                android:password="true"
-                android:singleLine="true" />
+              <requestFocus />
+          </EditText>
 
-            <Button
-                android:id="@+id/btnLogin"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dip"
-                android:text="Login" />
+          <TextView
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:text="Password"
+              android:textColor="#372c24" />
 
-            <Button
-                android:id="@+id/link_to_register"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="40dip"
-                android:layout_marginTop="40dip"
-                android:gravity="center"
-                android:text="Sign Up"
-                android:textColor="#050b1d"/>
+          <EditText
+              android:id="@+id/password"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="5dip"
+              android:password="true"
+              android:singleLine="true" />
 
-        </LinearLayout>
- 
+          <Button
+              android:id="@+id/btnLogin"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="10dip"
+              android:text="Login" />
+
+          <Button
+              android:id="@+id/link_to_register"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="40dip"
+              android:layout_marginTop="40dip"
+              android:gravity="center"
+              android:text="Sign Up"
+              android:textColor="#050b1d" />
+      </LinearLayout>
   </RelativeLayout>
+
 </ScrollView>
