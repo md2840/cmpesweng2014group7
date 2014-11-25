@@ -3,7 +3,7 @@
 	<form method="post" action="/UrbSource/j_spring_security_check">
         <div id="passwordLoginOption" class="form">
             <div class="row">
-                <div class="left">
+                <div class="left" style="margin-bottom:-5px;">
                     <label for="j_username">Username:</label>
                 </div>
                 <div class="right">
@@ -14,7 +14,7 @@
                 <div class="cl"></div>
             </div>
             <div class="row">
-                <div class="left">
+                <div class="left" style="margin-bottom:-5px;margin-top:10px;">
                     <label for="j_password">Password:</label>
                 </div>
                 <div class="right">
@@ -25,18 +25,15 @@
                 <div class="cl"></div>
             </div>
             <div class="buttons">
-                <input style="margin-top: 1%" type="submit" class="btn btn-primary" value="Login"/>
+                <input style="margin-top: 5%" type="submit" class="btn btn-primary" value="Login"/>
             </div>
         </div>
     </form>
     <form action="/UrbSource/signup/confirm" method="GET">
-	    <div style="margin-top: 1%"class="buttons">
-                Or you can <input type="submit" class="btn btn-primary" value="sign up!"/>
+	    <div style="margin-top: 5%"class="buttons">
+                <input type="submit" class="btn btn-primary" value="sign up!"/>
      	</div>
     </form>
-        <form action="/UrbSource/user/forgot" method="GET">
-	    <div style="margin-top: 1%"class="buttons">
-                <input type="submit" class="btn btn-primary" value="Forgot your password?"/>
-     	</div>
-    </form>
+    <a href="/UrbSource/user/forgot" style="margin-left:-15px;" >Forgot your password?</a>
+     	
 </div>
