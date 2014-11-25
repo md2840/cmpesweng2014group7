@@ -31,7 +31,6 @@
 </jsp:attribute>
 <jsp:attribute name="mainPanel">
 		<div ng-controller="ExperienceListController">
-		<div ng-hide="search">Recent Experiences:<br>
 		<div id="recent-experience-list">
 		<c:forEach var="experience" items="${experiences}">
 			<div class="panel panel-default">
