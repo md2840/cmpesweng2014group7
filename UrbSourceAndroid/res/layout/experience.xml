@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="fill_parent">
 
     <TextView
         android:id="@+id/ex_username"
@@ -79,7 +79,7 @@
         android:layout_alignBottom="@+id/ex_verify"
         android:layout_alignLeft="@+id/ex_upvote"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/ex_location"
+        android:layout_alignTop="@+id/ex_content"
         android:background="#FFFFFF"
         android:src="@android:drawable/ic_delete" />
 
