@@ -20,10 +20,8 @@
 		<div ng-show ="by=='text'" > <input style="margin-top: 2%; width: 100%;" type="text" ng-model="text"></div>
 		<div ng-show ="by=='location'" style="margin-top: 2%; width: 100%;">Location araması</div>
 		</div>
-		<button type="button"
-			style=" margin-left: 100%; width: 47px; display: flex;"
-			ng-click="searchExp()">
-			<img style="width: 47px;margin-top:-33px;z-index:10000" src="resources/images/search.jpg" />
-		</button>
+		
+			<img ng-click="searchExp()" style="cursor:pointer;margin-left:101%;width:33px;height:33px;margin-top:-50px;z-index:10000" src="resources/images/search.jpg" />
+		
 	</div>
 </div>
