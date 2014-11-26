@@ -81,8 +81,9 @@ public class ExperienceController {
 			return map;
 		}
 		int id;
+		System.out.println(json);
 		try {
-			id = json.getInt("id");
+			id = json.getJSONObject("params").getInt("id");
 		} catch (JSONException e) {
 			map.put("success", false);
 			map.put("error", "Experience ID is not given or not int, check how you call the API!");

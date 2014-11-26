@@ -1,4 +1,4 @@
-controllers.controller('ExperienceListController',['$scope','SendExperienceService','SearchExperienceFactory',function($scope,SendExperienceService,SearchExperienceFactory){
+controllers.controller('ExperienceListController',['$scope','DelEditExperienceFactory','SendExperienceService','SearchExperienceFactory',function($scope,DelEditExperienceFactory,SendExperienceService,SearchExperienceFactory){
 	$scope.experienceList = {};
 	$scope.search = false;
 	
@@ -8,4 +8,8 @@ controllers.controller('ExperienceListController',['$scope','SendExperienceServi
 		$scope.experienceList = experienceList;
 		$scope.search = true;
 	});
+	
+	$scope.deleteExp = function(id){
+		DelEditExperienceFactory.deleteExp($scope,id);
+	};
 }]);

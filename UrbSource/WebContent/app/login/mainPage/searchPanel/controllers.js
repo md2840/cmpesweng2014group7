@@ -30,6 +30,6 @@ controllers.controller('searchExperienceCtrl',['$scope','SearchExperienceFactory
 		} else
 		{
 			console.log('location araması');
-			}
+		}
 	};
 }]);
