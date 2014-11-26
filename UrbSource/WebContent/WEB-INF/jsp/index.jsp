@@ -67,7 +67,13 @@
 				<div class="panel panel-default"
 					ng-repeat="experience in experienceList">
 					<div class="panel-heading">
-						By: <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
+						<span ng-switch on="experience.mood">
+							<span ng-switch-when="good" style="color: green">Good Experience</span>
+							<span ng-switch-when="bad" style="color: red">Bad Experience</span>
+							<span ng-switch-default></span>
+						</span>
+						by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
+						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
 					<div class="panel-body">
 						<p>{{experience.text}}</p>
@@ -90,7 +96,13 @@
 				<div class="panel panel-default"
 					ng-repeat="experience in experienceList">
 					<div class="panel-heading">
-						By: <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
+						<span ng-switch on="experience.mood">
+							<span ng-switch-when="good" style="color: green">Good Experience</span>
+							<span ng-switch-when="bad" style="color: red">Bad Experience</span>
+							<span ng-switch-default></span>
+						</span>
+						by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
+						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
 					<div class="panel-body">
 						<p>{{experience.text}}</p>
