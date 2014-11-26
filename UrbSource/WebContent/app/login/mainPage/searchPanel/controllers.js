@@ -4,6 +4,7 @@ controllers.controller('searchExperienceCtrl',['$scope','SearchExperienceFactory
 	$scope.by = "text";
 	$scope.tag = undefined;
 	$scope.location = undefined;
+	$scope.tagArray = [];
 
 	$scope.selectBy = function(by){
 		$scope.by = by;
@@ -15,12 +16,17 @@ controllers.controller('searchExperienceCtrl',['$scope','SearchExperienceFactory
 			SearchExperienceFactory.getTextBaseExp($scope);
 		}
 		else if($scope.by === 'tag'){
-			if($scope.tag.originalObject){
-				SearchExperienceFactory.getTagBaseExp($scope);
+			
+			var i = 0;
+			
+			while($scope.tag[i]){
+				$scope.tagArray.push($scope.tag[i].originalObject);
+				i++;
 			}
-			else
-				console.log("burda tag seçmedin alerti at");
-			//TODO
+			
+			if($scope.tagArray.length)
+				SearchExperienceFactory.getTagBaseExp($scope);
+		
 		} else
 		{
 			console.log('location araması');

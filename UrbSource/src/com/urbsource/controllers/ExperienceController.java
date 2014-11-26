@@ -112,8 +112,12 @@ public class ExperienceController {
 	public @ResponseBody HashMap<String,Object> searchExperienceTag(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
-		Tag tag = new Tag(json.getJSONObject("params").getString("name"), json.getJSONObject("params").getInt("id"));
-		map.put("experienceList", expDao.getExperiences(tag));
+		JSONArray json2 = json.getJSONObject("params").getJSONArray("tags");
+		Tag[] tags = new Tag[json2.length()];
+		for(int i =0; i<json2.length();i++){
+			tags[i] = new Tag(json2.getJSONObject(i).getString("name"),json2.getJSONObject(i).getInt("id"));
+		}
+		map.put("experiences", expDao.getExperiences(tags));
 		return map;
 	}
 	
