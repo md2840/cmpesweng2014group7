@@ -205,4 +205,57 @@ public class ExperienceController {
 		return map;
 	}
 
+	@RequestMapping(value="/cleanUpExpired")
+	public @ResponseBody HashMap<String, Object> cleanUpExpired(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("count", expDao.cleanUpExpiredExperiences());
+		return map;
+		
+	}
+	
+	@RequestMapping(value="/markSpam", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> markSpam(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken) {
+			map.put("success", false);
+			map.put("error", "You must log in to report spam");
+			return map;
+		}
+		int id;
+		try {
+			id = json.getInt("id");
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", "Experience ID is not given or not int, check how you call the API!");
+			return map;
+		}
+		Experience exp = expDao.getExperience(id);
+		map.put("success", expDao.markSpam(exp));
+		return map;
+	}
+	
+	@RequestMapping(value="/unmarkSpam", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> unmarkSpam(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken) {
+			map.put("success", false);
+			map.put("error", "You must log in to undo your spam report");
+			return map;
+		}
+		int id;
+		try {
+			id = json.getInt("id");
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", "Experience ID is not given or not int, check how you call the API!");
+			return map;
+		}
+		Experience exp = expDao.getExperience(id);
+		map.put("success", expDao.unmarkSpam(exp));
+		return map;
+	}
 }

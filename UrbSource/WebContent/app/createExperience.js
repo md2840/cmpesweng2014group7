@@ -7,6 +7,7 @@
 jQuery(function($) {
     $('button#create-experience').click(function () {
         var text = $('textarea#experience-text').val().trim();
+        var mood = $('select#experience-mood').val().trim();
         var tags = $('input#experience-tags').val().trim().toLowerCase().split(',');
         if (text === '') {
             alert('You must enter experience content to share it!');
@@ -21,7 +22,8 @@ jQuery(function($) {
             'contentType': 'application/json; charset=utf-8',
             'data': JSON.stringify({
                 text: text,
-                tags: tags
+                tags: tags,
+                mood: mood
             }),
             'dataType': 'json'
         }).done(function (resp) {

@@ -5,6 +5,10 @@ import javax.sql.DataSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import com.urbsource.models.Experience;
@@ -120,4 +124,16 @@ public class JDBCUserDAO {
 		jdbcTemplate.update(sql, user.getId());
 		return true;
 	}
+	
+    /**
+     * Get current user object.
+     * 
+     * @return User model for current User, null if anonymous.
+     */
+    public User getCurrentUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken)
+			return null;
+		return getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+    }
 }

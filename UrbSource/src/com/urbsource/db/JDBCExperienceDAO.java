@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -42,7 +43,7 @@ public class JDBCExperienceDAO {
 		this.tagDao = tagDao;
 		this.insert = new SimpleJdbcInsert(jdbcTemplate)
 						.withTableName("experience")
-						.usingColumns("text", "author_id")
+						.usingColumns("text", "author_id", "mood", "creation_time")
 						.usingGeneratedKeyColumns("id");
 	}
 	
@@ -71,8 +72,15 @@ public class JDBCExperienceDAO {
 				User u = userDao.getUser(rs.getInt("author_id"));
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
-				Experience exp =  new Experience(id, u, text, tags);
-				exp.setMood(rs.getString("mood"));
+				Experience exp =  new Experience(id, u, text, tags)
+					.setCreationTime(rs.getTimestamp("creation_time"))
+					.setModificationTime(rs.getTimestamp("modification_time"))
+					.setExpirationDate(rs.getDate("expiration_date"))
+				    .setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+				User currentUser = userDao.getCurrentUser();
+				if (currentUser != null)
+					exp.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) > 0);
+
 				return exp;
 			}
 			
@@ -96,8 +104,15 @@ public class JDBCExperienceDAO {
 				int id = rs.getInt("id");
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
-				Experience exp =  new Experience(id, u, text, tags);
-				exp.setMood(rs.getString("mood"));
+				Experience exp =  new Experience(id, u, text, tags)
+					.setCreationTime(rs.getTimestamp("creation_time"))
+					.setModificationTime(rs.getTimestamp("modification_time"))
+					.setExpirationDate(rs.getDate("expiration_date"))
+					.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+				User currentUser = userDao.getCurrentUser();
+				if (currentUser != null)
+					exp.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) > 0);
+
 				return exp;
 			}
 			
@@ -122,8 +137,15 @@ public class JDBCExperienceDAO {
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
 				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags);
-				e.setMood(rs.getString("mood"));
+				Experience e = new Experience(id, u, text, tags)
+					.setCreationTime(rs.getTimestamp("creation_time"))
+					.setModificationTime(rs.getTimestamp("modification_time"))
+					.setExpirationDate(rs.getDate("expiration_date"))
+					.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+				User currentUser = userDao.getCurrentUser();
+				if (currentUser != null)
+					e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
+
 				e.setAsSaved();
 				return e;
 			}
@@ -168,8 +190,15 @@ public class JDBCExperienceDAO {
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
 				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags);
-				e.setMood(rs.getString("mood"));
+				Experience e = new Experience(id, u, text, tags)
+					.setCreationTime(rs.getTimestamp("creation_time"))
+					.setModificationTime(rs.getTimestamp("modification_time"))
+					.setExpirationDate(rs.getDate("expiration_date"))
+					.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+				User currentUser = userDao.getCurrentUser();
+				if (currentUser != null)
+					e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
+
 				e.setAsSaved();
 				return e;
 			}
@@ -199,8 +228,14 @@ public class JDBCExperienceDAO {
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
 				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags);
-				e.setMood(rs.getString("mood"));
+				Experience e = new Experience(id, u, text, tags)
+					.setCreationTime(rs.getTimestamp("creation_time"))
+					.setModificationTime(rs.getTimestamp("modification_time"))
+					.setExpirationDate(rs.getDate("expiration_date"))
+					.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+				User currentUser = userDao.getCurrentUser();
+				if (currentUser != null)
+					e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
 				e.setAsSaved();
 				return e;
 			}
@@ -227,6 +262,8 @@ public class JDBCExperienceDAO {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("text", exp.getText());
 		parameters.put("author_id", exp.getAuthor().getId());
+		parameters.put("mood", exp.getMood());
+		parameters.put("creation_time", new java.sql.Timestamp(new java.util.Date().getTime()));
 		exp.setId(insert.executeAndReturnKey(parameters).intValue());
 		SimpleJdbcInsert insertTag = new SimpleJdbcInsert(jdbcTemplate)
 			.withTableName("rel_experience_tag")
@@ -307,7 +344,14 @@ public class JDBCExperienceDAO {
 				String text = rs.getString("text");
 				List<Tag> tags = tagDao.getTags(id);
 				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags);
+					Experience e = new Experience(id, u, text, tags)
+					.setCreationTime(rs.getTimestamp("creation_time"))
+					.setModificationTime(rs.getTimestamp("modification_time"))
+					.setExpirationDate(rs.getDate("expiration_date"))
+					.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+					User currentUser = userDao.getCurrentUser();
+					if (currentUser != null)
+						e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
 				e.setAsSaved();
 				return e;
 			}
@@ -324,5 +368,40 @@ public class JDBCExperienceDAO {
 		String sql = "SELECT * FROM tag WHERE UPPER(name) LIKE UPPER(CONCAT('%', ?, '%'))";
 		List<Map<String,Object>> resultList = jdbcTemplate.queryForList(sql, new Object[] {query});
 		return resultList;
+	}
+	
+	public int cleanUpExpiredExperiences() {
+		String sql = "DELETE FROM experience WHERE expiration_date <> NULL AND expiration_date < NOW()";
+		return jdbcTemplate.update(sql);
+	}
+
+	public boolean markSpam(Experience e) {
+		if (e.hasUserMarkedSpam())
+			return false;
+		try {
+			jdbcTemplate.update("INSERT INTO experience_spam (experience_id, user_id) VALUES(?, ?)", new Object[] {e.getId(), userDao.getCurrentUser().getId()});
+			e.incrementSpam();
+			if (e.exceedsSpamLimit()) {
+				return deleteExperience(e);
+			} else {
+				saveExperience(e);
+			}
+		} catch (DataIntegrityViolationException ex) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean unmarkSpam(Experience e) {
+		if (! e.hasUserMarkedSpam())
+			return false;
+		try {
+			jdbcTemplate.update("DELETE FROM experience_spam WHERE experience_id=? AND user_id=?", new Object[] {e.getId(), userDao.getCurrentUser().getId()});
+			e.decrementSpam();
+			saveExperience(e);
+		} catch (DataIntegrityViolationException ex) {
+			return false;
+		}
+		return true;
 	}
 }

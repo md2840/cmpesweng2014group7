@@ -4,11 +4,17 @@
 	<div class="panel-body">
 	<p>
 	<label for="experience-text">Tell us about your experience:</label><br/>
-	<textarea name="experience-text" id="experience-text"></textarea>
+	<textarea name="experience-text" id="experience-text" style="width:100%"></textarea>
 	</p>
 	<p>
 	<label for="experience-tags">Tags:</label></br>
 	<input type="text" name="experience-tags" id="experience-tags" />
+	</p>
+	<label for="experience-tags">Mood:</label></br>
+	<select id="experience-mood" name="experience-mood">
+		<option value="good" selected>Good</option>
+		<option value="bad">Bad</option>
+	</select>
 	</p>
 	<label for="experience-locations">Location:</label></br>
 	<input id="pac-input" class="controls" type="text" placeholder="Search Box">
