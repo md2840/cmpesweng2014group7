@@ -35,11 +35,13 @@ public class ExperienceController {
 	JDBCUserDAO userDao;
 	JDBCTagDAO tagDao;
 	JDBCExperienceDAO expDao;
+	JDBCExperienceVoteDAO voteDao;
 	
 	public ExperienceController(){
 		userDao = new JDBCUserDAO();
 		tagDao = new JDBCTagDAO();
 		expDao = new JDBCExperienceDAO(userDao, tagDao);
+		voteDao = new JDBCExperienceVoteDAO(); 
 	}
 	
 	@RequestMapping(value="/recent", method=RequestMethod.GET)
@@ -101,7 +103,7 @@ public class ExperienceController {
 		
 	}
 	@RequestMapping(value="/upvote", method=RequestMethod.POST)
-	public String SignUp(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String upvote(HttpServletRequest request, HttpServletResponse response, Model model) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth instanceof AnonymousAuthenticationToken) {
@@ -127,7 +129,7 @@ public class ExperienceController {
 	}
 	
 	@RequestMapping(value="/downvote", method=RequestMethod.POST)
-	public String SignUp(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String downvote(HttpServletRequest request, HttpServletResponse response, Model model) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth instanceof AnonymousAuthenticationToken) {
