@@ -11,6 +11,7 @@ public class UrbSource extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setting default screen to login.xml
+        
         setContentView(R.layout.activity_main);
  
         Button registerScreen = (Button) findViewById(R.id.link_to_register);

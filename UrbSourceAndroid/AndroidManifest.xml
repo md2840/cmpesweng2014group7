@@ -24,6 +24,10 @@
                   android:label="Register New Account">
              
          </activity>
+         <activity android:name=".UserProfile"
+                  android:label="User Profile">
+             
+         </activity>
     </application>
 
 </manifest>
