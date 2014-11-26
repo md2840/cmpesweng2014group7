@@ -87,17 +87,7 @@
 							Tags: <span ng-repeat="tag in experience.tags">{{tag.name}},
 							</span>
 						</p>
-						<p>	
-					<form:form action="/UrbSource/experience/upvote" method="POST">
-					<input type="hidden" name = "id" value="${experience.id}">
-					<input type="submit" value="Upvote">
-					</form:form>
-					<form:form action="/UrbSource/experience/downvote" method="POST">
-					<input type="hidden" name = "id1" value="${experience.id}">
-					<input type="submit" value="Downvote">
-					</form:form>	
-					
-				</p>
+						
 						
 					</div>				
  
