@@ -161,6 +161,7 @@ public class JDBCExperienceDAO {
 	 */
 	public List<Experience> getExperiences(final Tag[] tags) {
 		
+		
 		return jdbcTemplate.query(
 				new PreparedStatementCreator() {
 					

@@ -26,7 +26,7 @@ jQuery(function($) {
             'dataType': 'json'
         }).done(function (resp) {
             if (resp.success) {
-                alert('Refresh page to see your new experience!');
+            	location.reload();
                 // TODO: Automatically add new experience to list
             }
             else {
