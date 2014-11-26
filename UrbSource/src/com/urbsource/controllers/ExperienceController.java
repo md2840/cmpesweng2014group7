@@ -100,7 +100,60 @@ public class ExperienceController {
 		return map;
 		
 	}
+	@RequestMapping(value="/upvote", method=RequestMethod.POST)
+	public String SignUp(HttpServletRequest request, HttpServletResponse response, Model model) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken) {
+			model.addAttribute("success", false);
+			model.addAttribute("error", "You must log in to vote experiences");
+			return  "redirect:/index.html";
+		}
+		int id;
+		
+		if( request != null){
+			id = Integer.parseInt(request.getParameter("id"));
+		
+			User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+			Experience exp = expDao.getExperience(id);
+		
+			model.addAttribute("success", voteDao.saveVote(exp, u, 1));
+			return   "redirect:/index.html";
+		}else{
+			model.addAttribute("success", false);
+			model.addAttribute("error", "Request is null");
+			return   "redirect:/index.html";
+		}
+	}
 	
+	@RequestMapping(value="/downvote", method=RequestMethod.POST)
+	public String SignUp(HttpServletRequest request, HttpServletResponse response, Model model) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken) {
+			model.addAttribute("success", false);
+			model.addAttribute("error", "You must log in to vote experiences");
+			return  "redirect:/index.html";
+		}
+		int id;
+		
+		if( request != null){
+			id = Integer.parseInt(request.getParameter("id1"));
+		
+			User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+			Experience exp = expDao.getExperience(id);
+		
+			model.addAttribute("success", voteDao.saveVote(exp, u, 0));
+			return   "redirect:/index.html";
+		}else{
+			model.addAttribute("success", false);
+			model.addAttribute("error", "Request is null");
+			return   "redirect:/index.html";
+		}
+	}
+	
+
+
 	@RequestMapping(value="/searchTag", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> searchTag(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
