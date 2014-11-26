@@ -321,6 +321,18 @@ public class JDBCExperienceDAO {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	public boolean updateText(Experience exp) {
+		// Save experience to database
+		System.out.println("id +" + exp.getId());
+		System.out.println("text" + exp.getText());
+		String sql = "UPDATE experience SET text=? WHERE id=?";
+		jdbcTemplate.update(sql, exp.getText(), exp.getId());
+		exp.setAsSaved();
+		return true;
+		
+	}
+	
 	public boolean deleteExperience(Experience exp) {
 		if (exp.getId() < 0)
 			return false;
