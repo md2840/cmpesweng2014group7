@@ -2,8 +2,6 @@
 <%@taglib prefix="us" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="sc" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptcha" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaFactory" %>
 
 <us:page user="${command}">
 <jsp:attribute name="mainPanel">
@@ -21,9 +19,7 @@
 					<c:when test="${error == 'empty_password'}">
 						Password is empty.
 					</c:when>
-					<c:when test="${error == 'wrong_captcha'}">
-					Please check your captcha. 
-					</c:when>
+					
 					<c:otherwise>
 				The username or e-mail address is already taken.
 					</c:otherwise>
