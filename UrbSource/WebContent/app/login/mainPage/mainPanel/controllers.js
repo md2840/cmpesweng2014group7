@@ -12,4 +12,8 @@ controllers.controller('ExperienceListController',['$scope','DelEditExperienceFa
 	$scope.deleteExp = function(id){
 		DelEditExperienceFactory.deleteExp($scope,id);
 	};
+	
+	$scope.editExp = function(){
+		
+	};
 }]);
