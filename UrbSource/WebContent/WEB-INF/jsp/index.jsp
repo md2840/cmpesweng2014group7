@@ -7,25 +7,58 @@
 <jsp:attribute name="head">
   <script>
 
-    $(document).ready(function() {
-    	toastr.options = {
-    			  "closeButton": false,
-    			  "debug": false,
-    			  "positionClass": "toast-bottom-right",
-    			  "onclick": null,
-    			  "showDuration": "3000",
-    			  "hideDuration": "10000",
-    			  "timeOut": "50000",
-    			  "extendedTimeOut": "10000",
-    			  "showEasing": "swing",
-    			  "hideEasing": "linear",
-    			  "showMethod": "fadeIn",
-    			  "hideMethod": "fadeOut"
-    			};
-    	toastr.info("This is a great city! I would love to come again.", "Mustafa Demirel");
-    	toastr.info("Best Iskender Doner I've ever had.", "Steve Jobs");
-    	toastr.info("Traffic is so frustrating.", "Ilgın Yasar");
+  $(function () {
+	  
+		var lastCheck = Date.now()+1000; // One second bias
+		var timeInterval = 10*1000;
 
+		toastr.options = {
+			"closeButton": false,
+			"debug": false,
+			"positionClass": "toast-bottom-right",
+			"onclick": null,
+			"showDuration": "300",
+			"hideDuration": "1000",
+			"timeOut": "0",
+			"extendedTimeOut": "0",
+			"showEasing": "swing",
+			"hideEasing": "linear",
+			"showMethod": "fadeIn",
+			"hideMethod": "fadeOut"
+		}
+
+		var callback = function (response) {
+			console.log(response);
+			var nsize=response.notifications.length;
+			for(var i=0;i<nsize;i++){
+				toastr.info(response.notifications[i].text,response.notifications[i].user.username).click(function() { // Read notification
+					$.ajax({
+						type: 'POST',
+						url: '/UrbSource/notification/delete/'
+					} );
+				});
+
+		    }	 
+			//response.forEach(function () {
+			//	toastr.info(reponse.notifications.text);
+				/* toastr.info(notifications.text).click(function() { // Read notification
+					$.ajax({
+						type: 'GET',
+						url: '/UrbSource/notification/all/'
+					} );
+				});*/
+			//});
+		};
+		
+		
+
+		// Initial notification check
+		$.ajax({
+			type: 'GET',
+			url: '/UrbSource/notification/all/'
+		}).done(callback);
+        
+            
     });
  </script> 
 </jsp:attribute>
