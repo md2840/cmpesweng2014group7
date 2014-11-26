@@ -59,6 +59,12 @@
 
 			});
 		</script> 
+		<script>
+		function editExp(el) {
+			el.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","true");
+			el.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "block";
+		}
+		</script>
 </jsp:attribute>
 	<jsp:attribute name="mainPanel">
 		<div ng-controller="ExperienceListController">
@@ -67,7 +73,13 @@
 				<div class="panel panel-default"
 					ng-repeat="experience in experienceList">
 					<div class="panel-heading">
-						By: <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
+						<span ng-switch on="experience.mood">
+							<span ng-switch-when="good" style="color: green">Good Experience</span>
+							<span ng-switch-when="bad" style="color: red">Bad Experience</span>
+							<span ng-switch-default></span>
+						</span>
+						by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
+						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
 					<div class="panel-body">
 						<p>{{experience.text}}</p>
@@ -78,7 +90,7 @@
 					</div>				
  
 					<div ng-show="experience.author.username === '${user.username}'" class="panel-footer">
-						<button type="button" class="btn btn-primary" id="edit-experience">Edit</button>
+						<button type="button" class="btn btn-primary" onclick="editExp(this)" id="edit-experience">Edit</button>
 						<button type="button" class="btn btn-primary" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
 					</div>
 				</div>
@@ -90,14 +102,24 @@
 				<div class="panel panel-default"
 					ng-repeat="experience in experienceList">
 					<div class="panel-heading">
-						By: <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
+						<span ng-switch on="experience.mood">
+							<span ng-switch-when="good" style="color: green">Good Experience</span>
+							<span ng-switch-when="bad" style="color: red">Bad Experience</span>
+							<span ng-switch-default></span>
+						</span>
+						by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
+						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
 					<div class="panel-body">
-						<p>{{experience.text}}</p>
+						<p><p>{{experience.text}} </p><button style="float:right;display:none;" ng-click="save()" type="button" class="btn btn-primary">Save</button></p></p> 
 						<p>
 							Tags: <span ng-repeat="tag in experience.tags">{{tag.name}},
 							</span>
 						</p>
+					</div>
+					<div ng-show="experience.author.username === '${user.username}'" class="panel-footer">
+						<button type="button" class="btn btn-primary" onclick="editExp(this)" id="edit-experience">Edit</button>
+						<button type="button" class="btn btn-primary" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
 					</div>
 				</div>
 			</div>
