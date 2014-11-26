@@ -3,8 +3,7 @@ services.factory('SearchExperienceFactory',['$http','SendExperienceService',func
 		getTagBaseExp: function($scope){
 			var request = $http.post('/UrbSource/experience/searchExperienceTag',{
 				params: {
-					id: $scope.tag.originalObject.id,
-					name: $scope.tag.originalObject.name
+					tags: $scope.tagArray
 				}
 			});
 			
