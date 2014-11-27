@@ -288,7 +288,6 @@ public class JDBCExperienceDAO {
 	 * @param exp The experience to be saved.
 	 * @return true if success, false if failure
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean saveExperience(Experience exp) {
 		if (exp.getId() < 0) {
 			return createExperience(exp);
@@ -312,7 +311,9 @@ public class JDBCExperienceDAO {
 			params.put("tag_id", t.getId());
 			sqlParameters.add(params);
 		}
-		int[] results = insertTag.executeBatch((HashMap<String, Object>[])sqlParameters.toArray());
+		@SuppressWarnings("unchecked")
+		HashMap<String, Object>[] H = new HashMap[0];
+		int[] results = insertTag.executeBatch(sqlParameters.toArray(H));
 		for (int i : results) {
 			System.out.println(i);
 		}
@@ -376,7 +377,7 @@ public class JDBCExperienceDAO {
 	}
 
 	public boolean markSpam(Experience e) {
-		if (e.hasUserMarkedSpam())
+		if (e.isUserMarkedSpam())
 			return false;
 		try {
 			jdbcTemplate.update("INSERT INTO experience_spam (experience_id, user_id) VALUES(?, ?)", new Object[] {e.getId(), userDao.getCurrentUser().getId()});
@@ -393,7 +394,7 @@ public class JDBCExperienceDAO {
 	}
 
 	public boolean unmarkSpam(Experience e) {
-		if (! e.hasUserMarkedSpam())
+		if (! e.isUserMarkedSpam())
 			return false;
 		try {
 			jdbcTemplate.update("DELETE FROM experience_spam WHERE experience_id=? AND user_id=?", new Object[] {e.getId(), userDao.getCurrentUser().getId()});
