@@ -175,6 +175,8 @@ public class JDBCExperienceDAO {
 				"SELECT * FROM rel_experience_tag AS rel WHERE " +
 				"rel.experience_id = experience.id AND rel.tag_id IN ("+ qmarkstr +")) ORDER BY experience.id DESC";
 		
+		System.out.println(sql);
+		
 		return jdbcTemplate.query(
 				sql,
 				tag_ids,
