@@ -59,6 +59,12 @@
 
 			});
 		</script> 
+		<script>
+		function editExp(el) {
+			el.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","true");
+			el.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "block";
+		}
+		</script>
 </jsp:attribute>
 	<jsp:attribute name="mainPanel">
 		<div ng-controller="ExperienceListController">
@@ -83,10 +89,11 @@
 						</p>
 					</div>				
  
+					
 					<div class="panel-footer">
 						<div class="btn-toolbar">
 							<div class="btn-group" ng-show="experience.author.username === '${user.username}'">
-								<button type="button" class="btn btn-primary" id="edit-experience">Edit</button>
+								<button type="button" class="btn btn-primary" onclick="editExp(this)" id="edit-experience">Edit</button>
 								<button type="button" class="btn btn-primary" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
 							</div>
 							<div class="btn-group" ng-hide="experience.userMarkedSpam">
@@ -122,7 +129,7 @@
 					<div class="panel-footer">
 						<div class="btn-toolbar">
 							<div class="btn-group" ng-show="experience.author.username === '${user.username}'">
-								<button type="button" class="btn btn-primary" id="edit-experience">Edit</button>
+								<button type="button" class="btn btn-primary" onclick="editExp(this)" id="edit-experience">Edit</button>
 								<button type="button" class="btn btn-primary" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
 							</div>
 							<div class="btn-group" ng-hide="experience.userMarkedSpam">

@@ -12,7 +12,7 @@ controllers.controller('ExperienceListController',['$scope','DelEditExperienceFa
 	$scope.deleteExp = function(id){
 		DelEditExperienceFactory.deleteExp($scope,id);
 	};
-	
+
 	$scope.reportSpam = function(id,$event) {
 		$.ajax({
 			url:"/UrbSource/experience/markSpam",
@@ -27,5 +27,11 @@ controllers.controller('ExperienceListController',['$scope','DelEditExperienceFa
 				$($event.target).hide();
 			}
 		});
+	};
+	
+	$scope.save = function(id,$event){
+		$event.target.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","true");
+		$event.target.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "none";
+		DelEditExperienceFactory.editExp($scope,id,$event.target.parentElement.parentElement.childNodes[3].childNodes[2].innerText);
 	};
 }]);

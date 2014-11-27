@@ -35,11 +35,13 @@ public class ExperienceController {
 	JDBCUserDAO userDao;
 	JDBCTagDAO tagDao;
 	JDBCExperienceDAO expDao;
+	JDBCExperienceVoteDAO voteDao;
 	
 	public ExperienceController(){
 		userDao = new JDBCUserDAO();
 		tagDao = new JDBCTagDAO();
 		expDao = new JDBCExperienceDAO(userDao, tagDao);
+		voteDao = new JDBCExperienceVoteDAO(); 
 	}
 	
 	@RequestMapping(value="/recent", method=RequestMethod.GET)
@@ -100,7 +102,60 @@ public class ExperienceController {
 		return map;
 		
 	}
+	@RequestMapping(value="/upvote", method=RequestMethod.POST)
+	public String upvote(HttpServletRequest request, HttpServletResponse response, Model model) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken) {
+			model.addAttribute("success", false);
+			model.addAttribute("error", "You must log in to vote experiences");
+			return  "redirect:/index.html";
+		}
+		int id;
+		
+		if( request != null){
+			id = Integer.parseInt(request.getParameter("id"));
+		
+			User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+			Experience exp = expDao.getExperience(id);
+		
+			model.addAttribute("success", voteDao.saveVote(exp, u, 1));
+			return   "redirect:/index.html";
+		}else{
+			model.addAttribute("success", false);
+			model.addAttribute("error", "Request is null");
+			return   "redirect:/index.html";
+		}
+	}
 	
+	@RequestMapping(value="/downvote", method=RequestMethod.POST)
+	public String downvote(HttpServletRequest request, HttpServletResponse response, Model model) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken) {
+			model.addAttribute("success", false);
+			model.addAttribute("error", "You must log in to vote experiences");
+			return  "redirect:/index.html";
+		}
+		int id;
+		
+		if( request != null){
+			id = Integer.parseInt(request.getParameter("id1"));
+		
+			User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+			Experience exp = expDao.getExperience(id);
+		
+			model.addAttribute("success", voteDao.saveVote(exp, u, 0));
+			return   "redirect:/index.html";
+		}else{
+			model.addAttribute("success", false);
+			model.addAttribute("error", "Request is null");
+			return   "redirect:/index.html";
+		}
+	}
+	
+
+
 	@RequestMapping(value="/searchTag", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> searchTag(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -198,6 +253,38 @@ public class ExperienceController {
 		}
 		for (Tag t : tags) {
 			exp.addTag(t);
+		}
+		exp.setText(json.getString("text"));
+		expDao.saveExperience(exp);
+		map.put("success", true);
+		return map;
+	}
+	
+	
+	@RequestMapping(value="/editText", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> updateText(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result").getJSONObject("params");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken) {
+			map.put("success", false);
+			map.put("error", "You must log in to update your experiences");
+			return map;
+		}
+		int id;
+		try {
+			id = json.getInt("id");
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", "Experience ID is not given or not int, check how you call the API!");
+			return map;
+		}
+		User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+		Experience exp = expDao.getExperience(id);
+		if (u.getId() != exp.getAuthor().getId()) {
+			map.put("success", false);
+			map.put("error", "You can update only your experiences!");
+			return map;
 		}
 		exp.setText(json.getString("text"));
 		expDao.saveExperience(exp);

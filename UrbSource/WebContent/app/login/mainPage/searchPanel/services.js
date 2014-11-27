@@ -105,6 +105,44 @@ services.factory('DelEditExperienceFactory',['$http',function($http){
 			});
 
 			request.error(function(responseData, status, headers, config){});
+		},
+		editExp: function($scope,id,text){
+			var request = $http.post('/UrbSource/experience/editText',{
+				params: {
+					id:id,
+					text:text
+				}
+			});
+			
+			toastr.options = {
+					"closeButton": false,
+					"debug": false,
+					"positionClass": "toast-bottom-right",
+					"onclick": null,
+					"showDuration": "300",
+					"hideDuration": "1000",
+					"timeOut": "0",
+					"extendedTimeOut": "0",
+					"showEasing": "swing",
+					"hideEasing": "linear",
+					"showMethod": "fadeIn",
+					"hideMethod": "fadeOut"
+			};
+
+			request.success(function(responseData, status, headers, config){
+					var request = $http.get('/UrbSource/experience/recent');
+
+					request.success(function(responseData, status, headers, config){
+						$scope.experienceList = responseData.experiences;
+						toastr.success("Edit is successfully done", 'Please wait then click anywhere to refresh');
+					});
+
+					request.error(function(responseData, status, headers, config){
+
+					});
+			});
+
+			request.error(function(responseData, status, headers, config){});
 		}
 	};
 }]);

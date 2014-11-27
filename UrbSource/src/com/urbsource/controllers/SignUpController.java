@@ -32,8 +32,8 @@ import com.urbsource.sendEmail.SendEmail;
 @RequestMapping("/signup/*")
 public class SignUpController {
 	JDBCUserDAO dao;
-	 @Autowired
-	    private ReCaptcha reCaptchaService = null;
+    //@Autowired
+    //private ReCaptcha reCaptchaService = null;
 	     
 	public SignUpController() {
 		// Initialize DB connection
@@ -53,16 +53,16 @@ public class SignUpController {
         String response = request.getParameter("recaptcha_response_field");
         String remoteAddr = request.getRemoteAddr();
          
-        ReCaptchaResponse reCaptchaResponse = reCaptchaService.checkAnswer(remoteAddr, challenge, response);
+      //  ReCaptchaResponse reCaptchaResponse = reCaptchaService.checkAnswer(remoteAddr, challenge, response);
 		if (! u.getPassword().equals(u.getPassword2())) {
 			model.addAttribute("error", "password_mismatch");
 		} else if (u.getPassword().isEmpty()) {
 			model.addAttribute("error", "empty_password");
 		} else if (! u.isEmailValid()) {
 			model.addAttribute("error", "invalid_email");
-		} else if(!reCaptchaResponse.isValid()){
+		} else /*if(!reCaptchaResponse.isValid()){
 			model.addAttribute("error", "wrong_captcha");
-		} else {
+		} else */{
 			try {
 				dao.createUser(u);
 				
