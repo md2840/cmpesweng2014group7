@@ -160,27 +160,24 @@ public class JDBCExperienceDAO {
 	 * @return List of experiences containing given tags
 	 */
 	public List<Experience> getExperiences(final Tag[] tags) {
-		
+
+		Integer tag_ids[] = new Integer[tags.length];
+		for (int i = 0; i < tags.length; ++i) {
+			tag_ids[i] = tags[i].getId();
+		}
+		String qmarkstr = "?";
+		for (int i = 1; i < tag_ids.length; ++i)
+			qmarkstr += ",?";
+		// The broken, old, rusty MySQL that lacks intelligent design completely
+		// also doesn't support sending arrays in prepared statements. If hell
+		// exists it must be a place where people are forced to use MySQL
+		String sql = "SELECT * FROM experience WHERE EXISTS (" +
+				"SELECT * FROM rel_experience_tag AS rel WHERE " +
+				"rel.experience_id = experience.id AND rel.tag_id IN ("+ qmarkstr +")) ORDER BY experience.id DESC";
 		
 		return jdbcTemplate.query(
-				new PreparedStatementCreator() {
-					
-					@Override
-					public PreparedStatement createPreparedStatement(
-							Connection conn) throws SQLException {
-						Integer tag_ids[] = new Integer[tags.length];
-						for (int i = 0; i < tags.length; ++i) {
-							tag_ids[i] = tags[i].getId();
-						}
-						String sql = "SELECT * FROM experience WHERE EXISTS (" +
-								"SELECT * FROM rel_experience_tag AS rel WHERE " +
-								"rel.experience_id = experience.id AND rel.tag_id IN ?) ORDER BY experience.id DESC";
-						PreparedStatement p = conn.prepareStatement(sql);
-						p.setArray(0, conn.createArrayOf("int", tag_ids));
-						return p;
-					}
-					
-				},
+				sql,
+				tag_ids,
 				new RowMapper<Experience>() {
 
 			@Override
