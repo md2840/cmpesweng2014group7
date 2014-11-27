@@ -12,4 +12,20 @@ controllers.controller('ExperienceListController',['$scope','DelEditExperienceFa
 	$scope.deleteExp = function(id){
 		DelEditExperienceFactory.deleteExp($scope,id);
 	};
+	
+	$scope.reportSpam = function(id,$event) {
+		$.ajax({
+			url:"/UrbSource/experience/markSpam",
+			data: JSON.stringify({
+				id: id
+			}),
+			type: 'POST',
+			contentType: 'application/json; charset=UTF-8',
+            'dataType': 'json'
+		}).done(function(responseData, status, jqXHR){
+			if (responseData.success) {
+				$($event.target).hide();
+			}
+		});
+	};
 }]);

@@ -83,9 +83,16 @@
 						</p>
 					</div>				
  
-					<div ng-show="experience.author.username === '${user.username}'" class="panel-footer">
-						<button type="button" class="btn btn-primary" id="edit-experience">Edit</button>
-						<button type="button" class="btn btn-primary" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
+					<div class="panel-footer">
+						<div class="btn-toolbar">
+							<div class="btn-group" ng-show="experience.author.username === '${user.username}'">
+								<button type="button" class="btn btn-primary" id="edit-experience">Edit</button>
+								<button type="button" class="btn btn-primary" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
+							</div>
+							<div class="btn-group" ng-hide="experience.userMarkedSpam">
+								<button type="button" class="btn btn-danger" ng-click="reportSpam(experience.id, $event)" id="report-spam">Report Spam</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -110,6 +117,18 @@
 							Tags: <span ng-repeat="tag in experience.tags">{{tag.name}},
 							</span>
 						</p>
+					</div>
+					
+					<div class="panel-footer">
+						<div class="btn-toolbar">
+							<div class="btn-group" ng-show="experience.author.username === '${user.username}'">
+								<button type="button" class="btn btn-primary" id="edit-experience">Edit</button>
+								<button type="button" class="btn btn-primary" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
+							</div>
+							<div class="btn-group" ng-hide="experience.userMarkedSpam">
+								<button type="button" class="btn btn-danger" ng-click="reportSpam(experience.id, $event)" id="report-spam">Report Spam</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
