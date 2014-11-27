@@ -14,7 +14,7 @@ controllers.controller('ExperienceListController',['$scope','DelEditExperienceFa
 	};
 	
 	$scope.save = function(id,$event){
-		$event.target.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","true");
+		$event.target.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","false");
 		$event.target.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "none";
 		DelEditExperienceFactory.editExp($scope,id,$event.target.parentElement.parentElement.childNodes[3].childNodes[2].innerText);
 	};

@@ -17,9 +17,7 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 		</property>
 	</bean>
 	
-	<bean id="JDBCNotificationDAO" class="com.urbsource.db.JDBCNotificationDAO">
-		<property name="dataSource" ref="dataSource"></property>
-	</bean>
+	
 	<bean id="JDBCIndexDAO" class="com.urbsource.db.JDBCIndexDAO">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
@@ -33,6 +31,9 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	<bean id="JDBCExperienceVoteDAO" class="com.urbsource.db.JDBCExperienceVoteDAO">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<bean id="JDBCNotificationDAO" class="com.urbsource.db.JDBCNotificationDAO">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	
