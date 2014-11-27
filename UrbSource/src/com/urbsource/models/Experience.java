@@ -233,7 +233,7 @@ public class Experience implements Serializable {
 	/**
 	 * @return the userMarkedSpam
 	 */
-	public boolean hasUserMarkedSpam() {
+	public boolean isUserMarkedSpam() {
 		return userMarkedSpam;
 	}
 
