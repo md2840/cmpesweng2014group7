@@ -32,7 +32,7 @@ import com.urbsource.sendEmail.SendEmail;
 @RequestMapping("/signup/*")
 public class SignUpController {
 	JDBCUserDAO dao;
-	 @Autowired
+	   // @Autowired
 	    //private ReCaptcha reCaptchaService = null;
 	     
 	public SignUpController() {
