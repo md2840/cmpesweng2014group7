@@ -61,8 +61,8 @@
 		</script> 
 		<script>
 		function editExp(el) {
-			el.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","true");
-			el.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "block";
+			el.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","true");
+			el.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "block";
 		}
 		</script>
 </jsp:attribute>
@@ -82,7 +82,7 @@
 						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
 					<div class="panel-body">
-						<p>{{experience.text}}</p>
+						<p><p>{{experience.text}}</p><button style="float:right;display:none;" ng-click="save(experience.id,$event)" type="button" class="btn btn-primary">Save</button></p>
 						<p>
 							Tags: <span ng-repeat="tag in experience.tags">{{tag.name}},
 							</span>
@@ -119,7 +119,7 @@
 						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
 					<div class="panel-body">
-						<p>{{experience.text}}</p>
+						<p><p>{{experience.text}}</p><button style="float:right;display:none;" ng-click="save(experience.id,$event)" type="button" class="btn btn-primary">Save</button></p>
 						<p>
 							Tags: <span ng-repeat="tag in experience.tags">{{tag.name}},
 							</span>
