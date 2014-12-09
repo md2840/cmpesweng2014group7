@@ -1,4 +1,4 @@
-package models;
+package com.group7.urbsourceandroid.models;
 
 import java.io.Serializable;
 import java.util.regex.Pattern;
