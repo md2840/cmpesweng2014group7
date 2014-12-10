@@ -1,9 +1,12 @@
 package com.group7.urbsourceandroid;
 import java.io.IOException;
+import java.io.InputStream;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -11,7 +14,9 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -154,7 +159,7 @@ public class Register extends Activity {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/signup/confirm");
- 
+			HttpGet httpGet = new HttpGet("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/recent");
 			try {
 				// Add your data
 //				JSONObject jsonobj = new JSONObject();
@@ -194,10 +199,17 @@ public class Register extends Activity {
 				 httppost.setEntity(se);
 					
 					// Execute HTTP Post Request
-					HttpResponse response = httpclient.execute(httppost);
+					HttpResponse response = httpclient.execute(httpGet);
 					
 				 Log.i("geldi mi",response.getStatusLine().toString());
+				 HttpEntity entity = response.getEntity();
 
+
+				 String text = getASCIIContentFromEntity(entity);
+				 JSONObject myObject = new JSONObject(text);
+				 JSONArray jsona = new JSONArray(myObject.getString("experiences"));
+				 Log.i("response",jsona.getString(jsona.length()-1));
+				 
  
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
@@ -207,5 +219,24 @@ public class Register extends Activity {
 		}
  
 	}
+	public String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
+		InputStream in = entity.getContent();
+
+
+		StringBuffer out = new StringBuffer();
+		int n = 1;
+		while (n>0) {
+		byte[] b = new byte[4096];
+		n =  in.read(b);
+
+
+		if (n>0) out.append(new String(b, 0, n));
+		}
+
+
+		return out.toString();
+		}
+
+
 
 }
