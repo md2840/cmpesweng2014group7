@@ -18,8 +18,6 @@ public class Experience implements Serializable {
 	private String text;
 	private String mood="good";
 	private ArrayList<Tag> tags;
-	private ArrayList<Tag> removedTags=new ArrayList<Tag>();
-	private ArrayList<Tag> addedTags=new ArrayList<Tag>();
 	private boolean textChanged=false;
 	private boolean saved=false;
 	private int spam = 0;
@@ -33,9 +31,7 @@ public class Experience implements Serializable {
 	 * To be a bean.
 	 */
 	public Experience() {
-		creationTime = new Timestamp(new java.util.Date().getTime());
-		modificationTime = new Timestamp(new java.util.Date().getTime());
-		expirationDate = new Date(new java.util.Date().getTime());
+		
 	}
 	
 	public Experience(int id, User author, String text, List<Tag> tags) {
@@ -87,51 +83,28 @@ public class Experience implements Serializable {
 		return textChanged;
 	}
 
-	public boolean isTagsChanged() {
-		return !(addedTags.isEmpty() && removedTags.isEmpty());
-	}
+	
 
 	public boolean addTag(Tag t) {
+		if(tags==null){
+			tags= new ArrayList<Tag>();
+			tags.add(t);
+			return true;
+		}else{
 		if (tags.contains(t))
 			return false;
 
 		tags.add(t);
 		
-		if (removedTags.contains(t))
-			removedTags.remove(t);
-		else
-			addedTags.add(t);
-
-		saved = false;
 		return true;
+		}
 	}
 	
-	public boolean removeTag(Tag t) {
-		if (removedTags.contains(t))
-			return false;
-
-		tags.add(t);
-		
-		if (addedTags.contains(t))
-			addedTags.remove(t);
-		else
-			removedTags.add(t);
-		
-		saved = false;
-		return true;
-	}
-
+	
 	public ArrayList<Tag> getTags() {
 		return tags;
 	}
-	public ArrayList<Tag> getRemovedTags() {
-		return removedTags;
-	}
-
-	public ArrayList<Tag> getAddedTags() {
-		return addedTags;
-	}
-
+	
 	public User getAuthor() {
 		return author;
 	}
