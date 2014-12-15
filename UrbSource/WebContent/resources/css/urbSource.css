@@ -1,15 +1,15 @@
 @font-face {
     font-family: celias;
-    src: url("/resources/css/fonts/celias-webfont.woff");
+    src: url("/UrbSource/resources/css/fonts/celias-webfont.woff");
 }
 @font-face {
     font-family: celias;
     font-weight:bold;
-    src: url("/resources/css/fonts/celiasbold-webfont.woff");
+    src: url("/UrbSource/resources/css/fonts/celiasbold-webfont.woff");
 }
 @font-face {
     font-family: celiaslight;
-    src: url("/resources/css/fonts/celiaslight-webfont.woff");
+    src: url("/UrbSource/resources/css/fonts/celiaslight-webfont.woff");
 }
 body{
    font-family:celias,Helvetica,sans-serif;	
