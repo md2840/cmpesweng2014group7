@@ -99,7 +99,7 @@ public class UserController {
 	 * @param model The model passed to controller via Spring.
 	 * @return The response model-view pair
 	 */
-	@RequestMapping(value="/forgot_pw", method=RequestMethod.POST)
+	@RequestMapping(value="/forgot", method=RequestMethod.POST)
 	public ModelAndView resetPassword(@ModelAttribute User u, Model model) {
 		if (u.getEmail().isEmpty()) {
 			model.addAttribute("error", "empty_email");
@@ -124,7 +124,7 @@ public class UserController {
 				model.addAttribute("error", "user_not_exist");
 			}
 		}
-		return new ModelAndView("forgot_pw", "command", new User());
+		return new ModelAndView("forgot_pw", "command", u);
 	}
 	
 	/***
@@ -134,10 +134,10 @@ public class UserController {
 	 * @return The response model-view pair
 	 * @author Gokce Yesiltas
 	 */
-	@RequestMapping(value="/forgot_pw", method=RequestMethod.GET)
+	@RequestMapping(value="/forgot", method=RequestMethod.GET)
 	public ModelAndView resetPassword(Model model) {
 		model.addAttribute("user", null);
-		return new ModelAndView("forgot_pw", "command", new User());
+		return new ModelAndView("forgot_pw");
 	}
 
 }

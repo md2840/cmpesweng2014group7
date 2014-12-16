@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <us:page user="${command}">
 <jsp:attribute name="mainPanel">
-	<form:form action="/UrbSource/user/forgot_pw" method="POST">
+	<form:form action="/UrbSource/user/forgot" method="POST">
 		<c:set var="error" value="${error}" />
 		<c:if test="${!empty error}">
 			<div class="alert alert-danger" role="alert">
