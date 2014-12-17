@@ -94,7 +94,7 @@ public class User implements Serializable {
 	}
 
 	public boolean isEmailValid() {
-		return Pattern.matches("\\w+@\\w+(\\w|[.-_])*\\.[a-zA-Z]+", email);
+		return Pattern.matches("(\\w|[.-_])+@\\w+(\\w|[.-_])*\\.[a-zA-Z]+", email);
 	}
 
 	/**
