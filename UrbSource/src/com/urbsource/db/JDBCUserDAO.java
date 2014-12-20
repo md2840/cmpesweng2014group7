@@ -35,7 +35,7 @@ public class JDBCUserDAO {
 				sql,
 				new Object[] { username },
 				new BeanPropertyRowMapper<User>(User.class));
-		sql = "SELECT COUNT(id) FROM experience WHERE author_id = ?";
+		sql = "SELECT COUNT(*) FROM experience WHERE author_id = ?";
 		u.setNumberOfExperiences(jdbcTemplate.queryForInt(
 				sql,
 				new Object[] { u.getId() }));
@@ -48,6 +48,11 @@ public class JDBCUserDAO {
 				sql,
 				new Object[] { id },
 				new BeanPropertyRowMapper<User>(User.class));
+		sql = "SELECT COUNT(*) FROM experience WHERE author_id = ?";
+		int expNo = jdbcTemplate.queryForInt(
+				sql,
+				new Object[] { u.getId() });
+		u.setNumberOfExperiences(expNo);
 		return u;
 	}
 	
@@ -64,6 +69,10 @@ public class JDBCUserDAO {
 				sql,
 				new Object[] { email },
 				new BeanPropertyRowMapper<User>(User.class));
+		sql = "SELECT COUNT(*) FROM experience WHERE author_id = ?";
+		u.setNumberOfExperiences(jdbcTemplate.queryForInt(
+				sql,
+				new Object[] { u.getId() }));
 		return u;
 	}
 	

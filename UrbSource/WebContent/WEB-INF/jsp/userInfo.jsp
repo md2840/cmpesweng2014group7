@@ -73,7 +73,7 @@
 			Comment Points: ${command.commentPoints}
 		</p>
 		<p>
-			<a href="/UrbSource/experience/user/${command.id}">${command.username} has shared ${user.numberOfExperiences} experiences</a>
+			<a href="/UrbSource/experience/user/${command.id}">${command.username} has shared ${command.numberOfExperiences} experiences</a>
 		</p>
 </c:otherwise>
 </c:choose>
