@@ -90,14 +90,17 @@
 					</div>				
  
 					
-					<div class="panel-footer">
-						<div class="btn-toolbar">
+					<div class="panel-footer clearfix">
+						<div class="pull-left">
+							<a href="/UrbSource/experience/id/{{experience.id}}">{{experience.numberOfComments}} Comments</a>
+						</div>
+						<div class="btn-toolbar pull-right">
 							<div class="btn-group" ng-show="experience.author.username === '${user.username}'">
-								<button type="button" class="btn btn-primary" onclick="editExp(this)" id="edit-experience">Edit</button>
-								<button type="button" class="btn btn-primary" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
+								<button type="button" class="btn btn-primary btn-xs" onclick="editExp(this)" id="edit-experience">Edit</button>
+								<button type="button" class="btn btn-primary btn-xs" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
 							</div>
 							<div class="btn-group" ng-hide="experience.userMarkedSpam">
-								<button type="button" class="btn btn-danger" ng-click="reportSpam(experience.id, $event)" id="report-spam">Report Spam</button>
+								<button type="button" class="btn btn-danger btn-xs" ng-click="reportSpam(experience.id, $event)" id="report-spam">Report Spam</button>
 							</div>
 						</div>
 					</div>
@@ -126,14 +129,17 @@
 						</p>
 					</div>
 					
-					<div class="panel-footer">
-						<div class="btn-toolbar">
+					<div class="panel-footer clearfix">
+						<div class="pull-left">
+							<a href="/UrbSource/experience/id/{{experience.id}}">{{experience.numberOfComments}} Comments</a>
+						</div>
+						<div class="btn-toolbar pull-right">
 							<div class="btn-group" ng-show="experience.author.username === '${user.username}'">
-								<button type="button" class="btn btn-primary" onclick="editExp(this)" id="edit-experience">Edit</button>
-								<button type="button" class="btn btn-primary" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
+								<button type="button" class="btn btn-primary btn-xs" onclick="editExp(this)" id="edit-experience">Edit</button>
+								<button type="button" class="btn btn-primary btn-xs" ng-click="deleteExp(experience.id)" id="delete-experience">Delete</button>
 							</div>
 							<div class="btn-group" ng-hide="experience.userMarkedSpam">
-								<button type="button" class="btn btn-danger" ng-click="reportSpam(experience.id, $event)" id="report-spam">Report Spam</button>
+								<button type="button" class="btn btn-danger btn-xs" ng-click="reportSpam(experience.id, $event)" id="report-spam">Report Spam</button>
 							</div>
 						</div>
 					</div>

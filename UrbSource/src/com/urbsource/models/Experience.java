@@ -28,6 +28,7 @@ public class Experience implements Serializable {
 	private Timestamp modificationTime;
 	private Date expirationDate;
 	private boolean userMarkedSpam=false;
+	private int numberOfComments;
 	
 	/**
 	 * To be a bean.
@@ -243,5 +244,13 @@ public class Experience implements Serializable {
 	public Experience setUserMarkedSpam(boolean userMarkedSpam) {
 		this.userMarkedSpam = userMarkedSpam;
 		return this;
+	}
+
+	public int getNumberOfComments() {
+		return numberOfComments;
+	}
+
+	public void setNumberOfComments(int numberOfComments) {
+		this.numberOfComments = numberOfComments;
 	}
 }
