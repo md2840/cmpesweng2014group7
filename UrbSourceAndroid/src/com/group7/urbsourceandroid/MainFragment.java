@@ -196,7 +196,9 @@ public class MainFragment extends Fragment{
 		public void getData() throws JSONException {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/recent");
+			//HttpGet httpGet = new HttpGet("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/recent");
+			HttpGet httpGet = new HttpGet("http://10.0.3.2/UrbSource/experience/recent"); //for genymotion
+			
 			try {
 			
 				

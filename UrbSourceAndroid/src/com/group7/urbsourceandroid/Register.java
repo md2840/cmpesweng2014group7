@@ -120,10 +120,10 @@ public class Register extends Activity {
 	}
 	public void deneme(){
 		
-		String username="dilara91";
+		String username="dilara912";
 		String firstName = "Dilara";
 		String lastName = "Kek";
-		String email = "dilara.kekulluoglu@boun.edu.tr";
+		String email = "dilarakeku@boun.edu";
 		String password = "123456";
 		String password2 = "123456";
 		new MyAsyncTask().execute(username,firstName,lastName,email,password,password2);	
@@ -158,58 +158,37 @@ public class Register extends Activity {
 		public void postData(String username, String firstName,String lastName,String email,String password,String password2) throws JSONException {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/signup/confirm");
-			HttpGet httpGet = new HttpGet("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/recent");
+			HttpPost httppost = new HttpPost("http://10.0.3.2/UrbSource/signup/mobileconfirm");
 			try {
 				// Add your data
-//				JSONObject jsonobj = new JSONObject();
-//				jsonobj.put("username",username);
-//				jsonobj.put("firstName",firstName);
-//				jsonobj.put("lastName",lastName);
-//				jsonobj.put("email",email);
-//				jsonobj.put("password",password);
-//				StringEntity se = new StringEntity(jsonobj.toString());    
-//				se.setContentType("application/json;charset=UTF-8");
-//				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
-//				httppost.setHeader("Content-Type", "application/json");
-//				 httppost.setHeader("Accept", "application/json");
-//			
-//				httppost.setEntity(se);
-//				
-//				// Execute HTTP Post Request
-//				HttpResponse response = httpclient.execute(httppost);
-				
-				User u= new User();
-				u.setUsername(username);
-				u.setFirstName(firstName);
-				u.setLastName(lastName);
-				u.setEmail(email);
-				u.setPassword(password);
-				u.setPassword2(password2);
-				Log.i("parametreler",username);
-				ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-				String json = ow.writeValueAsString(u);
-				 Log.i("json",json);
+				JSONObject jsonobj = new JSONObject();
+				jsonobj.put("username",username);
+				jsonobj.put("firstName",firstName);
+				jsonobj.put("lastName",lastName);
+				jsonobj.put("email",email);
+				jsonobj.put("password",password);
+				StringEntity se = new StringEntity(jsonobj.toString());    
+				se.setContentType("application/json;charset=UTF-8");
+				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+				httppost.setHeader("Content-Type", "application/json");
+				httppost.setHeader("Accept", "application/json");
+			
+				httppost.setEntity(se);
+				Log.i("httppost","execute now");
+				// Execute HTTP Post Request
+				HttpResponse response = httpclient.execute(httppost);
+				Log.i("response",Integer.toString(response.getStatusLine().getStatusCode()));
+				HttpEntity entity = response.getEntity();
 				 
-				 //httppost.setHeader("Content-Type", "application/json");
-				  StringEntity se = new StringEntity(json);    
-				 se.setContentType("application/json;charset=UTF-8");
-				 se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
-
-				 httppost.setEntity(se);
-					
-					// Execute HTTP Post Request
-					HttpResponse response = httpclient.execute(httpGet);
-					
-				 Log.i("geldi mi",response.getStatusLine().toString());
-				 HttpEntity entity = response.getEntity();
-
-
 				 String text = getASCIIContentFromEntity(entity);
-				 JSONObject myObject = new JSONObject(text);
-				 JSONArray jsona = new JSONArray(myObject.getString("experiences"));
-				 Log.i("response",jsona.getString(jsona.length()-1));
-				 
+				
+				Log.i("gelentext",text);
+				 //httppost.setHeader("Content-Type", "application/json");
+				
+				// HttpEntity entity = response.getEntity();
+
+
+				  
  
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
