@@ -329,6 +329,11 @@ public class JDBCExperienceDAO {
 		return true;
 	}
 
+	/**
+	 *  Get latest n experiences in the system.
+	 * @param n Number of experiences to return.
+	 * @return Latest n experiences in the system.
+	 */
 	public List<Experience> getRecentExperiences(int n) {
 		return jdbcTemplate.query(
 				"SELECT * FROM experience ORDER BY id DESC LIMIT ?",
@@ -358,7 +363,73 @@ public class JDBCExperienceDAO {
 	}
 
 	/**
-	 * query'ye göre tagleri filtreler
+	 * Get most popular n experiences in the system, which are the ones with maximum score.
+	 * @param n Number of experiences to return.
+	 * @return Most popular n experiences in the system.
+	 */
+	public List<Experience> getPopularExperiences(int n) {
+		return jdbcTemplate.query(
+				"SELECT * FROM experience ORDER BY (upvotes - downvotes) DESC LIMIT ?",
+				new Object[] { n },
+				new RowMapper<Experience>() {
+
+			@Override
+			public Experience mapRow(ResultSet rs, int rowNumber)
+					throws SQLException {
+				int id = rs.getInt("id");
+				String text = rs.getString("text");
+				List<Tag> tags = tagDao.getTags(id);
+				User u = userDao.getUser(rs.getInt("author_id"));
+					Experience e = new Experience(id, u, text, tags)
+					.setCreationTime(rs.getTimestamp("creation_time"))
+					.setModificationTime(rs.getTimestamp("modification_time"))
+					.setExpirationDate(rs.getDate("expiration_date"))
+					.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+					User currentUser = userDao.getCurrentUser();
+					if (currentUser != null)
+						e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
+				e.setAsSaved();
+				return e;
+			}
+			
+		});
+	}
+	
+	/**
+	 * Get hottest n experiences in the system, which are the ones with maximum score and are entered in last 2 weeks.
+	 * @param n Number of experiences to return.
+	 * @return Hottest n experiences in the system.
+	 */
+	public List<Experience> getHotExperiences(int n) {
+		return jdbcTemplate.query(
+				"SELECT * FROM experience WHERE creation_date > DATEADD(WEEK(), -2, NOW()) ORDER BY (upvotes - downvotes) DESC LIMIT ?",
+				new Object[] { n },
+				new RowMapper<Experience>() {
+
+			@Override
+			public Experience mapRow(ResultSet rs, int rowNumber)
+					throws SQLException {
+				int id = rs.getInt("id");
+				String text = rs.getString("text");
+				List<Tag> tags = tagDao.getTags(id);
+				User u = userDao.getUser(rs.getInt("author_id"));
+					Experience e = new Experience(id, u, text, tags)
+					.setCreationTime(rs.getTimestamp("creation_time"))
+					.setModificationTime(rs.getTimestamp("modification_time"))
+					.setExpirationDate(rs.getDate("expiration_date"))
+					.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+					User currentUser = userDao.getCurrentUser();
+					if (currentUser != null)
+						e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
+				e.setAsSaved();
+				return e;
+			}
+			
+		});
+	}
+	
+	/**
+	 * Filter tags according to query.
 	 * @param query
 	 * @return
 	 */
