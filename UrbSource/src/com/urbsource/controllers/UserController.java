@@ -124,7 +124,7 @@ public class UserController {
 				model.addAttribute("error", "user_not_exist");
 			}
 		}
-		return new ModelAndView("forgot_pw", "command", new User());
+		return new ModelAndView("forgot_pw", "command", u);
 	}
 	
 	/***
@@ -137,7 +137,7 @@ public class UserController {
 	@RequestMapping(value="/forgot", method=RequestMethod.GET)
 	public ModelAndView resetPassword(Model model) {
 		model.addAttribute("user", null);
-		return new ModelAndView("forgot_pw", "command", new User());
+		return new ModelAndView("forgot_pw");
 	}
 
 }

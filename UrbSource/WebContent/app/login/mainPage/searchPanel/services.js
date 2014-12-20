@@ -1,6 +1,8 @@
 services.factory('SearchExperienceFactory',['$http','SendExperienceService',function($http,SendExperienceService){
 	return {
 		getTagBaseExp: function($scope){
+			
+			console.log($scope.tagArray.length);
 			var request = $http.post('/UrbSource/experience/searchExperienceTag',{
 				params: {
 					tags: $scope.tagArray
@@ -8,7 +10,8 @@ services.factory('SearchExperienceFactory',['$http','SendExperienceService',func
 			});
 
 			request.success(function(responseData, status, headers, config){
-				SendExperienceService.send(responseData.experienceList);
+				console.log(responseData.experiences);
+				SendExperienceService.send(responseData.experiences);
 			});
 
 			request.error(function(responseData, status, headers, config){

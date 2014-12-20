@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
  
 public class UrbSource extends Activity {
+	
+	private Button login;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,5 +27,16 @@ public class UrbSource extends Activity {
                 startActivity(i);
             }
         });
+        
+        login = (Button) findViewById(R.id.btnLogin);
+        login.setOnClickListener(new View.OnClickListener() {
+ 
+            public void onClick(View v) {
+                // Switching to Register screen
+                Intent i = new Intent(getApplicationContext(), HomePage.class);
+                startActivity(i);
+            }
+        });
+        
     }
 }

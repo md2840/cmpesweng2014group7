@@ -26,6 +26,8 @@ controllers.controller('searchExperienceCtrl',['$scope','SearchExperienceFactory
 			
 			if($scope.tagArray.length)
 				SearchExperienceFactory.getTagBaseExp($scope);
+			
+			$scope.tagArray = [];
 		
 		} else
 		{
