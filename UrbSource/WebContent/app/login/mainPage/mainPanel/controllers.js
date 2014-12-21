@@ -1,4 +1,6 @@
-controllers.controller('ExperienceListController',['$scope','DelEditExperienceFactory','SendExperienceService','SearchExperienceFactory',function($scope,DelEditExperienceFactory,SendExperienceService,SearchExperienceFactory){
+controllers.controller('ExperienceListController',
+		['$scope', 'VoteFactory', 'DelEditExperienceFactory', 'SendExperienceService', 'SearchExperienceFactory',
+		 function($scope, VoteFactory, DelEditExperienceFactory, SendExperienceService, SearchExperienceFactory) {
 	$scope.experienceList = {};
 	$scope.search = false;
 	
@@ -13,6 +15,14 @@ controllers.controller('ExperienceListController',['$scope','DelEditExperienceFa
 		DelEditExperienceFactory.deleteExp($scope,id);
 	};
 
+	$scope.upvote = function(id, element, undo){
+		VoteFactory.upvote(id, element, undo);
+	}
+	
+	$scope.downvote = function(id, element, undo){
+		VoteFactory.downvote(id, element, undo);
+	}
+	
 	$scope.reportSpam = function(id,$event) {
 		$.ajax({
 			url:"/UrbSource/experience/markSpam",

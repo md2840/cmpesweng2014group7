@@ -40,6 +40,10 @@
 <script src="/UrbSource/app/login/mainPage/searchPanel/controllers.js"></script>
 <!-- Search Experience Service -->
 <script src="/UrbSource/app/login/mainPage/searchPanel/services.js"></script>
+<sec:authorize access="isAuthenticated()">
+	<script src="/UrbSource/app/createExperience.js"></script>
+	<script src="/UrbSource/app/voteExperience.js"></script>
+</sec:authorize>
 
 <style>
      #map-canvas {
@@ -171,12 +175,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
       #target {
         width: 345px;
       }
-    </style>
-
-
-<sec:authorize access="isAuthenticated()">
-	<script src="/UrbSource/app/createExperience.js"></script>
-</sec:authorize>
+</style>
 
 <jsp:invoke fragment="head" />
 </head>

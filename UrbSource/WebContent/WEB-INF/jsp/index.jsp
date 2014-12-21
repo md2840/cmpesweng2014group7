@@ -5,66 +5,65 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <us:page user="${user}">
 	<jsp:attribute name="head">
-  <script>
-			$(function() {
+	<script>
+		$(function() {
 
-				var lastCheck = Date.now() + 1000; // One second bias
-				var timeInterval = 10 * 1000;
+			var lastCheck = Date.now() + 1000; // One second bias
+			var timeInterval = 10 * 1000;
 
-				toastr.options = {
-					"closeButton" : false,
-					"debug" : false,
-					"positionClass" : "toast-bottom-right",
-					"onclick" : null,
-					"showDuration" : "300",
-					"hideDuration" : "1000",
-					"timeOut" : "0",
-					"extendedTimeOut" : "0",
-					"showEasing" : "swing",
-					"hideEasing" : "linear",
-					"showMethod" : "fadeIn",
-					"hideMethod" : "fadeOut"
-				}
+			toastr.options = {
+				"closeButton" : false,
+				"debug" : false,
+				"positionClass" : "toast-bottom-right",
+				"onclick" : null,
+				"showDuration" : "300",
+				"hideDuration" : "1000",
+				"timeOut" : "0",
+				"extendedTimeOut" : "0",
+				"showEasing" : "swing",
+				"hideEasing" : "linear",
+				"showMethod" : "fadeIn",
+				"hideMethod" : "fadeOut"
+			}
 
-				var callback = function(response) {
-					console.log(response);
-					var nsize = response.notifications.length;
-					for ( var i = 0; i < nsize; i++) {
-						toastr.info(response.notifications[i].text,
-								response.notifications[i].user.username).click(
-								function() { // Read notification
-									$.ajax({
-										type : 'POST',
-										url : '/UrbSource/notification/delete/'
-									});
+			var callback = function(response) {
+				console.log(response);
+				var nsize = response.notifications.length;
+				for ( var i = 0; i < nsize; i++) {
+					toastr.info(response.notifications[i].text,
+							response.notifications[i].user.username).click(
+							function() { // Read notification
+								$.ajax({
+									type : 'POST',
+									url : '/UrbSource/notification/delete/'
 								});
+							});
 
-					}
-					//response.forEach(function () {
-					//	toastr.info(reponse.notifications.text);
-					/* toastr.info(notifications.text).click(function() { // Read notification
-						$.ajax({
-							type: 'GET',
-							url: '/UrbSource/notification/all/'
-						} );
-					});*/
-					//});
-				};
+				}
+				//response.forEach(function () {
+				//	toastr.info(reponse.notifications.text);
+				/* toastr.info(notifications.text).click(function() { // Read notification
+					$.ajax({
+						type: 'GET',
+						url: '/UrbSource/notification/all/'
+					} );
+				});*/
+				//});
+			};
 
-				// Initial notification check
-				$.ajax({
-					type : 'GET',
-					url : '/UrbSource/notification/all/'
-				}).done(callback);
+			// Initial notification check
+			$.ajax({
+				type : 'GET',
+				url : '/UrbSource/notification/all/'
+			}).done(callback);
 
-			});
-		</script> 
-		<script>
+		});
+		
 		function editExp(el) {
 			el.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","true");
 			el.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "block";
 		}
-		</script>
+	</script>
 </jsp:attribute>
 	<jsp:attribute name="mainPanel">
 		<div ng-controller="ExperienceListController">
@@ -92,6 +91,14 @@
 					
 					<div class="panel-footer clearfix">
 						<div class="pull-left">
+							<div class="btn-toolbar" style="display: inline-block !important;">
+								<div class="btn-group" style="display: inline-block !important;">
+									<button type="button" ng-click="upvote(experience.id, this, false)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-up" ng-if="experience.upvotedByUser"></button>
+									<button type="button" ng-click="upvote(experience.id, this, true)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-up" ng-if="!experience.upvotedByUser"></button>
+									<button type="button" ng-click="downvote(experience.id, this, false)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-down" ng-if="experience.downvotedByUser"></button>
+									<button type="button" ng-click="downvote(experience.id, this, true)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down" ng-if="!experience.downvotedByUser"></button>
+								</div>
+							</div>
 							<a href="/UrbSource/experience/id/{{experience.id}}">{{experience.numberOfComments}} Comments</a>
 						</div>
 						<div class="btn-toolbar pull-right">
@@ -131,6 +138,14 @@
 					
 					<div class="panel-footer clearfix">
 						<div class="pull-left">
+							<div class="btn-toolbar" style="display: inline-block !important;">
+								<div class="btn-group" style="display: inline-block !important;">
+									<button type="button" ng-click="upvote(experience.id, this, false)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-up" ng-if="experience.upvotedByUser"></button>
+									<button type="button" ng-click="upvote(experience.id, this, true)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-up" ng-if="!experience.upvotedByUser"></button>
+									<button type="button" ng-click="downvote(experience.id, this, false)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-down" ng-if="experience.downvotedByUser"></button>
+									<button type="button" ng-click="downvote(experience.id, this, true)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down" ng-if="!experience.downvotedByUser"></button>
+								</div>
+							</div>
 							<a href="/UrbSource/experience/id/{{experience.id}}">{{experience.numberOfComments}} Comments</a>
 						</div>
 						<div class="btn-toolbar pull-right">
