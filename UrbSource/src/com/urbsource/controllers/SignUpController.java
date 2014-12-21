@@ -102,7 +102,11 @@ public class SignUpController {
 		model.addAttribute("user", null);
 		return new ModelAndView("signup", "command", new User());
 	}
-	
+	/**
+	 * Handles POST requests to SignUp page  form mobile app
+	 * 
+	 * @author dilara kekulluoglu
+	 */
 	@RequestMapping(value="/mobileconfirm", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> SignUp(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
