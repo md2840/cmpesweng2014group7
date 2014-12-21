@@ -25,7 +25,33 @@ import com.urbsource.models.Experience;
 
 @Repository
 public class JDBCExperienceDAO {
-
+	
+	private class ExperienceRowMapper implements RowMapper<Experience> {
+		@Override
+		public Experience mapRow(ResultSet rs, int rowNumber) throws SQLException {
+			int id = rs.getInt("id");
+			User u = userDao.getUser(rs.getInt("author_id"));
+			String text = rs.getString("text");
+			List<Tag> tags = tagDao.getTags(id);
+			Experience exp =  new Experience(id, u, text, tags)
+				.setCreationTime(rs.getTimestamp("creation_time"))
+				.setModificationTime(rs.getTimestamp("modification_time"))
+				.setExpirationDate(rs.getDate("expiration_date"))
+			    .setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+			User currentUser = userDao.getCurrentUser();
+			if (currentUser != null)
+				exp.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) > 0);
+			if (currentUser != null)
+				if (jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_vote WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) > 0) {
+					boolean isUpvote = jdbcTemplate.queryForInt("SELECT is_upvote FROM experience_vote WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) != 0;
+					exp.setUpvotedByUser(isUpvote);
+					exp.setDownvotedByUser(!isUpvote);
+				}
+			exp.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {exp.getId()}));
+			return exp;
+		}	
+	}
+	
 	private static JdbcTemplate jdbcTemplate;
 	private JDBCUserDAO userDao;
 	private JDBCTagDAO tagDao;
@@ -64,27 +90,7 @@ public class JDBCExperienceDAO {
 	 */
 	public Experience getExperience(final int id) {
 		String sql = "SELECT * FROM experience WHERE id = ?";
-		return jdbcTemplate.queryForObject(sql, new Object[] { id }, new RowMapper<Experience>() {
-
-			@Override
-			public Experience mapRow(ResultSet rs, int rowNumber)
-					throws SQLException {
-				User u = userDao.getUser(rs.getInt("author_id"));
-				String text = rs.getString("text");
-				List<Tag> tags = tagDao.getTags(id);
-				Experience exp =  new Experience(id, u, text, tags)
-					.setCreationTime(rs.getTimestamp("creation_time"))
-					.setModificationTime(rs.getTimestamp("modification_time"))
-					.setExpirationDate(rs.getDate("expiration_date"))
-				    .setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
-				User currentUser = userDao.getCurrentUser();
-				if (currentUser != null)
-					exp.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) > 0);
-				exp.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {exp.getId()}));
-				return exp;
-			}
-			
-		});
+		return jdbcTemplate.queryForObject(sql, new Object[] { id }, new ExperienceRowMapper());
 		
 	}
 	
@@ -96,27 +102,7 @@ public class JDBCExperienceDAO {
 	 */
 	public List<Experience> getExperiences(final User u) {
 		String sql = "SELECT * FROM experience WHERE author_id = ?";
-		return jdbcTemplate.query(sql, new Object[] { u.getId() }, new RowMapper<Experience>() {
-
-			@Override
-			public Experience mapRow(ResultSet rs, int rowNumber)
-					throws SQLException {
-				int id = rs.getInt("id");
-				String text = rs.getString("text");
-				List<Tag> tags = tagDao.getTags(id);
-				Experience exp =  new Experience(id, u, text, tags)
-				.setCreationTime(rs.getTimestamp("creation_time"))
-				.setModificationTime(rs.getTimestamp("modification_time"))
-				.setExpirationDate(rs.getDate("expiration_date"))
-				.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
-				User currentUser = userDao.getCurrentUser();
-				if (currentUser != null)
-					exp.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) > 0);
-				exp.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {exp.getId()}));				
-				return exp;
-			}
-			
-		});
+		return jdbcTemplate.query(sql, new Object[] { u.getId() }, new ExperienceRowMapper());
 		
 	}
 	
@@ -128,29 +114,7 @@ public class JDBCExperienceDAO {
 	 */
 	public List<Experience> getExperiences(Tag tag) {
 		String sql = "SELECT * FROM experience, rel_experience_tag AS rel WHERE rel.experience_id = experience.id AND rel.tag_id = ? ORDER BY experience.id DESC";
-		return jdbcTemplate.query(sql, new Object[] { tag.getId() }, new RowMapper<Experience>() {
-
-			@Override
-			public Experience mapRow(ResultSet rs, int rowNumber)
-					throws SQLException {
-				int id = rs.getInt("id");
-				String text = rs.getString("text");
-				List<Tag> tags = tagDao.getTags(id);
-				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags)
-				.setCreationTime(rs.getTimestamp("creation_time"))
-				.setModificationTime(rs.getTimestamp("modification_time"))
-				.setExpirationDate(rs.getDate("expiration_date"))
-				.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
-				User currentUser = userDao.getCurrentUser();
-				if (currentUser != null)
-					e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
-				e.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {e.getId()}));
-				e.setAsSaved();
-				return e;
-			}
-			
-		});
+		return jdbcTemplate.query(sql, new Object[] { tag.getId() }, new ExperienceRowMapper());
 	}
 
 	/**
@@ -177,32 +141,7 @@ public class JDBCExperienceDAO {
 		
 		System.out.println(sql);
 		
-		return jdbcTemplate.query(
-				sql,
-				tag_ids,
-				new RowMapper<Experience>() {
-
-			@Override
-			public Experience mapRow(ResultSet rs, int rowNumber)
-					throws SQLException {
-				int id = rs.getInt("id");
-				String text = rs.getString("text");
-				List<Tag> tags = tagDao.getTags(id);
-				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags)
-				.setCreationTime(rs.getTimestamp("creation_time"))
-				.setModificationTime(rs.getTimestamp("modification_time"))
-				.setExpirationDate(rs.getDate("expiration_date"))
-				.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
-				User currentUser = userDao.getCurrentUser();
-				if (currentUser != null)
-					e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
-				e.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {e.getId()}));
-				e.setAsSaved();
-				return e;
-			}
-			
-		});
+		return jdbcTemplate.query(sql, tag_ids, new ExperienceRowMapper());
 		
 	}
 	
@@ -218,29 +157,7 @@ public class JDBCExperienceDAO {
 		// but we can't :/
 		//String sql = "SELECT * FROM experience WHERE MATCH(text) AGAINST (?)";
 		String sql = "SELECT * FROM experience WHERE UPPER(text) LIKE UPPER(CONCAT('%', ?, '%')) ORDER BY experience.id DESC";
-		return jdbcTemplate.query(sql, new Object[] {text}, new RowMapper<Experience>() {
-
-			@Override
-			public Experience mapRow(ResultSet rs, int rowNumber)
-					throws SQLException {
-				int id = rs.getInt("id");
-				String text = rs.getString("text");
-				List<Tag> tags = tagDao.getTags(id);
-				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags)
-				.setCreationTime(rs.getTimestamp("creation_time"))
-				.setModificationTime(rs.getTimestamp("modification_time"))
-				.setExpirationDate(rs.getDate("expiration_date"))
-				.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
-				User currentUser = userDao.getCurrentUser();
-				if (currentUser != null)
-					e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
-				e.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {e.getId()}));
-				e.setAsSaved();
-				return e;
-			}
-			
-		});
+		return jdbcTemplate.query(sql, new Object[] {text}, new ExperienceRowMapper());
 		
 	}
 	
@@ -341,29 +258,7 @@ public class JDBCExperienceDAO {
 		return jdbcTemplate.query(
 				"SELECT * FROM experience ORDER BY id DESC LIMIT ?",
 				new Object[] { n },
-				new RowMapper<Experience>() {
-
-			@Override
-			public Experience mapRow(ResultSet rs, int rowNumber)
-					throws SQLException {
-				int id = rs.getInt("id");
-				String text = rs.getString("text");
-				List<Tag> tags = tagDao.getTags(id);
-				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags)
-				.setCreationTime(rs.getTimestamp("creation_time"))
-				.setModificationTime(rs.getTimestamp("modification_time"))
-				.setExpirationDate(rs.getDate("expiration_date"))
-				.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
-				User currentUser = userDao.getCurrentUser();
-				if (currentUser != null)
-					e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
-				e.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {e.getId()}));
-				e.setAsSaved();
-				return e;
-			}
-			
-		});
+				new ExperienceRowMapper());
 	}
 
 	/**
@@ -375,29 +270,7 @@ public class JDBCExperienceDAO {
 		return jdbcTemplate.query(
 				"SELECT * FROM experience ORDER BY (upvotes - downvotes) DESC LIMIT ?",
 				new Object[] { n },
-				new RowMapper<Experience>() {
-
-			@Override
-			public Experience mapRow(ResultSet rs, int rowNumber)
-					throws SQLException {
-				int id = rs.getInt("id");
-				String text = rs.getString("text");
-				List<Tag> tags = tagDao.getTags(id);
-				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags)
-				.setCreationTime(rs.getTimestamp("creation_time"))
-				.setModificationTime(rs.getTimestamp("modification_time"))
-				.setExpirationDate(rs.getDate("expiration_date"))
-				.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
-				User currentUser = userDao.getCurrentUser();
-				if (currentUser != null)
-					e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
-				e.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {e.getId()}));
-				e.setAsSaved();
-				return e;
-			}
-			
-		});
+				new ExperienceRowMapper());
 	}
 	
 	/**
@@ -409,29 +282,7 @@ public class JDBCExperienceDAO {
 		return jdbcTemplate.query(
 				"SELECT * FROM experience WHERE creation_date > DATEADD(WEEK(), -2, NOW()) ORDER BY (upvotes - downvotes) DESC LIMIT ?",
 				new Object[] { n },
-				new RowMapper<Experience>() {
-
-			@Override
-			public Experience mapRow(ResultSet rs, int rowNumber)
-					throws SQLException {
-				int id = rs.getInt("id");
-				String text = rs.getString("text");
-				List<Tag> tags = tagDao.getTags(id);
-				User u = userDao.getUser(rs.getInt("author_id"));
-				Experience e = new Experience(id, u, text, tags)
-				.setCreationTime(rs.getTimestamp("creation_time"))
-				.setModificationTime(rs.getTimestamp("modification_time"))
-				.setExpirationDate(rs.getDate("expiration_date"))
-				.setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
-				User currentUser = userDao.getCurrentUser();
-				if (currentUser != null)
-					e.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {e.getId(), currentUser.getId()}) > 0);
-				e.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {e.getId()}));
-				e.setAsSaved();
-				return e;
-			}
-			
-		});
+				new ExperienceRowMapper());
 	}
 	
 	/**

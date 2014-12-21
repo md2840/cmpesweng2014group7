@@ -29,6 +29,8 @@ public class Experience implements Serializable {
 	private Date expirationDate;
 	private boolean userMarkedSpam=false;
 	private int numberOfComments;
+	private boolean upvotedByUser=false;
+	private boolean downvotedByUser=false;
 	
 	/**
 	 * To be a bean.
@@ -252,5 +254,21 @@ public class Experience implements Serializable {
 
 	public void setNumberOfComments(int numberOfComments) {
 		this.numberOfComments = numberOfComments;
+	}
+
+	public boolean isUpvotedByUser() {
+		return upvotedByUser;
+	}
+
+	public void setUpvotedByUser(boolean upvotedByUser) {
+		this.upvotedByUser = upvotedByUser;
+	}
+
+	public boolean isDownvotedByUser() {
+		return downvotedByUser;
+	}
+
+	public void setDownvotedByUser(boolean downvotedByUser) {
+		this.downvotedByUser = downvotedByUser;
 	}
 }
