@@ -165,15 +165,16 @@ public class JDBCExperienceDAO {
 		for (int i = 0; i < tags.length; ++i) {
 			tag_ids[i] = tags[i].getId();
 		}
-		String qmarkstr = "?";
-		for (int i = 1; i < tag_ids.length; ++i)
-			qmarkstr += ",?";
+		String tagQuery = "EXISTS (SELECT 1 FROM rel_experience_tag AS rel WHERE rel.experience_id = experience.id AND rel.tag_id = ?)";
+		StringBuilder qmarkstr = new StringBuilder(tagQuery);
+		for (int i = 1; i < tag_ids.length; ++i) {
+			qmarkstr.append(" AND ");
+			qmarkstr.append(tagQuery);
+		}
 		// The broken, old, rusty MySQL that lacks intelligent design completely
 		// also doesn't support sending arrays in prepared statements. If hell
 		// exists it must be a place where people are forced to use MySQL
-		String sql = "SELECT * FROM experience WHERE EXISTS (" +
-				"SELECT * FROM rel_experience_tag AS rel WHERE " +
-				"rel.experience_id = experience.id AND rel.tag_id IN ("+ qmarkstr +")) ORDER BY experience.id DESC";
+		String sql = "SELECT * FROM experience WHERE " + qmarkstr + " ORDER BY experience.id DESC";
 		
 		System.out.println(sql);
 		
