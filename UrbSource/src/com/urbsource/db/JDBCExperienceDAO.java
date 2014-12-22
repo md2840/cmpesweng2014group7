@@ -251,7 +251,6 @@ public class JDBCExperienceDAO {
 	 * @param exp The experience to be created.
 	 * @return true if success, false if failure
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean createExperience(Experience exp) {
 		// If experience already exists, exit immediately
 		if (exp.getId() >= 0) {

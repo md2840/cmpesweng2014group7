@@ -82,7 +82,10 @@
 						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
 					<div class="panel-body">
-						<p><p>{{experience.text}}</p><button style="float:right;display:none;" ng-click="save(experience.id,$event)" type="button" class="btn btn-primary">Save</button></p>
+						<p>
+							<p>{{experience.text}}</p>
+							<button style="float:right;display:none;" ng-click="save(experience.id,$event)" type="button" class="btn btn-primary btn-xs">Save</button>
+						</p>
 						<p>
 							Tags: <span ng-repeat="tag in experience.tags">{{tag.name}},
 							</span>
@@ -122,7 +125,10 @@
 						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
 					<div class="panel-body">
-						<p><p>{{experience.text}}</p><button style="float:right;display:none;" ng-click="save(experience.id,$event)" type="button" class="btn btn-primary">Save</button></p>
+						<p>
+							<p>{{experience.text}}</p>
+							<button style="float:right;display:none;" ng-click="save(experience.id,$event)" type="button" class="btn btn-primary btn-xs">Save</button>
+						</p>
 						<p>
 							Tags: <span ng-repeat="tag in experience.tags">{{tag.name}},
 							</span>

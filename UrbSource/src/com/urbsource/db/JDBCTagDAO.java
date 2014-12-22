@@ -17,11 +17,8 @@ public class JDBCTagDAO {
 	private static JdbcTemplate jdbcTemplate;
 
 	public void setDataSource(DataSource dataSource) {
-		System.out.println("constructor");
-
 		try {
 			jdbcTemplate = new JdbcTemplate(dataSource);
-			System.out.println("constructortry");
 		} catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());
 			e.printStackTrace();
