@@ -41,6 +41,10 @@ import com.group7.urbsourceandroid.models.User;
 public class Register extends Activity {
 	
 	private Button register;
+	private String responseString=null;
+	private EditText usernameT;
+	private EditText emailT;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,8 +68,8 @@ public class Register extends Activity {
 		register.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View arg0) {
-				//register(arg0);
-				deneme();
+				register(arg0);
+			
 			}
 		});
 	}
@@ -73,10 +77,11 @@ public class Register extends Activity {
 	 * Is called when the register button is clicked on the register page. 
 	 */
 	public void register(View view){
-		String username = ((EditText)findViewById(R.id.reg_username)).getText().toString();
+		usernameT = (EditText)findViewById(R.id.reg_username);
+		String username = usernameT.getText().toString();
 		String firstName = ((EditText)findViewById(R.id.reg_firstname)).getText().toString();
 		String lastName = ((EditText)findViewById(R.id.reg_lastname)).getText().toString();
-		EditText emailT = (EditText) findViewById(R.id.reg_email);
+		emailT = (EditText) findViewById(R.id.reg_email);
 		String email = emailT.getText().toString();
 		EditText passwordT = (EditText)findViewById(R.id.reg_password);
 		String password = passwordT.getText().toString();
@@ -93,41 +98,9 @@ public class Register extends Activity {
 			passwordT.setError("Passwords aren't matched.");
 		
 		///////send'em all to API
-//		 HttpClient httpclient = new DefaultHttpClient();
-//		 HttpPost httppost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/signup/confirm");
-//		 try {
-//		        // Add your data
-//		        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-//		        nameValuePairs.add(new BasicNameValuePair("username", username));
-//		        nameValuePairs.add(new BasicNameValuePair("firstName", firstName));
-//		        nameValuePairs.add(new BasicNameValuePair("lastName", lastName));
-//		        nameValuePairs.add(new BasicNameValuePair("email", email));
-//		        nameValuePairs.add(new BasicNameValuePair("password", password));
-//		        
-//		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-//
-//		        // Execute HTTP Post Request
-//		        HttpResponse response = httpclient.execute(httppost);
-//		        Log.i("geldi mi",response.toString());
-//
-//		    } catch (ClientProtocolException e) {
-//		        // TODO Auto-generated catch block
-//		    } catch (IOException e) {
-//		        // TODO Auto-generated catch block
-//		    }
-
 		new MyAsyncTask().execute(username,firstName,lastName,email,password,password2);	
 	}
-	public void deneme(){
-		
-		String username="dilara91";
-		String firstName = "Dilara";
-		String lastName = "Kek";
-		String email = "dilara.kekulluoglu@boun.edu.tr";
-		String password = "123456";
-		String password2 = "123456";
-		new MyAsyncTask().execute(username,firstName,lastName,email,password,password2);	
-	}
+	
 	public final static boolean isValidEmail(CharSequence target) {
 		if (TextUtils.isEmpty(target)) {
 			return false;
@@ -151,65 +124,52 @@ public class Register extends Activity {
 		}
  
 		protected void onPostExecute(Double result){
-			Toast.makeText(getApplicationContext(), "command sent", Toast.LENGTH_LONG).show();
+			
+			try {
+				JSONObject res = new JSONObject(responseString);
+				if(!res.getBoolean("success")){
+					Toast.makeText(getApplicationContext(), "Username or email already in use", Toast.LENGTH_LONG).show();
+					usernameT.setText("");
+					emailT.setText("");
+				}else{
+					Toast.makeText(getApplicationContext(), "Sign Up Successful", Toast.LENGTH_LONG).show();
+					finish();
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
  
 		public void postData(String username, String firstName,String lastName,String email,String password,String password2) throws JSONException {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/signup/confirm");
-			HttpGet httpGet = new HttpGet("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/recent");
+			HttpPost httppost = new HttpPost("http://10.0.3.2/UrbSource/signup/mobileconfirm");
 			try {
 				// Add your data
-//				JSONObject jsonobj = new JSONObject();
-//				jsonobj.put("username",username);
-//				jsonobj.put("firstName",firstName);
-//				jsonobj.put("lastName",lastName);
-//				jsonobj.put("email",email);
-//				jsonobj.put("password",password);
-//				StringEntity se = new StringEntity(jsonobj.toString());    
-//				se.setContentType("application/json;charset=UTF-8");
-//				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
-//				httppost.setHeader("Content-Type", "application/json");
-//				 httppost.setHeader("Accept", "application/json");
-//			
-//				httppost.setEntity(se);
-//				
-//				// Execute HTTP Post Request
-//				HttpResponse response = httpclient.execute(httppost);
+				JSONObject jsonobj = new JSONObject();
+				jsonobj.put("username",username);
+				jsonobj.put("firstName",firstName);
+				jsonobj.put("lastName",lastName);
+				jsonobj.put("email",email);
+				jsonobj.put("password",password);
+				StringEntity se = new StringEntity(jsonobj.toString());    
+				se.setContentType("application/json;charset=UTF-8");
+				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+				httppost.setHeader("Content-Type", "application/json");
+				httppost.setHeader("Accept", "application/json");
+			
+				httppost.setEntity(se);
+				// Execute HTTP Post Request
+				HttpResponse response = httpclient.execute(httppost);
 				
-				User u= new User();
-				u.setUsername(username);
-				u.setFirstName(firstName);
-				u.setLastName(lastName);
-				u.setEmail(email);
-				u.setPassword(password);
-				u.setPassword2(password2);
-				Log.i("parametreler",username);
-				ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-				String json = ow.writeValueAsString(u);
-				 Log.i("json",json);
+				HttpEntity entity = response.getEntity();
 				 
-				 //httppost.setHeader("Content-Type", "application/json");
-				  StringEntity se = new StringEntity(json);    
-				 se.setContentType("application/json;charset=UTF-8");
-				 se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
-
-				 httppost.setEntity(se);
-					
-					// Execute HTTP Post Request
-					HttpResponse response = httpclient.execute(httpGet);
-					
-				 Log.i("geldi mi",response.getStatusLine().toString());
-				 HttpEntity entity = response.getEntity();
-
-
-				 String text = getASCIIContentFromEntity(entity);
-				 JSONObject myObject = new JSONObject(text);
-				 JSONArray jsona = new JSONArray(myObject.getString("experiences"));
-				 Log.i("response",jsona.getString(jsona.length()-1));
-				 
+				String text = getASCIIContentFromEntity(entity);
+				responseString = text;
+				
+				  
  
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
