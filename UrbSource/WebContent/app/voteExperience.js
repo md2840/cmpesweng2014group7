@@ -5,7 +5,9 @@
 
 services.factory('VoteFactory',['$http',function($http) {
 	return {
-		upvote: function(exp, element, undo) {
+		upvote: function(exp, element) {
+			var undo = $(element).hasClass('btn-primary');
+			$(element).parent().children().prop("disabled", true);
 			$.ajax({
 		        'type': 'POST',
 		        'url': '/UrbSource/experience/upvote',
@@ -17,21 +19,22 @@ services.factory('VoteFactory',['$http',function($http) {
 		        'dataType': 'json'
 		    }).done(function (resp) {
 		        if (resp.success) {
-		        	if (undo)
-		        		$(element).addClass("btn-primary");
-		        	else
-		        		$(element).removeClass("btn-primary");
+		        	$(element).toggleClass("btn-primary");
+		        	$(element).toggleClass("btn-default");
 		        }
 		        else {
-		            alert('Error', resp.error);
+			        alert('An internal error has occurred. Please try again later');
 		        }
 		    }).fail(function () {
 		        alert('An internal error has occurred. Please try again later');
 		    }).always(function (resp) {
 		    	console.log(resp);
+				$(element).parent().children().prop("disabled", false);
 		    });
 		},
-		downvote: function(exp, element, undo) {
+		downvote: function(exp, element) {
+			var undo = $(element).hasClass('btn-primary');
+			$(element).parent().children().prop("disabled", true);
 			$.ajax({
 		        'type': 'POST',
 		        'url': '/UrbSource/experience/downvote',
@@ -43,18 +46,17 @@ services.factory('VoteFactory',['$http',function($http) {
 		        'dataType': 'json'
 		    }).done(function (resp) {
 		        if (resp.success) {
-		        	if (undo)
-		        		$(element).addClass("btn-primary");
-		        	else
-		        		$(element).removeClass("btn-primary");
+		        	$(element).toggleClass("btn-primary");
+		        	$(element).toggleClass("btn-default");
 		        }
 		        else {
-		            alert('Error', resp.error);
+			        alert('An internal error has occurred. Please try again later');
 		        }
 		    }).fail(function () {
 		        alert('An internal error has occurred. Please try again later');
 		    }).always(function (resp) {
 		    	console.log(resp);
+				$(element).parent().children().prop("disabled", false);
 		    });
 		}
 	};

@@ -15,15 +15,15 @@ controllers.controller('ExperienceListController',
 		DelEditExperienceFactory.deleteExp($scope,id);
 	};
 
-	$scope.upvote = function(id, element, undo){
-		VoteFactory.upvote(id, element, undo);
+	$scope.upvote = function(id, $event){
+		VoteFactory.upvote(id, $event.target);
 	}
 	
-	$scope.downvote = function(id, element, undo){
-		VoteFactory.downvote(id, element, undo);
+	$scope.downvote = function(id, $event){
+		VoteFactory.downvote(id, $event.target);
 	}
 	
-	$scope.reportSpam = function(id,$event) {
+	$scope.reportSpam = function(id, $event) {
 		$.ajax({
 			url:"/UrbSource/experience/markSpam",
 			data: JSON.stringify({

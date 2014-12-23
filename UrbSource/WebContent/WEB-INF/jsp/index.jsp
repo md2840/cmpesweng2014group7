@@ -96,10 +96,10 @@
 						<div class="pull-left">
 							<div class="btn-toolbar" style="display: inline-block !important;">
 								<div class="btn-group" style="display: inline-block !important;">
-									<button type="button" ng-click="upvote(experience.id, this, false)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-up" ng-if="experience.upvotedByUser"></button>
-									<button type="button" ng-click="upvote(experience.id, this, true)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-up" ng-if="!experience.upvotedByUser"></button>
-									<button type="button" ng-click="downvote(experience.id, this, false)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-down" ng-if="experience.downvotedByUser"></button>
-									<button type="button" ng-click="downvote(experience.id, this, true)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down" ng-if="!experience.downvotedByUser"></button>
+									<button type="button" ng-click="upvote(experience.id, $event)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-up" ng-if="experience.upvotedByUser"></button>
+									<button type="button" ng-click="upvote(experience.id, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-up" ng-if="!experience.upvotedByUser"></button>
+									<button type="button" ng-click="downvote(experience.id, $event)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-down" ng-if="experience.downvotedByUser"></button>
+									<button type="button" ng-click="downvote(experience.id, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down" ng-if="!experience.downvotedByUser"></button>
 								</div>
 							</div>
 							<a href="/UrbSource/experience/id/{{experience.id}}">{{experience.numberOfComments}} Comments</a>
@@ -146,10 +146,10 @@
 						<div class="pull-left">
 							<div class="btn-toolbar" style="display: inline-block !important;">
 								<div class="btn-group" style="display: inline-block !important;">
-									<button type="button" ng-click="upvote(experience.id, this, false)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-up" ng-if="experience.upvotedByUser"></button>
-									<button type="button" ng-click="upvote(experience.id, this, true)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-up" ng-if="!experience.upvotedByUser"></button>
-									<button type="button" ng-click="downvote(experience.id, this, false)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-down" ng-if="experience.downvotedByUser"></button>
-									<button type="button" ng-click="downvote(experience.id, this, true)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down" ng-if="!experience.downvotedByUser"></button>
+									<button type="button" ng-click="upvote(experience.id, $event)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-up" ng-if="experience.upvotedByUser"></button>
+									<button type="button" ng-click="upvote(experience.id, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-up" ng-if="!experience.upvotedByUser"></button>
+									<button type="button" ng-click="downvote(experience.id, $event)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-down" ng-if="experience.downvotedByUser"></button>
+									<button type="button" ng-click="downvote(experience.id, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down" ng-if="!experience.downvotedByUser"></button>
 								</div>
 							</div>
 							<a href="/UrbSource/experience/id/{{experience.id}}">{{experience.numberOfComments}} Comments</a>

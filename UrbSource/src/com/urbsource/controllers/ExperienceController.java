@@ -83,7 +83,6 @@ public class ExperienceController {
 			return map;
 		}
 		int id;
-		System.out.println(json);
 		try {
 			id = json.getJSONObject("params").getInt("id");
 		} catch (JSONException e) {
@@ -102,60 +101,59 @@ public class ExperienceController {
 		return map;
 		
 	}
-	@RequestMapping(value="/upvote", method=RequestMethod.POST)
-	public String upvote(HttpServletRequest request, HttpServletResponse response, Model model) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth instanceof AnonymousAuthenticationToken) {
-			model.addAttribute("success", false);
-			model.addAttribute("error", "You must log in to vote experiences");
-			return  "redirect:/index.html";
-		}
-		int id;
-		
-		if( request != null){
-			id = Integer.parseInt(request.getParameter("id"));
-		
-			User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
-			Experience exp = expDao.getExperience(id);
-		
-			model.addAttribute("success", voteDao.saveVote(exp, u, 1));
-			return   "redirect:/index.html";
-		}else{
-			model.addAttribute("success", false);
-			model.addAttribute("error", "Request is null");
-			return   "redirect:/index.html";
-		}
-	}
-	
+
 	@RequestMapping(value="/downvote", method=RequestMethod.POST)
-	public String downvote(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public @ResponseBody HashMap<String,Object> downvote(HttpServletRequest request, HttpServletResponse response, Model model) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth instanceof AnonymousAuthenticationToken) {
-			model.addAttribute("success", false);
-			model.addAttribute("error", "You must log in to vote experiences");
-			return  "redirect:/index.html";
+			map.put("success", false);
+			map.put("error", "You must log in to vote experiences");
+			return map;
 		}
-		int id;
-		
-		if( request != null){
-			id = Integer.parseInt(request.getParameter("id1"));
-		
+		try {
+			JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+			int exp_id = json.getInt("id");
+			boolean undo = json.getBoolean("undo");
 			User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
-			Experience exp = expDao.getExperience(id);
-		
-			model.addAttribute("success", voteDao.saveVote(exp, u, 0));
-			return   "redirect:/index.html";
-		}else{
-			model.addAttribute("success", false);
-			model.addAttribute("error", "Request is null");
-			return   "redirect:/index.html";
+			Experience exp = expDao.getExperience(exp_id);
+			if (undo)
+				map.put("success", voteDao.deleteVote(exp, u));
+			else
+				map.put("success", voteDao.saveVote(exp, u, false));
+		} catch (Exception e) {
+			map.put("success", false);
+			map.put("error", e.getMessage());
 		}
+		return map;
+	}
+
+	@RequestMapping(value="/upvote", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String,Object> upvote(HttpServletRequest request, HttpServletResponse response, Model model) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof AnonymousAuthenticationToken) {
+			map.put("success", false);
+			map.put("error", "You must log in to vote experiences");
+			return map;
+		}
+		try {
+			JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+			int exp_id = json.getInt("id");
+			boolean undo = json.getBoolean("undo");
+			User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+			Experience exp = expDao.getExperience(exp_id);
+			if (undo)
+				map.put("success", voteDao.deleteVote(exp, u));
+			else
+				map.put("success", voteDao.saveVote(exp, u, true));
+		} catch (Exception e) {
+			map.put("success", false);
+			map.put("error", e.getMessage());
+		}
+		return map;
 	}
 	
-
-
 	@RequestMapping(value="/searchTag", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> searchTag(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();

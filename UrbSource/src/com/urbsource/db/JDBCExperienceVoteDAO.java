@@ -64,7 +64,7 @@ public class JDBCExperienceVoteDAO {
 	 * @param Vote  whether its upvote and downvote
 	 * @return true if success, false if failure
 	 */
-		public boolean createVote(Experience exp,User u,int Vote ) {
+	public boolean createVote(Experience exp,User u, boolean isUpvote) {
 		// If vote already exists, exit immediately
 		String sql = "SELECT COUNT(*) FROM experience_vote WHERE experience_id = ? AND user_id = ?";
 		Integer count=0;
@@ -84,9 +84,8 @@ public class JDBCExperienceVoteDAO {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("experience_id", exp.getId());
 		parameters.put("user_id", u.getId());
-		parameters.put("is_upvote", Vote);
+		parameters.put("is_upvote", isUpvote ? 1 : 0);
 	    insert.execute(parameters);	
-		
 		return true;
 	}
 
@@ -98,35 +97,31 @@ public class JDBCExperienceVoteDAO {
 	 * @param Vote  whether its upvote and downvote
 	 * @return true if success, false if failure
 	 */
-	
-	public boolean saveVote(Experience exp,User u,int Vote) {
+	public boolean saveVote(Experience exp, User u, boolean isUpvote) {
 		
 		String sql = "SELECT COUNT(*) FROM experience_vote WHERE experience_id = ? AND user_id = ?";
 		int count = jdbcTemplate.queryForObject(sql, new Object[] { exp.getId(),u.getId() },Integer.class); 
 	
 		if (count == 0) {
-			return createVote(exp,u,Vote);
+			return createVote(exp, u, isUpvote);
 		}
 		
-		// Save experience to database
-		String sql1 = "UPDATE experience_vote SET is_upvote=? WHERE experience_id = ? AND user_id = ?";
-		jdbcTemplate.update(sql1, Vote, exp.getId(), u.getId());
-		
-		
+		// Save vote to database
+		sql = "UPDATE experience_vote SET is_upvote=? WHERE experience_id = ? AND user_id = ?";
+		jdbcTemplate.update(sql, isUpvote ? 1 : 0, exp.getId(), u.getId());
 		return true;
 		
 	}
 	
-	public boolean deleteVote(Experience exp,User u,int Vote) {
-	
+	public boolean deleteVote(Experience exp,User u) {
 		String sql = "SELECT COUNT(*) FROM experience_vote WHERE experience_id = ? AND user_id = ?";
 		int count = jdbcTemplate.queryForObject(sql, new Object[] { exp.getId(),u.getId() },Integer.class); 
 	
 		if (count == 0)
 			return false;
 
-		String sql1 = "DELETE FROM experience_vote WHERE experience_id = ? AND user_id = ?";
-		jdbcTemplate.update(sql1, new Object[] {exp.getId(),u.getId()});
+		sql = "DELETE FROM experience_vote WHERE experience_id = ? AND user_id = ?";
+		jdbcTemplate.update(sql, new Object[] {exp.getId(),u.getId()});
 		return true;
 	}
 	
