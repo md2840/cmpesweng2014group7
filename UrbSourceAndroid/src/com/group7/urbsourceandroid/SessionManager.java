@@ -46,15 +46,13 @@ public class SessionManager {
 	    /**
 	     * Create login session
 	     * */
-	    public void createLoginSession(String name, String email, String password){
+	    public void createLoginSession(String name,String password){
 	        // Storing login value as TRUE
 	        editor.putBoolean(IS_LOGIN, true);
 	         
 	        // Storing name in pref
 	        editor.putString(KEY_NAME, name);
 	         
-	        // Storing email in pref
-	        editor.putString(KEY_EMAIL, email);
 	        
 	        // Storing email in pref
 	        editor.putString(KEY_PASS, password);
@@ -95,8 +93,6 @@ public class SessionManager {
 	        // user name
 	        user.put(KEY_NAME, pref.getString(KEY_NAME, null));
 	         
-	        // user email id
-	        user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
 	        
 	        // user password
 	        user.put(KEY_PASS, pref.getString(KEY_PASS, null));
@@ -116,8 +112,9 @@ public class SessionManager {
 	         
 	        // After logout redirect user to Login Activity
 	        Intent i = new Intent(_context, UrbSource.class);
+	       
 	        // Closing all the Activities
-	        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	         
 	        // Add new Flag to start new Activity
 	        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

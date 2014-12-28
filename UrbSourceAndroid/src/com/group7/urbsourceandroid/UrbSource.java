@@ -16,9 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,17 +35,32 @@ public class UrbSource extends Activity {
 	//EditTexts
 	EditText usernameT,passwordT;
 	
+	String responseText;
+	
+	String username , password;
+	
+ 	private ProgressDialog dialog;
+	
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setting default screen to login.xml
         
         setContentView(R.layout.activity_main);
+        
+        
+        session = new SessionManager(this.getApplicationContext());
+        
         if(session.isLoggedIn()){
         	Intent i = new Intent(getApplicationContext(), HomePage.class);
             startActivity(i);
             //This may result in not being able to exit. Check for it.
+            finish();
         }
+        
+        dialog = new ProgressDialog(this);
+        
         
         Button registerScreen = (Button) findViewById(R.id.link_to_register);
  
@@ -61,7 +78,7 @@ public class UrbSource extends Activity {
         login.setOnClickListener(new View.OnClickListener() {
  
             public void onClick(View v) {
-                // Switching to Register screen
+                
                 Login();
             }
         });
@@ -72,18 +89,18 @@ public class UrbSource extends Activity {
     }
     public void Login(){
     	//Check from the api if there exists such user
-    	String username = usernameT.getText().toString();
-    	String password = passwordT.getText().toString();
+    	username = usernameT.getText().toString();
+    	password = passwordT.getText().toString();
     	
-    	//new MyAsyncTask().execute(username,password);	
+    	new MyAsyncTask().execute(username,password);	
     	
-    	//Session dan logged in yap
-    	Intent i = new Intent(getApplicationContext(), HomePage.class);
-        startActivity(i);
+    	
+    	
     }
     
     private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		 
+   	
 		@Override
 		protected Double doInBackground(String... params) {
 			// TODO Auto-generated method stub
@@ -98,14 +115,36 @@ public class UrbSource extends Activity {
  
 		protected void onPostExecute(Double result){
 			
-			
+			 try {
+				 Log.i("gelen response",responseText);
+				JSONObject myObject = new JSONObject(responseText);
+				if(myObject.getBoolean("success")){
+					session.createLoginSession(username,password);
+					Intent i = new Intent(getApplicationContext(), HomePage.class);
+			        startActivity(i);
+			        finish();
+				}else{
+						 String error = myObject.getString("error");
+						 dialog.setMessage(error);
+					     dialog.show(); 
+					     usernameT.setText("");
+					     passwordT.setText("");
+					     username = null;
+					     password = null;
+					
+				}
+			} catch (JSONException e) {
+				
+				e.printStackTrace();
+			}
+			 
 		}
 		
  
 		public void checkLogin(String username,String password) throws JSONException {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost("http://10.0.3.2/UrbSource/signup/mobileconfirm");
+			HttpPost httppost = new HttpPost("http://10.0.3.2/UrbSource/mobilelogin/confirm");
 			try {
 				// Add your data
 				JSONObject jsonobj = new JSONObject();
@@ -124,7 +163,7 @@ public class UrbSource extends Activity {
 				
 				HttpEntity entity = response.getEntity();
 				 
-				String text = getASCIIContentFromEntity(entity);
+				responseText = getASCIIContentFromEntity(entity);
 			
 				
 				  
