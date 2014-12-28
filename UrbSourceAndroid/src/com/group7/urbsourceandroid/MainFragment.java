@@ -44,11 +44,15 @@ public class MainFragment extends Fragment{
 	private ListView listView;
 	private List<Experience> recentExperiences;
 	private ActionListAdapter adapter;
+	private SessionManager session;
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
  
         View view = inflater.inflate(R.layout.mainfragment, container, false);
+        
+        session = new SessionManager(getActivity().getApplicationContext());
+        session.checkLogin();
         
         listView = (ListView) view.findViewById(R.id.exp_list);
         recentExperiences = new ArrayList<Experience>();
