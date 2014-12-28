@@ -108,7 +108,12 @@ public class Register extends Activity {
 			return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
 		}
 	}
-	
+	/**
+	 * @author dilara kekulluoglu
+	 *     AsyncTask class which does http post, get in background.
+	 *     When it finishes, signs up the new user. 
+	 * 
+	 * */
 	private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		 
 		@Override
