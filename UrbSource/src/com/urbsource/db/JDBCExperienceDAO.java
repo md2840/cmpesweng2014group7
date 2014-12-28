@@ -1,22 +1,22 @@
 package com.urbsource.db;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.sql.DataSource;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import com.urbsource.models.Tag;
@@ -38,15 +38,24 @@ public class JDBCExperienceDAO {
 				.setModificationTime(rs.getTimestamp("modification_time"))
 				.setExpirationDate(rs.getDate("expiration_date"))
 			    .setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+			// Try to set source of experience. If source is not given, default to empty
+			// string.
+			try {
+				exp.setSource(rs.getString("source"));
+			} catch (SQLException e) {
+				exp.setSource("");
+			}
 			User currentUser = userDao.getCurrentUser();
-			if (currentUser != null)
+			if (currentUser != null) {
 				exp.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) > 0);
-			if (currentUser != null)
-				if (jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_vote WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) > 0) {
-					boolean isUpvote = jdbcTemplate.queryForInt("SELECT is_upvote FROM experience_vote WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) != 0;
+				SqlRowSet vote = jdbcTemplate.queryForRowSet("SELECT is_upvote FROM experience_vote WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()});
+				// If there is a vote
+				if (vote.first()) {
+					boolean isUpvote = vote.getBoolean(0);
 					exp.setUpvotedByUser(isUpvote);
 					exp.setDownvotedByUser(!isUpvote);
 				}
+			}
 			exp.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {exp.getId()}));
 			return exp;
 		}	
@@ -230,10 +239,7 @@ public class JDBCExperienceDAO {
 		}
 		@SuppressWarnings("unchecked")
 		HashMap<String, Object>[] H = new HashMap[0];
-		int[] results = insertTag.executeBatch(sqlParameters.toArray(H));
-		for (int i : results) {
-			System.out.println(i);
-		}
+		insertTag.executeBatch(sqlParameters.toArray(H));
 		exp.setAsSaved();
 		return true;
 		
@@ -250,15 +256,20 @@ public class JDBCExperienceDAO {
 	}
 
 	/**
-	 *  Get latest n experiences in the system.
+	 *  Get n experiences chosen among latest experiences and most popular experiences in the system.
 	 * @param n Number of experiences to return.
-	 * @return Latest n experiences in the system.
+	 * @return A selection of n experiences among latest and most popular experiences in the system.
 	 */
-	public List<Experience> getRecentExperiences(int n) {
-		return jdbcTemplate.query(
-				"SELECT * FROM experience ORDER BY id DESC LIMIT ?",
-				new Object[] { n },
+	public List<Experience> getRecentAndPopularExperiences(int n) {
+		System.out.println("Godspeed Broforce!");
+		List<Experience> experiences = jdbcTemplate.query(
+				"(SELECT 'recent' AS source, experience.* FROM experience ORDER BY id DESC LIMIT ?) "
+				+ "UNION ALL (SELECT 'popular', experience.* FROM experience ORDER BY points DESC LIMIT ?)",
+				new Object[] { n/2, n - n/2 /* in case n is odd, there will be one more popular experience */ },
 				new ExperienceRowMapper());
+		Collections.shuffle(experiences, new Random(2));
+		System.out.println("DONE!");
+		return experiences;
 	}
 
 	/**
@@ -268,7 +279,7 @@ public class JDBCExperienceDAO {
 	 */
 	public List<Experience> getPopularExperiences(int n) {
 		return jdbcTemplate.query(
-				"SELECT * FROM experience ORDER BY (upvotes - downvotes) DESC LIMIT ?",
+				"SELECT * FROM experience ORDER BY points DESC LIMIT ?",
 				new Object[] { n },
 				new ExperienceRowMapper());
 	}

@@ -80,12 +80,14 @@ public class JDBCExperienceVoteDAO {
 		.withTableName("experience_vote")
 		.usingColumns("experience_id", "user_id", "is_upvote");
 		
-		// Save experience to database
+		// Save vote to database
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("experience_id", exp.getId());
 		parameters.put("user_id", u.getId());
 		parameters.put("is_upvote", isUpvote ? 1 : 0);
-	    insert.execute(parameters);	
+	    insert.execute(parameters);
+		sql = "UPDATE experience SET votes=votes+1, points=points+? WHERE id = ?";
+		jdbcTemplate.update(sql, isUpvote ? 1 : -1, exp.getId());
 		return true;
 	}
 
@@ -109,6 +111,8 @@ public class JDBCExperienceVoteDAO {
 		// Save vote to database
 		sql = "UPDATE experience_vote SET is_upvote=? WHERE experience_id = ? AND user_id = ?";
 		jdbcTemplate.update(sql, isUpvote ? 1 : 0, exp.getId(), u.getId());
+		sql = "UPDATE experience SET points=points+? WHERE id = ?";
+		jdbcTemplate.update(sql, isUpvote ? 2 : -2, exp.getId());
 		return true;
 		
 	}
@@ -120,8 +124,13 @@ public class JDBCExperienceVoteDAO {
 		if (count == 0)
 			return false;
 
+		sql = "SELECT is_upvote FROM experience_vote WHERE experience_id = ? AND user_id = ?";
+		boolean isUpvote  = jdbcTemplate.queryForObject(sql, new Object[] { exp.getId(),u.getId() }, Integer.class) > 0;
+		
 		sql = "DELETE FROM experience_vote WHERE experience_id = ? AND user_id = ?";
 		jdbcTemplate.update(sql, new Object[] {exp.getId(),u.getId()});
+		sql = "UPDATE experience SET votes=votes-1, points=points+? WHERE id = ?";
+		jdbcTemplate.update(sql, isUpvote ? -1 : 1, exp.getId());
 		return true;
 	}
 	

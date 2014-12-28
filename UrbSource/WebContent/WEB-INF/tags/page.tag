@@ -46,56 +46,74 @@
 </sec:authorize>
 
 <style>
-     #map-canvas {
-        height: 100%;
-        margin: 0px;
-        padding: 0px
-      }
-      .controls {
-        margin-top: 16px;
-        border: 1px solid transparent;
-        border-radius: 2px 0 0 2px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        height: 32px;
-        outline: none;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-      }
+	#map-canvas {
+		height: 100%;
+		margin: 0px;
+		padding: 0px
+    }
+    .controls {
+		margin-top: 16px;
+		border: 1px solid transparent;
+		border-radius: 2px 0 0 2px;
+		box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		height: 32px;
+		outline: none;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
 
-      #pac-input {
-        background-color: #fff;
-        padding: 0 11px 0 13px;
-        width: 400px;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        text-overflow: ellipsis;
-      }
+    #pac-input {
+		background-color: #fff;
+		padding: 0 11px 0 13px;
+		width: 400px;
+		font-family: Roboto;
+		font-size: 15px;
+		font-weight: 300;
+		text-overflow: ellipsis;
+    }
 
-      #pac-input:focus {
-        border-color: #4d90fe;
-        margin-left: -1px;
-        padding-left: 14px;  /* Regular padding-left + 1. */
-        width: 401px;
-      }
+    #pac-input:focus {
+		border-color: #4d90fe;
+		margin-left: -1px;
+		padding-left: 14px;  /* Regular padding-left + 1. */
+		width: 401px;
+    }
 
-      .pac-container {
-        font-family: Roboto;
-      }
+    .pac-container {
+		font-family: Roboto;
+    }
 
-      #type-selector {
-        color: #fff;
-        background-color: #4d90fe;
-        padding: 5px 11px 0px 11px;
-      }
+    #type-selector {
+		color: #fff;
+		background-color: #4d90fe;
+		padding: 5px 11px 0px 11px;
+    }
 
-      #type-selector label {
-        font-family: Roboto;
-        font-size: 13px;
-        font-weight: 300;
-      }
-}
-
+    #type-selector label {
+		font-family: Roboto;
+		font-size: 13px;
+		font-weight: 300;
+    }
+    
+    .popular::before {
+		content: "Popular";
+	}
+	
+    .recent::before {
+		content: "Recent";
+	}
+	
+	.popular::before, .recent::before {
+		padding: 2px 7px;
+		font-size: 12px;
+		font-weight: bold;
+		background-color: whiteSmoke;
+		border: 1px solid #DDD;
+		color: #9DA0A4;
+		-webkit-border-radius: 0 0 4px 0;
+		-moz-border-radius: 0 0 4px 0;
+		border-radius: 0 0 4px 0;
+	}
 </style>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <script>

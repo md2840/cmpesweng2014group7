@@ -75,11 +75,12 @@
 						<span ng-switch on="experience.mood">
 							<span ng-switch-when="good" style="color: green">Good Experience</span>
 							<span ng-switch-when="bad" style="color: red">Bad Experience</span>
-							<span ng-switch-default></span>
+							<span ng-switch-default>{{experience.mood}} Experience</span>
 						</span>
 						by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
 						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
+					<div class="{{experience.source}}"></div>
 					<div class="panel-body">
 						<p>
 							<p>{{experience.text}}</p>
@@ -131,6 +132,7 @@
 						by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
 						on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
 					</div>
+					<div class="{{experience.source}}"></div>
 					<div class="panel-body">
 						<p>
 							<p>{{experience.text}}</p>

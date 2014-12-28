@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,9 +44,9 @@ public class ExperienceController {
 	}
 	
 	@RequestMapping(value="/recent", method=RequestMethod.GET)
-	public @ResponseBody HashMap<String,Object> recent(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+	public @ResponseBody HashMap<String,Object> recentAndPopular(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("experiences", expDao.getRecentExperiences(10));
+		map.put("experiences", expDao.getRecentAndPopularExperiences(10));
 		return map;
 	}
 

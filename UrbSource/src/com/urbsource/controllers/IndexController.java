@@ -47,7 +47,6 @@ public class IndexController {
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 		        u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
 		}
-		model.addAttribute("experiences", expDao.getRecentExperiences(10));
 		model.addAttribute("user", u);
 		return "index";
 	}

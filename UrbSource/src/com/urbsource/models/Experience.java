@@ -31,6 +31,7 @@ public class Experience implements Serializable {
 	private int numberOfComments;
 	private boolean upvotedByUser=false;
 	private boolean downvotedByUser=false;
+	private String source;
 	
 	/**
 	 * To be a bean.
@@ -270,5 +271,13 @@ public class Experience implements Serializable {
 
 	public void setDownvotedByUser(boolean downvotedByUser) {
 		this.downvotedByUser = downvotedByUser;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 }
