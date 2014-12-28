@@ -343,4 +343,266 @@ public class ExperienceController {
 		map.put("success", expDao.unmarkSpam(exp));
 		return map;
 	}
+	/*
+	 * The Web API for the mobile access.
+	 * @author = dilara kekulluoglu
+	 * 
+	 * */
+	/**
+	 * Handles POST requests to Create experience page  from mobile app
+	 * 
+	 * @author dilara kekulluoglu
+	 */
+	@RequestMapping(value="/mobilecreate", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> mobileCreate(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		String username = json.getString("username");
+		boolean hasAuthority = json.getBoolean("IsLoggedIn");
+		if(!hasAuthority){
+			map.put("success", false);
+			map.put("error", "You must log in to create experience");
+			return map;
+		}
+		
+		User u = userDao.getLoginUser(username);
+		JSONArray tagArray = json.getJSONArray("tags");
+		Tag tags[] = new Tag[tagArray.length()];
+		for (int i = 0, len = tagArray.length(); i < len; ++i)
+			tags[i] = tagDao.getTag(tagArray.getString(i));
+		Experience exp = new Experience(u, json.getString("text"), tags).setMood(json.getString("mood"));
+		map.put("success", expDao.createExperience(exp));
+		return map;
+		
+	}
+	
+	/**
+	 * Handles POST requests to delete experience page  from mobile app
+	 * 
+	 * @author dilara kekulluoglu
+	 */
+	@RequestMapping(value="/mobiledelete", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> mobileDelete(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		
+		String username = json.getString("username");
+		boolean hasAuthority = json.getBoolean("IsLoggedIn");
+		if(!hasAuthority){
+			map.put("success", false);
+			map.put("error", "You must log in to delete experience");
+			return map;
+		}
+		
+		int id;
+		try {
+			id = json.getJSONObject("params").getInt("id");
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", "Experience ID is not given or not int, check how you call the API!");
+			return map;
+		}
+		User u = userDao.getLoginUser(username);
+		Experience exp = expDao.getExperience(id);
+		if (u.getId() != exp.getAuthor().getId()) {
+			map.put("success", false);
+			map.put("error", "You cannot delete others' experiences");
+			return map;
+		}
+		map.put("success", expDao.deleteExperience(exp));
+		return map;
+		
+	}
+	
+	@RequestMapping(value="/mobiledownvote", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String,Object> mobileDownvote(HttpServletRequest request, HttpServletResponse response, Model model) throws JSONException, IOException {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		
+		String username = json.getString("username");
+		boolean hasAuthority = json.getBoolean("IsLoggedIn");
+		if(!hasAuthority){
+			map.put("success", false);
+			map.put("error", "You must log in to downvote experience");
+			return map;
+		}
+		
+		try {
+			
+			int exp_id = json.getInt("id");
+			boolean undo = json.getBoolean("undo");
+			User u = userDao.getLoginUser(username);
+			Experience exp = expDao.getExperience(exp_id);
+			if (undo)
+				map.put("success", voteDao.deleteVote(exp, u));
+			else
+				map.put("success", voteDao.saveVote(exp, u, false));
+		} catch (Exception e) {
+			map.put("success", false);
+			map.put("error", e.getMessage());
+		}
+		return map;
+	}
+
+	@RequestMapping(value="/mobileupvote", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String,Object> mobileUpvote(HttpServletRequest request, HttpServletResponse response, Model model) throws JSONException, IOException {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		
+		String username = json.getString("username");
+		boolean hasAuthority = json.getBoolean("IsLoggedIn");
+		if(!hasAuthority){
+			map.put("success", false);
+			map.put("error", "You must log in to downvote experience");
+			return map;
+		}
+		try {
+			int exp_id = json.getInt("id");
+			boolean undo = json.getBoolean("undo");
+			User u = userDao.getLoginUser(username);
+			Experience exp = expDao.getExperience(exp_id);
+			if (undo)
+				map.put("success", voteDao.deleteVote(exp, u));
+			else
+				map.put("success", voteDao.saveVote(exp, u, true));
+		} catch (Exception e) {
+			map.put("success", false);
+			map.put("error", e.getMessage());
+		}
+		return map;
+	}
+	
+	
+	@RequestMapping(value="/mobileupdate", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> mobileUpdate(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		
+		String username = json.getString("username");
+		boolean hasAuthority = json.getBoolean("IsLoggedIn");
+		if(!hasAuthority){
+			map.put("success", false);
+			map.put("error", "You must log in to downvote experience");
+			return map;
+		}
+		
+		int id;
+		try {
+			id = json.getInt("id");
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", "Experience ID is not given or not int, check how you call the API!");
+			return map;
+		}
+		User u = userDao.getLoginUser(username);
+		Experience exp = expDao.getExperience(id);
+		if (u.getId() != exp.getAuthor().getId()) {
+			map.put("success", false);
+			map.put("error", "You can update only your experiences!");
+			return map;
+		}
+		JSONArray tagArray = json.getJSONArray("tags");
+		Tag tags[] = new Tag[tagArray.length()];
+		for (int i = 0, len = tagArray.length(); i < len; ++i)
+			tags[i] = tagDao.getTag(tagArray.getString(i));
+		HashSet<Tag> oldTags = new HashSet<Tag>(exp.getTags());
+		oldTags.removeAll(Arrays.asList(tags));
+		for (Tag t : oldTags) {
+			exp.removeTag(t);
+		}
+		for (Tag t : tags) {
+			exp.addTag(t);
+		}
+		exp.setText(json.getString("text"));
+		expDao.saveExperience(exp);
+		map.put("success", true);
+		return map;
+	}
+	
+	
+	@RequestMapping(value="/mobileeditText", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> mobileUpdateText(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result").getJSONObject("params");
+		
+		String username = json.getString("username");
+		boolean hasAuthority = json.getBoolean("IsLoggedIn");
+		if(!hasAuthority){
+			map.put("success", false);
+			map.put("error", "You must log in to downvote experience");
+			return map;
+		}
+		
+		int id;
+		try {
+			id = json.getInt("id");
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", "Experience ID is not given or not int, check how you call the API!");
+			return map;
+		}
+		User u = userDao.getLoginUser(username);
+		Experience exp = expDao.getExperience(id);
+		if (u.getId() != exp.getAuthor().getId()) {
+			map.put("success", false);
+			map.put("error", "You can update only your experiences!");
+			return map;
+		}
+		exp.setText(json.getString("text"));
+		expDao.saveExperience(exp);
+		map.put("success", true);
+		return map;
+	}
+
+		
+	@RequestMapping(value="/mobilemarkSpam", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> mobileMarkSpam(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		
+		boolean hasAuthority = json.getBoolean("IsLoggedIn");
+		if(!hasAuthority){
+			map.put("success", false);
+			map.put("error", "You must log in to downvote experience");
+			return map;
+		}
+		
+		int id;
+		try {
+			id = json.getInt("id");
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", "Experience ID is not given or not int, check how you call the API!");
+			return map;
+		}
+		Experience exp = expDao.getExperience(id);
+		map.put("success", expDao.markSpam(exp));
+		return map;
+	}
+	
+	@RequestMapping(value="/mobileunmarkSpam", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> mobileUnmarkSpam(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		
+		boolean hasAuthority = json.getBoolean("IsLoggedIn");
+		if(!hasAuthority){
+			map.put("success", false);
+			map.put("error", "You must log in to downvote experience");
+			return map;
+		}
+		
+		int id;
+		try {
+			id = json.getInt("id");
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", "Experience ID is not given or not int, check how you call the API!");
+			return map;
+		}
+		Experience exp = expDao.getExperience(id);
+		map.put("success", expDao.unmarkSpam(exp));
+		return map;
+	}
+	
 }

@@ -1,5 +1,7 @@
 package com.urbsource.db;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -39,6 +41,24 @@ public class JDBCUserDAO {
 				sql,
 				new Object[] { u.getId() }));
 		return u;
+	}
+	
+	/**
+	 * This is for checking whether mobile login username exists
+	 * */
+	public User getMobileUser(String username){
+		String sql = "SELECT * FROM user WHERE username = ?";
+		List<User> ulist = JDBCUserDAO.jdbcTemplate.query(
+				sql,
+				new Object[] { username },
+				new BeanPropertyRowMapper<User>(User.class));
+		
+		if(ulist.isEmpty()){
+			return null;
+		}else{
+			return ulist.get(0);
+		}
+		
 	}
 	
 	public User getUser(int id){
