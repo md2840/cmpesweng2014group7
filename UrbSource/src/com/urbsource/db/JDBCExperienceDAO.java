@@ -261,14 +261,12 @@ public class JDBCExperienceDAO {
 	 * @return A selection of n experiences among latest and most popular experiences in the system.
 	 */
 	public List<Experience> getRecentAndPopularExperiences(int n) {
-		System.out.println("Godspeed Broforce!");
 		List<Experience> experiences = jdbcTemplate.query(
 				"(SELECT 'recent' AS source, experience.* FROM experience ORDER BY id DESC LIMIT ?) "
 				+ "UNION ALL (SELECT 'popular', experience.* FROM experience ORDER BY points DESC LIMIT ?)",
 				new Object[] { n/2, n - n/2 /* in case n is odd, there will be one more popular experience */ },
 				new ExperienceRowMapper());
 		Collections.shuffle(experiences, new Random(2));
-		System.out.println("DONE!");
 		return experiences;
 	}
 

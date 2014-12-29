@@ -7,6 +7,12 @@
 jQuery(function($) {
     $('button#create-experience').click(function () {
         var text = $('textarea#experience-text').val().trim();
+        var date = $('#experience-date').val();
+        var expirationDate = $("#expires-date").val();
+        if (date === '') {
+            alert('Please enter a date for experience');
+        	return;
+        }
         var mood = $('select#experience-mood').val().trim();
         var tags = $('input#experience-tags').val().trim().toLowerCase().split(',');
         if (text === '') {
@@ -23,6 +29,8 @@ jQuery(function($) {
             'data': JSON.stringify({
                 text: text,
                 tags: tags,
+                date: date,
+                expirationDate: expirationDate,
                 mood: mood
             }),
             'dataType': 'json'

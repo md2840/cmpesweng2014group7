@@ -188,6 +188,19 @@ function initialize() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+Date.prototype.toDateInputValue = (function() {
+    var local = new Date(this);
+    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+    return local.toJSON().slice(0,10);
+});
+
+jQuery(function($) {
+	$("#experience-date").each(function() {
+		if ($(this).val() === '')
+			$(this).val(new Date().toDateInputValue());
+	});
+});
 </script>
  <style>
       #target {
