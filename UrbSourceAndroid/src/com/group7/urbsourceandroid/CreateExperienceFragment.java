@@ -4,6 +4,7 @@ package com.group7.urbsourceandroid;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -61,18 +65,19 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 
     private LocationManager locationManager;
     private GoogleMap mMap;
-	
+
 	//Session for users
 	SessionManager session;
-	
 	private String responseString;
     private LatLng LATLNG=new LatLng(41.017238, 28.953128);
-
-
-
     public static FragmentManager fragmentManager;
+    GPSTracker gps;
+    double latitude;
+    double longitude;
+    ImageButton locButton;
+    Marker marker;
 
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
 
@@ -92,9 +97,40 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
     	ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
     		android.R.layout.simple_spinner_item, moodList);
     	dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    	MoodS.setAdapter(dataAdapter);
+
+        MoodS.setAdapter(dataAdapter);
         fragmentManager = getFragmentManager();
         setUpMapIfNeeded();
+        locButton = (ImageButton) view.findViewById(R.id.locationBut);
+        locButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // create class object
+                gps = new GPSTracker(getActivity());
+                // check if GPS enabled
+                if(gps.canGetLocation()){
+                    if(marker!=null){
+                        marker.remove();
+                    }
+                     latitude = gps.getLatitude();
+                     longitude = gps.getLongitude();
+                     marker = mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(latitude, longitude))
+                                    .title("Your Location")
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.markerlogo))
+                    );
+                    LatLng currentLatLing=new LatLng(latitude,longitude);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLing));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+
+                }else{
+
+                    gps.showSettingsAlert();
+                }
+            }
+        });
+
+
 
         save = (Button) view.findViewById(R.id.button1);
         save.setOnClickListener(new View.OnClickListener() {
@@ -127,17 +163,33 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
      * This should only be called once and when we are sure that {@link #mMap}
      * is not null.
      */
+    String provider;
     private  void setUpMap() {
         // For showing a move to my loction button
-        this.locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-
+        provider=locationManager.GPS_PROVIDER;
         //Here while loop will be used in order to make user share his location
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             showGPSDisabledAlertToUser();
 
         }
-        mMap.setMyLocationEnabled(true);
+        if(!provider.equals("")){
+
+            // Get the location from the given provider
+            Location location = locationManager.getLastKnownLocation(provider);
+
+            locationManager.requestLocationUpdates(provider, 20000, 0, this);
+
+            if(location!=null)
+                onLocationChanged(location);
+            else
+                Toast.makeText(getActivity().getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
+
+        }else{
+            Toast.makeText(getActivity().getBaseContext(), "No Provider Found", Toast.LENGTH_SHORT).show();
+        }
+       // mMap.setMyLocationEnabled(true);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LATLNG));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
@@ -152,7 +204,7 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 
     @Override
     public void onLocationChanged(Location location) {
-
+        Toast.makeText(getActivity().getBaseContext(), location.getLatitude()+""+location.getLongitude(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
