@@ -12,7 +12,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONArray;
@@ -45,6 +49,9 @@ public class MainFragment extends Fragment{
 	private List<Experience> recentExperiences;
 	private ActionListAdapter adapter;
 	private SessionManager session;
+	private String responseText;
+	
+	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -119,11 +126,12 @@ public class MainFragment extends Fragment{
             	tags.setText(build.toString());
             }
             ImageButton upvote = (ImageButton) view.findViewById(R.id.ex_upvote);
+            upvote.setTag(new Integer(position));
             upvote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                 	//upvote httppost
-                	Log.i("experience upvote","geldi");
+                	Log.i("experience upvote",v.getTag().toString());
                 }
                 });
             ImageButton downvote = (ImageButton) view.findViewById(R.id.ex_downvote);
@@ -131,17 +139,20 @@ public class MainFragment extends Fragment{
                 @Override
                 public void onClick(View v) {
                 	//downvote httppost
-                	Log.i("experience downvote","geldi");
+                	
                 }
                 });
+            
+            //Upvote downvote u user a göre renklerini ayarla. Onclick eventlerini yaz.
             ImageButton delete = (ImageButton) view.findViewById(R.id.btn_delete);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                 	//delete httppost
-                	Log.i("experience delete","geldi");
+                	
                 }
                 });
+            delete.setVisibility(View.INVISIBLE);
             CheckBox verify = (CheckBox) view.findViewById(R.id.ex_verify);
             verify.setOnClickListener(new View.OnClickListener() {
 
@@ -159,7 +170,14 @@ public class MainFragment extends Fragment{
                   }
                 }
               });
+            
+            if(experience.getAuthor().getUsername().equals(session.getUserDetails().get("name"))){
+            	delete.setVisibility(View.VISIBLE);
+            	verify.setVisibility(View.INVISIBLE);
+            	upvote.setVisibility(View.INVISIBLE);
+            	downvote.setVisibility(View.INVISIBLE);
             }
+        }
             
         return view;
     }
@@ -192,8 +210,61 @@ public class MainFragment extends Fragment{
 		}
  
 		protected void onPostExecute(Double result){
+			JSONObject myObject;
+			try {
+				
+			 myObject = new JSONObject(responseText);
+			
+			 JSONArray jsona = new JSONArray(myObject.getString("experiences"));
+			 
+			 for(int i=0; i<jsona.length();i++){  // teker teker experience e gir.
+				JSONObject jsonObj = jsona.getJSONObject(i);
+				 Experience exp = new Experience();
+				 User u = new User();
+				 exp.setId(jsonObj.getInt("id"));
+				 exp.setText(jsonObj.getString("text"));
+				 exp.setMood(jsonObj.getString("mood"));
+				 //exp.setCreationTime(Timestamp.valueOf(jsonObj.getString("creationTime")));
+				 //exp.setExpirationDate(Date.valueOf(jsonObj.getString("expirationDate")));
+				 //exp.setModificationTime(Timestamp.valueOf(jsonObj.getString("modificationTime")));
+			     exp.setSpam(jsonObj.getInt("spam"));
+			     exp.setUserMarkedSpam(jsonObj.getBoolean("userMarkedSpam"));
+			     exp.setDownvotedByUser(jsonObj.getBoolean("downvotedByUser"));
+			     exp.setUpvotedByUser(jsonObj.getBoolean("upvotedByUser"));
+			     //USER çekme tarafý ileride ayrý method yap kolay olsun.
+			     JSONObject userJ = new JSONObject(jsonObj.getString("author"));
+			     u.setId(userJ.getInt("id"));
+			     u.setCommentPoints(userJ.getInt("commentPoints"));
+			     u.setEmail(userJ.getString("email"));
+			     u.setExperiencePoints(userJ.getInt("experiencePoints"));
+			     u.setFirstName(userJ.getString("firstName"));
+			     u.setLastName(userJ.getString("lastName"));
+			     u.setNumberOfExperiences(userJ.getInt("numberOfExperiences"));
+			     u.setPassword(userJ.getString("password"));
+			     u.setPassword2(userJ.getString("password2"));
+			     u.setUsername(userJ.getString("username"));
+			     exp.setAuthor(u);
+			     //TAG çekme tarafý
+			     JSONArray Tags = new JSONArray(jsonObj.getString("tags"));
+			     for(int j=0;j<Tags.length();j++){
+			    	 JSONObject tagObj = Tags.getJSONObject(j);
+					 Tag t = new Tag();
+			    	 t.setId(tagObj.getInt("id"));
+			    	 t.setName(tagObj.getString("name"));
+			    	 exp.addTag(t);
+			     }
+			     recentExperiences.add(exp);
+			    
+			 }
+			 
+			 } catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			 
 			dialog.dismiss();
 			adapter.notifyDataSetChanged();
+			 
 		}
 		
  
@@ -201,64 +272,30 @@ public class MainFragment extends Fragment{
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
 			//HttpGet httpGet = new HttpGet("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/recent");
-			HttpGet httpGet = new HttpGet("http://10.0.3.2/UrbSource/experience/recent"); //for genymotion
+			HttpPost httpPost = new HttpPost("http://10.0.3.2/UrbSource/experience/mobilerecent"); //for genymotion
 			
 			try {
 			
+				// Add your data
+				JSONObject jsonobj = new JSONObject();
+				jsonobj.put("username",session.getUserDetails().get("name"));
 				
+				StringEntity se = new StringEntity(jsonobj.toString());    
+				se.setContentType("application/json;charset=UTF-8");
+				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+				httpPost.setHeader("Content-Type", "application/json");
+				httpPost.setHeader("Accept", "application/json");
+			
+				httpPost.setEntity(se);
 					// Execute HTTP Get Request
-					HttpResponse response = httpclient.execute(httpGet);
+				HttpResponse response = httpclient.execute(httpPost);
 					
-				 Log.i("geldi mi",response.getStatusLine().toString());
 				 HttpEntity entity = response.getEntity();
 				 
-				 String text = getASCIIContentFromEntity(entity);
-				 JSONObject myObject = new JSONObject(text);
-				 JSONArray jsona = new JSONArray(myObject.getString("experiences"));
-				 Log.i("json array size",Integer.toString(jsona.length()));
+				 responseText = getASCIIContentFromEntity(entity);
 				 
-				 for(int i=0; i<jsona.length();i++){  // teker teker experience e gir.
-					 Log.i("kacýncý",Integer.toString(i));
-					 JSONObject jsonObj = jsona.getJSONObject(i);
-					 Experience exp = new Experience();
-					 User u = new User();
-					 exp.setId(jsonObj.getInt("id"));
-					 exp.setText(jsonObj.getString("text"));
-					 exp.setMood(jsonObj.getString("mood"));
-					 //exp.setCreationTime(Timestamp.valueOf(jsonObj.getString("creationTime")));
-					 //exp.setExpirationDate(Date.valueOf(jsonObj.getString("expirationDate")));
-					 //exp.setModificationTime(Timestamp.valueOf(jsonObj.getString("modificationTime")));
-				     exp.setSpam(jsonObj.getInt("spam"));
-				     exp.setUserMarkedSpam(jsonObj.getBoolean("userMarkedSpam"));
-				     //USER çekme tarafý ileride ayrý method yap kolay olsun.
-				     JSONObject userJ = new JSONObject(jsonObj.getString("author"));
-				     u.setId(userJ.getInt("id"));
-				     u.setCommentPoints(userJ.getInt("commentPoints"));
-				     u.setEmail(userJ.getString("email"));
-				     u.setExperiencePoints(userJ.getInt("experiencePoints"));
-				     u.setFirstName(userJ.getString("firstName"));
-				     u.setLastName(userJ.getString("lastName"));
-				     u.setNumberOfExperiences(userJ.getInt("numberOfExperiences"));
-				     u.setPassword(userJ.getString("password"));
-				     u.setPassword2(userJ.getString("password2"));
-				     u.setUsername(userJ.getString("username"));
-				     exp.setAuthor(u);
-				     //TAG çekme tarafý
-				     JSONArray Tags = new JSONArray(jsonObj.getString("tags"));
-				     Log.i("tag array",Integer.toString(Tags.length()));
-				     for(int j=0;j<Tags.length();j++){
-				    	 JSONObject tagObj = Tags.getJSONObject(j);
-						 Tag t = new Tag();
-				    	 t.setId(tagObj.getInt("id"));
-				    	 t.setName(tagObj.getString("name"));
-				    	 exp.addTag(t);
-				     }
-				     recentExperiences.add(exp);
-				     ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-				     String json = ow.writeValueAsString(exp);
-					 Log.i("json hali",json);	
 						
-				 }
+				 
 				 
 				 
 				 
