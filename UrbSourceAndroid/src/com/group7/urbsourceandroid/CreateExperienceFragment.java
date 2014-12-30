@@ -20,9 +20,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,26 +39,48 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
-public class CreateExperienceFragment extends Fragment {
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+
+public class CreateExperienceFragment extends Fragment implements LocationListener {
 
 	private EditText Text,Tags;
 	private Button save;
 	private Spinner MoodS;
+
+    private LocationManager locationManager;
+    private GoogleMap mMap;
 	
 	//Session for users
 	SessionManager session;
 	
 	private String responseString;
-	
+    private LatLng LATLNG=new LatLng(41.017238, 28.953128);
+
+
+
+    public static FragmentManager fragmentManager;
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
- 
+
+
         View view = inflater.inflate(R.layout.createexp, container, false);
-        
+
+
         session = new SessionManager(getActivity().getApplicationContext());
-        session.checkLogin(); 
-       
+
         Text = (EditText) view.findViewById(R.id.editText1);
         Tags = (EditText) view.findViewById(R.id.editText2);
         MoodS = (Spinner) view.findViewById(R.id.spinner1);
@@ -63,7 +93,9 @@ public class CreateExperienceFragment extends Fragment {
     		android.R.layout.simple_spinner_item, moodList);
     	dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     	MoodS.setAdapter(dataAdapter);
-        
+        fragmentManager = getFragmentManager();
+        setUpMapIfNeeded();
+
         save = (Button) view.findViewById(R.id.button1);
         save.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -74,15 +106,71 @@ public class CreateExperienceFragment extends Fragment {
                 });
         return view;
 	}
-	
+    public  void setUpMapIfNeeded() {
+
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null) {
+
+            // Try to obtain the map from the SupportMapFragment.
+            mMap = ((SupportMapFragment) fragmentManager
+                    .findFragmentById(R.id.map)).getMap();
+            // Check if we were successful in obtaining the map.
+            if (mMap != null)
+                setUpMap();
+        }
+    }
+
+    /**
+     * This is where we can add markers or lines, add listeners or move the
+     * camera.
+     * <p>
+     * This should only be called once and when we are sure that {@link #mMap}
+     * is not null.
+     */
+    private  void setUpMap() {
+        // For showing a move to my loction button
+        this.locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+
+        //Here while loop will be used in order to make user share his location
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            showGPSDisabledAlertToUser();
+
+        }
+        mMap.setMyLocationEnabled(true);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(LATLNG));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+    }
 	private void createExp(){
 		String exptext = Text.getText().toString();
 		String tags = Tags.getText().toString();
 		String mood = MoodS.getSelectedItem().toString();
+
 		new MyAsyncTask().execute(exptext,tags,mood);
 	}
-	
-	private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
+    private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		 
 		
 		    @Override
@@ -110,7 +198,7 @@ public class CreateExperienceFragment extends Fragment {
 			
 		}
 		
- 
+
 		public void sendData(String Text,String Tags, String Mood) throws JSONException {
 			
 			HttpClient httpclient = new DefaultHttpClient();
@@ -166,6 +254,29 @@ public class CreateExperienceFragment extends Fragment {
 		}
  
 	}
+
+    private void showGPSDisabledAlertToUser(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setMessage("Please enable your GPS.")
+                .setCancelable(false)
+                .setPositiveButton("Enable",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+
+    }
 	public String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
 		InputStream in = entity.getContent();
 
