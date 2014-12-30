@@ -346,7 +346,22 @@ public class ExperienceController {
 	 * The Web API for the mobile access.
 	 * @author = dilara kekulluoglu
 	 * 
-	 * */
+	 *
+	 */
+	
+	@RequestMapping(value="/mobilerecent", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String,Object> mobilerecentAndPopular(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		String username = json.getString("username");
+		
+		List<Experience> list = expDao.getRecentAndPopularExperiences(10);
+		for(int i=0; i<list.size(); i++){
+			configureVotes(username,list.get(i));
+		}
+		map.put("experiences", list);
+		return map;
+	}
 	/**
 	 * Handles POST requests to Create experience page  from mobile app
 	 * 

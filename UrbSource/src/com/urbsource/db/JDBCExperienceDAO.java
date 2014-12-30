@@ -339,4 +339,24 @@ public class JDBCExperienceDAO {
 		}
 		return true;
 	}
+	
+	/**
+	 * Sets the upvotes,downvotes and spams for experiences given username
+	 * for mobile users since userDao.getUser wont work for them.
+	 * */
+	public void configureVotes(String username, Experience exp){
+		
+		User currentUser = userDao.getLoginUser(username);
+		if (currentUser != null) {
+			exp.setUserMarkedSpam(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM experience_spam WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()}) > 0);
+			SqlRowSet vote = jdbcTemplate.queryForRowSet("SELECT is_upvote FROM experience_vote WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()});
+			// If there is a vote
+			if (vote.first()) {
+				boolean isUpvote = vote.getBoolean(0);
+				exp.setUpvotedByUser(isUpvote);
+				exp.setDownvotedByUser(!isUpvote);
+			}
+		}
+		
+	}
 }
