@@ -28,7 +28,7 @@
 		<label for="experience-date">Expiration Date</label><br>
 		<input type="date" name="expires-date" id="expires-date">
 	</p>
-	<small><em>Leave expiration date empty if experience is permanent.</em></small>
+	<small><em>Leave expiration date empty if experience is permanent.</em></small><br>
 	<label for="experience-locations">Location:</label><br>
 	<input id="pac-input" class="controls" type="text" placeholder="Search Box">
   	<div id="map-canvas" style="left:0;right:0;margin-left:auto;margin-right:auto;margin-bottom:2em;height:300px;top:20px"></div>

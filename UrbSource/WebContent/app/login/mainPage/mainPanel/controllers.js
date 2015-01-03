@@ -3,8 +3,15 @@ controllers.controller('ExperienceListController',
 		 function($scope, VoteFactory, DelEditExperienceFactory, SendExperienceService, SearchExperienceFactory) {
 	$scope.experienceList = {};
 	$scope.search = false;
-	
+	if (!String.prototype.includes) {
+		String.prototype.includes = function() {'use strict';
+			return String.prototype.indexOf.apply(this, arguments) !== -1;
+		};
+	}
+
 	SearchExperienceFactory.getRecentExperiences($scope);
+	if (document.URL.includes('experience/user'))
+		SearchExperienceFactory.getUserExperiences($scope);
 	
 	SendExperienceService.observe().then(null,null,function(experienceList){
 		$scope.experienceList = experienceList;

@@ -19,8 +19,13 @@ services.factory('VoteFactory',['$http',function($http) {
 		        'dataType': 'json'
 		    }).done(function (resp) {
 		        if (resp.success) {
-		        	$(element).toggleClass("btn-primary");
-		        	$(element).toggleClass("btn-default");
+		        	var toUpvote = $(element).hasClass("btn-default");
+		        	$(element).parent().children().removeClass("btn-primary");
+		        	$(element).parent().children().addClass("btn-default");
+		        	if (toUpvote) {
+			        	$(element).toggleClass("btn-primary");
+			        	$(element).toggleClass("btn-default");
+		        	}
 		        }
 		        else {
 			        alert('An internal error has occurred. Please try again later');
@@ -46,8 +51,13 @@ services.factory('VoteFactory',['$http',function($http) {
 		        'dataType': 'json'
 		    }).done(function (resp) {
 		        if (resp.success) {
-		        	$(element).toggleClass("btn-primary");
-		        	$(element).toggleClass("btn-default");
+		        	var toDownvote = $(element).hasClass("btn-default");
+		        	$(element).parent().children().removeClass("btn-primary");
+		        	$(element).parent().children().addClass("btn-default");
+		        	if (toDownvote) {
+			        	$(element).toggleClass("btn-primary");
+			        	$(element).toggleClass("btn-default");
+		        	}
 		        }
 		        else {
 			        alert('An internal error has occurred. Please try again later');

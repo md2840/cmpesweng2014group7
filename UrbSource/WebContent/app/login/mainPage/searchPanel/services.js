@@ -43,6 +43,21 @@ services.factory('SearchExperienceFactory',['$http','SendExperienceService',func
 			request.error(function(responseData, status, headers, config){
 
 			});
+		},
+		getUserExperiences: function($scope){
+			var id = document.URL.split('/').slice(-1)[0];
+			if (id !== (Number.parseInt(id)) + '' || ! (Number.parseInt(id) > 0)) {
+				return;
+			}
+			var request = $http.get('/UrbSource/experience/user/json/' + id);
+
+			request.success(function(responseData, status, headers, config){
+				$scope.userExperienceList = responseData.experiences;
+			});
+
+			request.error(function(responseData, status, headers, config){
+
+			});
 		}
 	};
 }]);

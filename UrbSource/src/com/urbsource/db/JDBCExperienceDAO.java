@@ -51,14 +51,14 @@ public class JDBCExperienceDAO {
 				SqlRowSet vote = jdbcTemplate.queryForRowSet("SELECT is_upvote FROM experience_vote WHERE experience_id=? AND user_id=? LIMIT 1", new Object[] {exp.getId(), currentUser.getId()});
 				// If there is a vote
 				if (vote.first()) {
-					boolean isUpvote = vote.getBoolean(0);
+					boolean isUpvote = vote.getBoolean("is_upvote");
 					exp.setUpvotedByUser(isUpvote);
 					exp.setDownvotedByUser(!isUpvote);
 				}
 			}
 			exp.setNumberOfComments(jdbcTemplate.queryForInt("SELECT COUNT(*) FROM comment WHERE experience_id=? LIMIT 1", new Object[] {exp.getId()}));
 			return exp;
-		}	
+		}
 	}
 	
 	private static JdbcTemplate jdbcTemplate;
@@ -148,8 +148,6 @@ public class JDBCExperienceDAO {
 		// also doesn't support sending arrays in prepared statements. If hell
 		// exists it must be a place where people are forced to use MySQL
 		String sql = "SELECT * FROM experience WHERE " + qmarkstr + " ORDER BY experience.id DESC";
-		
-		System.out.println(sql);
 		
 		return jdbcTemplate.query(sql, tag_ids, new ExperienceRowMapper());
 		
