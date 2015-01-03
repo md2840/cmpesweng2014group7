@@ -66,42 +66,51 @@
 	</script>
 </jsp:attribute>
 	<jsp:attribute name="mainPanel">
-		<h4><a href="/UrbSource/user/info/${ user_.username }">${ user_.username }</a>'s experiences</h4>
 		<div id="experience-list">
-			<div class="panel panel-default"
-				ng-repeat="experience in userExperienceList">
+			<div class="panel panel-default">
 				<div class="panel-heading">
-					<span ng-switch on="experience.mood">
+					<span ng-switch on="'${experience.mood}'">
 						<span ng-switch-when="good" style="color: green">Good Experience</span>
 						<span ng-switch-when="bad" style="color: red">Bad Experience</span>
-						<span ng-switch-default>{{experience.mood}} Experience</span>
+						<span ng-switch-default>${experience.mood} Experience</span>
 					</span>
-					by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
-					on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
+					by <a href="/UrbSource/user/info/${experience.author.id}">${experience.author.username}</a>
+					on ${experience.creationTime}
 				</div>
-				<div class="{{experience.source}}"></div>
+				<div class="${experience.source}"></div>
 				<div class="panel-body">
 					<p>
-						<p>{{experience.text}}</p>
-						<button style="float:right;display:none;" ng-click="save(experience.id,$event)" type="button" class="btn btn-primary btn-xs">Save</button>
+						<p>${experience.text}</p>
+						<button style="float:right;display:none;" ng-click="save(${experience.id},$event)" type="button" class="btn btn-primary btn-xs">Save</button>
 					</p>
 					<p>
-						Tags: <span>{{experience.tagNames}}</span>
+						Tags: <span>${experience.tagNames}</span>
 					</p>
-				</div>				
-
-				
+				</div>
 				<div class="panel-footer clearfix">
 					<div class="pull-left">
 						<div class="btn-toolbar" style="display: inline-block !important;">
 							<div class="btn-group" style="display: inline-block !important;">
-								<button type="button" ng-click="upvote(experience.id, $event)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-up" ng-if="experience.upvotedByUser"></button>
-								<button type="button" ng-click="upvote(experience.id, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-up" ng-if="!experience.upvotedByUser"></button>
-								<button type="button" ng-click="downvote(experience.id, $event)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-down" ng-if="experience.downvotedByUser"></button>
-								<button type="button" ng-click="downvote(experience.id, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down" ng-if="!experience.downvotedByUser"></button>
+							<c:choose>
+								<c:when test="${experience.upvotedByUser}">
+									<button type="button" ng-click="upvote(${experience.id}, $event)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-up"></button>
+								</c:when>
+								<c:otherwise>
+									<button type="button" ng-click="upvote(${experience.id}, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-up"></button>
+								</c:otherwise>
+							</c:choose>
+							<c:choose>
+								<c:when test="${experience.downvotedByUser}">
+									<button type="button" ng-click="downvote(${experience.id}, $event)" class="btn btn-xs btn-primary glyphicon glyphicon-thumbs-down"></button>
+								</c:when>
+								<c:otherwise>
+									<button type="button" ng-click="downvote(${experience.id}, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down"></button>
+								</c:otherwise>
+							</c:choose>
 							</div>
 						</div>
-						<a href="/UrbSource/experience/id/{{experience.id}}">{{experience.numberOfComments}} Comments</a>
+						~${experience.points} Points
+						<a href="/UrbSource/experience/id/${experience.id}">${experience.numberOfComments} Comments</a>
 					</div>
 					<div class="btn-toolbar pull-right">
 						<div class="btn-group" ng-show="experience.author.username === '${user.username}'">

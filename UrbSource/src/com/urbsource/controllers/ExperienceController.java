@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,6 +69,17 @@ public class ExperienceController {
 		}
 		model.addAttribute("user", u);
 		return new ModelAndView("user_experience_list", "user_", userDao.getUser(userId));
+	}
+	
+	@RequestMapping(value="/id/{id}", method=RequestMethod.GET)
+	public ModelAndView getExperience(@PathVariable(value="id") int id, Model model) {
+		User u = new User();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+		}
+		model.addAttribute("user", u);
+		return new ModelAndView("experience_details", "experience", expDao.getExperience(id));
 	}
 
 	@RequestMapping(value="/create", method=RequestMethod.POST)
@@ -379,7 +389,7 @@ public class ExperienceController {
 		
 		List<Experience> list = expDao.getRecentAndPopularExperiences(10);
 		for(int i=0; i<list.size(); i++){
-			//configureVotes(username,list.get(i));
+			//configureVotes(username, list.get(i));
 		}
 		map.put("experiences", list);
 		return map;

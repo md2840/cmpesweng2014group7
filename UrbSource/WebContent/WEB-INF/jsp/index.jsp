@@ -85,8 +85,7 @@
 					<button style="float:right;display:none;" ng-click="save(experience.id,$event)" type="button" class="btn btn-primary btn-xs">Save</button>
 				</p>
 				<p>
-					Tags: <span ng-repeat="tag in experience.tags">{{tag.name}},
-					</span>
+					Tags: <span>{{experience.tagNames}}</span>
 				</p>
 			</div>				
 	

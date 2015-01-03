@@ -33,11 +33,13 @@ public class JDBCExperienceDAO {
 			User u = userDao.getUser(rs.getInt("author_id"));
 			String text = rs.getString("text");
 			List<Tag> tags = tagDao.getTags(id);
-			Experience exp =  new Experience(id, u, text, tags)
+			Experience exp = new Experience(id, u, text, tags)
 				.setCreationTime(rs.getTimestamp("creation_time"))
 				.setModificationTime(rs.getTimestamp("modification_time"))
 				.setExpirationDate(rs.getDate("expiration_date"))
-			    .setMood(rs.getString("mood")).setSpam(rs.getInt("spam"));
+			    .setMood(rs.getString("mood"))
+			    .setPoints(rs.getInt("points"))
+			    .setSpam(rs.getInt("spam"));
 			// Try to set source of experience. If source is not given, default to empty
 			// string.
 			try {

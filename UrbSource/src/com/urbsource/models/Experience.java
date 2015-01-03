@@ -32,6 +32,7 @@ public class Experience implements Serializable {
 	private boolean upvotedByUser=false;
 	private boolean downvotedByUser=false;
 	private String source;
+	private int points;
 	
 	/**
 	 * To be a bean.
@@ -253,24 +254,27 @@ public class Experience implements Serializable {
 		return numberOfComments;
 	}
 
-	public void setNumberOfComments(int numberOfComments) {
+	public Experience setNumberOfComments(int numberOfComments) {
 		this.numberOfComments = numberOfComments;
+		return this;
 	}
 
 	public boolean isUpvotedByUser() {
 		return upvotedByUser;
 	}
 
-	public void setUpvotedByUser(boolean upvotedByUser) {
+	public Experience setUpvotedByUser(boolean upvotedByUser) {
 		this.upvotedByUser = upvotedByUser;
+		return this;
 	}
 
 	public boolean isDownvotedByUser() {
 		return downvotedByUser;
 	}
 
-	public void setDownvotedByUser(boolean downvotedByUser) {
+	public Experience setDownvotedByUser(boolean downvotedByUser) {
 		this.downvotedByUser = downvotedByUser;
+		return this;
 	}
 
 	public String getSource() {
@@ -279,5 +283,26 @@ public class Experience implements Serializable {
 
 	public void setSource(String source) {
 		this.source = source;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public Experience setPoints(int points) {
+		this.points = points;
+		return this;
+	}
+	
+	public String getTagNames() {
+		if (tags.size() == 0) {
+			return "";
+		}
+		StringBuilder tagNames = new StringBuilder(tags.get(0).getName());
+		for (int i = 1, iMax = tags.size(); i < iMax; ++i) {
+			tagNames.append(',');
+			tagNames.append(tags.get(i).getName());
+		}
+		return tagNames.toString();
 	}
 }
