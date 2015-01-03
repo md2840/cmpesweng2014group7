@@ -220,7 +220,12 @@ jQuery(function($) {
 		<sec:authorize access="isAuthenticated()">
 			<us:create-experience></us:create-experience>
 		</sec:authorize>
-		<jsp:invoke fragment="mainPanel"/>
+		<div ng-controller="ExperienceListController">
+		<div ng-hide="search">
+			<jsp:invoke fragment="mainPanel"/>
+		</div>
+		<us:search-results></us:search-results>
+		</div>
 	</div>
 </body>
 </html>
