@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,9 +18,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,12 +45,30 @@ public class ExperienceController {
 		expDao = new JDBCExperienceDAO(userDao, tagDao);
 		voteDao = new JDBCExperienceVoteDAO(); 
 	}
-	
+
 	@RequestMapping(value="/recent", method=RequestMethod.GET)
 	public @ResponseBody HashMap<String,Object> recentAndPopular(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("experiences", expDao.getRecentAndPopularExperiences(10));
 		return map;
+	}
+	
+	@RequestMapping(value="/user/json/{userId}", method=RequestMethod.GET)
+	public @ResponseBody HashMap<String,Object> userExperienceJSON(@PathVariable(value="userId") int userId, HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("experiences", expDao.getExperiences(userDao.getUser(userId)));
+		return map;
+	}
+
+	@RequestMapping(value="/user/{userId}", method=RequestMethod.GET)
+	public ModelAndView userInfo(@PathVariable(value="userId") int userId, Model model) {
+		User u = new User();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
+		}
+		model.addAttribute("user", u);
+		return new ModelAndView("user_experience_list", "user_", userDao.getUser(userId));
 	}
 
 	@RequestMapping(value="/create", method=RequestMethod.POST)
@@ -357,7 +378,7 @@ public class ExperienceController {
 		
 		List<Experience> list = expDao.getRecentAndPopularExperiences(10);
 		for(int i=0; i<list.size(); i++){
-			configureVotes(username,list.get(i));
+			//configureVotes(username,list.get(i));
 		}
 		map.put("experiences", list);
 		return map;
