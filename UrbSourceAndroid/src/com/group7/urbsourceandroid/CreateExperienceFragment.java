@@ -4,9 +4,10 @@ package com.group7.urbsourceandroid;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.Provider;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,6 +26,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -43,16 +46,13 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -62,6 +62,7 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 	private EditText Text,Tags;
 	private Button save;
 	private Spinner MoodS;
+    private EditText LocationText;
 
     private LocationManager locationManager;
     private GoogleMap mMap;
@@ -76,12 +77,15 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
     double longitude;
     ImageButton locButton;
     Marker marker;
+    String locationName;
+
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
 
-        View view = inflater.inflate(R.layout.createexp, container, false);
+        final View view = inflater.inflate(R.layout.createexp, container, false);
 
 
         session = new SessionManager(getActivity().getApplicationContext());
@@ -89,7 +93,8 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
         Text = (EditText) view.findViewById(R.id.editText1);
         Tags = (EditText) view.findViewById(R.id.editText2);
         MoodS = (Spinner) view.findViewById(R.id.spinner1);
-        
+        LocationText = (EditText) view.findViewById(R.id.location);
+
         List<String> moodList = new ArrayList<String>();
     	moodList.add("Good");
     	moodList.add("Bad");
@@ -112,16 +117,32 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
                     if(marker!=null){
                         marker.remove();
                     }
-                     latitude = gps.getLatitude();
-                     longitude = gps.getLongitude();
-                     marker = mMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(latitude, longitude))
-                                    .title("Your Location")
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.markerlogo))
-                    );
-                    LatLng currentLatLing=new LatLng(latitude,longitude);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLing));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+
+                    Geocoder gcd = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
+                    List<Address> addresses = null;
+                    try {
+                        addresses = gcd.getFromLocation(latitude, longitude, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (addresses.size() > 0) {
+
+                        locationName = addresses.get(0).getSubLocality() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getCountryName();
+
+                    }
+                        latitude = gps.getLatitude();
+                        longitude = gps.getLongitude();
+                        marker = mMap.addMarker(new MarkerOptions()
+                                     .position(new LatLng(latitude, longitude))
+                                     .title(locationName)
+                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.markerlogo))
+                        );
+
+                        LocationText.setText(locationName);
+
+                        LatLng currentLatLing=new LatLng(latitude,longitude);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLing));
+                        mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
                 }else{
 
@@ -167,30 +188,12 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
     private  void setUpMap() {
         // For showing a move to my loction button
         locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-
         provider=locationManager.GPS_PROVIDER;
-        //Here while loop will be used in order to make user share his location
+
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             showGPSDisabledAlertToUser();
 
         }
-        if(!provider.equals("")){
-
-            // Get the location from the given provider
-            Location location = locationManager.getLastKnownLocation(provider);
-
-            locationManager.requestLocationUpdates(provider, 20000, 0, this);
-
-            if(location!=null)
-                onLocationChanged(location);
-            else
-                Toast.makeText(getActivity().getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
-
-        }else{
-            Toast.makeText(getActivity().getBaseContext(), "No Provider Found", Toast.LENGTH_SHORT).show();
-        }
-       // mMap.setMyLocationEnabled(true);
-
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LATLNG));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
     }
@@ -198,13 +201,17 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 		String exptext = Text.getText().toString();
 		String tags = Tags.getText().toString();
 		String mood = MoodS.getSelectedItem().toString();
+        String location=LocationText.getText().toString();
 
+
+
+        //Here we need to pass data as parameters to MyAsyncTask together with location
 		new MyAsyncTask().execute(exptext,tags,mood);
 	}
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(getActivity().getBaseContext(), location.getLatitude()+""+location.getLongitude(), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -347,5 +354,6 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 		return out.toString();
 		}
 	
-	
+
+
 }
