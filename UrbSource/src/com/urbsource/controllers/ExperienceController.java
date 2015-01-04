@@ -389,7 +389,7 @@ public class ExperienceController {
 		
 		List<Experience> list = expDao.getRecentAndPopularExperiences(10);
 		for(int i=0; i<list.size(); i++){
-			//configureVotes(username, list.get(i));
+			expDao.configureVotes(username, list.get(i));
 		}
 		map.put("experiences", list);
 		return map;
