@@ -223,8 +223,8 @@ jQuery(function($) {
 		<div ng-controller="ExperienceListController">
 		<div ng-hide="search">
 			<jsp:invoke fragment="mainPanel"/>
+			<us:search-results></us:search-results>
 		</div>
-		<us:search-results></us:search-results>
 		</div>
 	</div>
 </body>

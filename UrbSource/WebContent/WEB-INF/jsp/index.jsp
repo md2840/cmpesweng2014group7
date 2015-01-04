@@ -87,7 +87,7 @@
 				<p>
 					Tags: <span>{{experience.tagNames}}</span>
 				</p>
-			</div>				
+			</div>
 	
 			
 			<div class="panel-footer clearfix">

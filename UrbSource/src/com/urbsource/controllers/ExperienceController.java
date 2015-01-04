@@ -202,7 +202,7 @@ public class ExperienceController {
 		for(int i =0; i<json2.length();i++){
 			tags[i] = new Tag(json2.getJSONObject(i).getString("name"),json2.getJSONObject(i).getInt("id"));
 		}
-		map.put("experiences", expDao.getExperiences(tags));
+		map.put("experiences", expDao.getSimilarExperiences(tags));
 		return map;
 	}
 	

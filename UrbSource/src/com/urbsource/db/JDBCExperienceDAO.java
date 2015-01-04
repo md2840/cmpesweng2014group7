@@ -1,16 +1,26 @@
 package com.urbsource.db;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import javax.sql.DataSource;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,6 +35,7 @@ import com.urbsource.models.Experience;
 
 @Repository
 public class JDBCExperienceDAO {
+	final int QUERY_LIMIT = 10;
 	
 	private class ExperienceRowMapper implements RowMapper<Experience> {
 		@Override
@@ -116,25 +127,101 @@ public class JDBCExperienceDAO {
 		return jdbcTemplate.query(sql, new Object[] { u.getId() }, new ExperienceRowMapper());
 		
 	}
-	
+
 	/**
-	 * Get experiences containing given tag.
+	 * Get experiences containing one of given tags.
 	 * 
-	 * @param tag Given tag
+	 * @param tag tag for querying
+	 * @param limit maximum number of experiences required
 	 * @return List of experiences containing given tag
 	 */
-	public List<Experience> getExperiences(Tag tag) {
-		String sql = "SELECT * FROM experience, rel_experience_tag AS rel WHERE rel.experience_id = experience.id AND rel.tag_id = ? ORDER BY experience.id DESC";
-		return jdbcTemplate.query(sql, new Object[] { tag.getId() }, new ExperienceRowMapper());
+	private List<Experience> getExperiences(List<Tag> tags, int limit) {
+		if (limit <= 0 || tags.size() == 0)
+			return new ArrayList<Experience>();
+		StringBuilder tagSet = new StringBuilder("(").append(tags.get(0).getId());
+		for (int i = 1, iMax = tags.size(); i < iMax; ++i) {
+			tagSet.append(',').append(tags.get(0).getId());
+		}
+		tagSet.append(')');
+		
+		String sql = "SELECT * FROM experience, rel_experience_tag AS rel WHERE rel.experience_id = experience.id AND rel.tag_id in " + tagSet.toString() + " ORDER BY experience.points DESC LIMIT ?";
+		return jdbcTemplate.query(sql, new Object[] { limit }, new ExperienceRowMapper());
+	}
+	
+	private List<Experience> fillUsingSemanticTagging(List<Experience> experiences, Tag[] tags) {
+		HttpURLConnection http = null;
+		HashSet<String> semanticTagNames = new HashSet<String>();
+		for (Tag tag : tags) {
+			try {
+				URL url = new URL("http://conceptnet5.media.mit.edu/data/5.2/assoc/c/en/" + URLEncoder.encode(tag.getName().replace(' ', '_')) + "?filter=/c/en");
+				http = (HttpURLConnection) url.openConnection();
+				http.setRequestMethod("GET");
+				http.setUseCaches (false);
+				http.setDoInput(true);
+				http.setDoOutput(false);
+				//Get Response    
+				InputStream is = http.getInputStream();
+				BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+				String line;
+				StringBuffer response = new StringBuffer(); 
+				
+				while((line = rd.readLine()) != null) {
+					response.append(line);
+					response.append('\r');
+				}
+				
+				rd.close();
+				
+				// Construct tag array
+				JSONArray results = new JSONObject(response.toString()).getJSONArray("similar");
+				for (int i = 0; i < results.length(); ++i) {
+					String[] categories = results.getJSONArray(i).getString(0).split("/");
+					String tagName = categories[categories.length - 1];
+					semanticTagNames.addAll(Arrays.asList(tagName.split("_")));
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (http != null)
+					http.disconnect();
+			}
+		}
+		ArrayList<Tag> semanticTags = new ArrayList<Tag>();
+		
+		for (String tagName : semanticTagNames)
+			semanticTags.add(tagDao.getTag(tagName));
+			
+		experiences.addAll(getExperiences(semanticTags, QUERY_LIMIT - experiences.size()));
+		
+		if (experiences.size() >= QUERY_LIMIT)
+			return experiences;
+
+		// Even semantic tagging didn't give enough results, fill the rest with popular and recent experiences
+		experiences.addAll(getRecentAndPopularExperiences(QUERY_LIMIT - experiences.size()));
+		return experiences;
+	}
+	
+	/**
+	 * Get experiences containing given tag or similar tags using semantic tagging.
+	 * 
+	 * @param tag tag for querying
+	 * @return List of experiences containing given tag
+	 */
+	public List<Experience> getSimilarExperiences(Tag tag) {
+		String sql = "SELECT * FROM experience, rel_experience_tag AS rel WHERE rel.experience_id = experience.id AND rel.tag_id = ? ORDER BY experience.id DESC LIMIT " + QUERY_LIMIT;
+		List<Experience> experiences = jdbcTemplate.query(sql, new Object[] { tag.getId() }, new ExperienceRowMapper());
+		if (experiences.size() >= QUERY_LIMIT)
+			return experiences;
+		return fillUsingSemanticTagging(experiences, new Tag[] { tag });
 	}
 
 	/**
-	 * Get experiences containing given tags.
+	 * Get experiences containing given tags or similar tags.
 	 * 
 	 * @param tags List of tags for searching experiences containing them
 	 * @return List of experiences containing given tags
 	 */
-	public List<Experience> getExperiences(final Tag[] tags) {
+	public List<Experience> getSimilarExperiences(final Tag[] tags) {
 
 		Integer tag_ids[] = new Integer[tags.length];
 		for (int i = 0; i < tags.length; ++i) {
@@ -149,10 +236,13 @@ public class JDBCExperienceDAO {
 		// The broken, old, rusty MySQL that lacks intelligent design completely
 		// also doesn't support sending arrays in prepared statements. If hell
 		// exists it must be a place where people are forced to use MySQL
-		String sql = "SELECT * FROM experience WHERE " + qmarkstr + " ORDER BY experience.id DESC";
+		String sql = "SELECT * FROM experience WHERE " + qmarkstr + " ORDER BY experience.id DESC LIMIT " + QUERY_LIMIT;
+		List<Experience> experiences = jdbcTemplate.query(sql, tag_ids, new ExperienceRowMapper());
 		
-		return jdbcTemplate.query(sql, tag_ids, new ExperienceRowMapper());
+		if (experiences.size() >= QUERY_LIMIT)
+			return experiences;
 		
+		return fillUsingSemanticTagging(experiences, tags);
 	}
 	
 	/**
@@ -166,9 +256,20 @@ public class JDBCExperienceDAO {
 		// the following query and get all the fantastic goodies
 		// but we can't :/
 		//String sql = "SELECT * FROM experience WHERE MATCH(text) AGAINST (?)";
-		String sql = "SELECT * FROM experience WHERE UPPER(text) LIKE UPPER(CONCAT('%', ?, '%')) ORDER BY experience.id DESC";
-		return jdbcTemplate.query(sql, new Object[] {text}, new ExperienceRowMapper());
+		String sql = "SELECT * FROM experience WHERE UPPER(text) LIKE UPPER(CONCAT('%', ?, '%')) ORDER BY experience.id DESC LIMIT " + QUERY_LIMIT;
+		List<Experience> experiences = jdbcTemplate.query(sql, new Object[] { text.trim() }, new ExperienceRowMapper());
+
+		if (experiences.size() >= QUERY_LIMIT)
+			return experiences;
 		
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		for (String word : text.trim().split("\\W")) {
+			word = word.trim();
+			if (word.isEmpty())
+				continue;
+			tags.add(tagDao.getTag(word));
+		}
+		return fillUsingSemanticTagging(experiences, tags.toArray(new Tag[] {}));
 	}
 	
 	/**
