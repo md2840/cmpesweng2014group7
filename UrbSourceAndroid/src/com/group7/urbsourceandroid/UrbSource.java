@@ -16,11 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +39,7 @@ public class UrbSource extends Activity {
 	
 	String username , password;
 	
- 	private ProgressDialog dialog;
+ 	private AlertDialog.Builder dialog;
 	
 	
     @Override
@@ -59,7 +59,7 @@ public class UrbSource extends Activity {
             finish();
         }
         
-        dialog = new ProgressDialog(this);
+        dialog = new AlertDialog.Builder(this);
         
         
         Button registerScreen = (Button) findViewById(R.id.link_to_register);
@@ -104,19 +104,15 @@ public class UrbSource extends Activity {
 		@Override
 		protected Double doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			try {
+			
 				checkLogin(params[0],params[1]);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 			return null;
 		}
  
 		protected void onPostExecute(Double result){
 			
 			 try {
-				 Log.i("gelen response",responseText);
 				JSONObject myObject = new JSONObject(responseText);
 				if(myObject.getBoolean("success")){
 					session.createLoginSession(username,password);
@@ -141,16 +137,15 @@ public class UrbSource extends Activity {
 		}
 		
  
-		public void checkLogin(String username,String password) throws JSONException {
+		public void checkLogin(String username,String password)  {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost("http://10.0.3.2/UrbSource/mobilelogin/confirm");
+			HttpPost httppost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobilelogin/confirm");
 			try {
 				// Add your data
 				JSONObject jsonobj = new JSONObject();
 				jsonobj.put("username",username);
 				jsonobj.put("password",password);
-				
 				StringEntity se = new StringEntity(jsonobj.toString());    
 				se.setContentType("application/json;charset=UTF-8");
 				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
@@ -160,18 +155,22 @@ public class UrbSource extends Activity {
 				httppost.setEntity(se);
 				// Execute HTTP Post Request
 				HttpResponse response = httpclient.execute(httppost);
-				
 				HttpEntity entity = response.getEntity();
 				 
 				responseText = getASCIIContentFromEntity(entity);
 			
-				
+					
 				  
  
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
  

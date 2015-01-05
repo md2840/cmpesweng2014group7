@@ -427,6 +427,33 @@ public class JDBCExperienceDAO {
 		}
 		return true;
 	}
+	
+	public boolean markSpamMobile(Experience e,User u) {
+		
+		try {
+			jdbcTemplate.update("INSERT INTO experience_spam (experience_id, user_id) VALUES(?, ?)", new Object[] {e.getId(), u.getId()});
+			e.incrementSpam();
+			if (e.exceedsSpamLimit()) {
+				return deleteExperience(e);
+			} else {
+				saveExperience(e);
+			}
+		} catch (DataIntegrityViolationException ex) {
+			return false;
+		}
+		return true;
+	}
+	public boolean unmarkSpamMobile(Experience e,User u) {
+		
+		try {
+			jdbcTemplate.update("DELETE FROM experience_spam WHERE experience_id=? AND user_id=?", new Object[] {e.getId(), u.getId()});
+			e.decrementSpam();
+			saveExperience(e);
+		} catch (DataIntegrityViolationException ex) {
+			return false;
+		}
+		return true;
+	}
 
 	public boolean unmarkSpam(Experience e) {
 		if (! e.isUserMarkedSpam())

@@ -48,7 +48,7 @@ controllers.controller('ExperienceListController',
 	
 	$scope.save = function(id,$event){
 		$event.target.parentElement.childNodes[2].setAttribute("contentEditable","false");
-		$event.target.parentElement.childNodes[3].style.display = "none";
+		$event.target.style.display = "none";
 		DelEditExperienceFactory.editExp($scope,id,$event.target.parentElement.childNodes[2].innerText);
 	};
 }]);

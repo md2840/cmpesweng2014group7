@@ -41,20 +41,24 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Tags"/>
+    <EditText
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter Location or Use Your Current Place"/>
 
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save" />
-    
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/location"
-        android:id="@+id/locationBut"
-        android:background="@null"/>
-    
+        android:text="Share" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -63,11 +67,17 @@
         tools:context=".MapsActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment"
        />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/location"
+            android:id="@+id/locationBut"
+            android:background="@null"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true" />
 
 
-
-
-
+    </RelativeLayout>
 
 
 
