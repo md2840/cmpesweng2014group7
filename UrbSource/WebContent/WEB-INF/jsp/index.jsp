@@ -60,8 +60,8 @@
 		});
 		
 		function editExp(el) {
-			el.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","true");
-			el.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "block";
+			el.parentElement.parentElement.parentElement.parentElement.childNodes[5].childNodes[2].setAttribute("contentEditable","true");
+			el.parentElement.parentElement.parentElement.parentElement.childNodes[5].childNodes[4].style.display = "block";
 		}
 	</script>
 </jsp:attribute>
