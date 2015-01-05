@@ -170,12 +170,15 @@ public class UserController {
 		String username;
 		try {
 			username = json.getJSONObject("params").getString("username");
-			User u = userDao.getLoginUser(username);
-			map.put("expPoint", u.getExperiencePoints());
-			map.put("commentPoint", u.getCommentPoints());
-			map.put("numOfExp", u.getNumberOfExperiences());
+			User u = userDao.getMobileUser(username);
+			map.put("user", u);
+			map.put("success",true );
+			//map.put("commentPoint", u.getCommentPoints());
+			//map.put("numOfExp", u.getNumberOfExperiences());
 
 		} catch (JSONException e) {
+			map.put("error", e);
+			map.put("success",false );
 			throw e;
 		}
 		return map;
