@@ -605,6 +605,7 @@ public class ExperienceController {
 	public @ResponseBody HashMap<String, Object> mobileMarkSpam(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		String username = json.getString("username");
 		
 		boolean hasAuthority = json.getBoolean("IsLoggedIn");
 		if(!hasAuthority){
@@ -622,7 +623,8 @@ public class ExperienceController {
 			return map;
 		}
 		Experience exp = expDao.getExperience(id);
-		map.put("success", expDao.markSpam(exp));
+		User u = userDao.getMobileUser(username);
+		map.put("success", expDao.markSpamMobile(exp,u));
 		return map;
 	}
 	
@@ -630,6 +632,7 @@ public class ExperienceController {
 	public @ResponseBody HashMap<String, Object> mobileUnmarkSpam(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+		String username = json.getString("username");
 		
 		boolean hasAuthority = json.getBoolean("IsLoggedIn");
 		if(!hasAuthority){
@@ -647,7 +650,8 @@ public class ExperienceController {
 			return map;
 		}
 		Experience exp = expDao.getExperience(id);
-		map.put("success", expDao.unmarkSpam(exp));
+		User u = userDao.getMobileUser(username);
+		map.put("success", expDao.unmarkSpamMobile(exp,u));
 		return map;
 	}
 	
