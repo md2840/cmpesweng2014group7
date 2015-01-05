@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -51,9 +52,9 @@ public class MainFragment extends Fragment{
 	final String UPVOTE_EXP="ue";
 	final String DOWNVOTE_EXP="de";
 	final String DELETE_EXP="dele";
+	final String SPAM_EXP = "se";
 	private String responseText;
 	private AlertDialog.Builder alert ;
-	private boolean imageChooser=false;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,6 +114,17 @@ public class MainFragment extends Fragment{
             TextView username = (TextView) view.findViewById(R.id.ex_username);
             if(username!=null){
             	username.setText(experience.getAuthor().getUsername());
+            	username.setTag(new Integer(position));
+                
+            	username.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    	Intent i = new Intent(getActivity().getApplicationContext(), UserProfile.class);
+                    	i.putExtra("username",recentExperiences.get(Integer.parseInt(v.getTag().toString())).getAuthor().getUsername());
+                        startActivity(i);
+                    }
+                    
+            	});
             }
             TextView location = (TextView) view.findViewById(R.id.ex_location);
             //location add
@@ -136,6 +148,29 @@ public class MainFragment extends Fragment{
             	
             	tags.setText(build.toString());
             }
+            
+            TextView comment = (TextView) view.findViewById(R.id.ex_comment);
+            if(comment!=null){
+            	if(experience.getNumberOfComments()==0){
+            		comment.setText("No comments");
+            	}else if(experience.getNumberOfComments()==1){
+            		comment.setText("1 comment");
+            	}else{
+            		comment.setText(experience.getNumberOfComments()+" comments");            		
+            	}
+            	comment.setTag(new Integer(position));
+                
+            	comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    	Intent i = new Intent(getActivity().getApplicationContext(), ShowExperience.class);
+                    	i.putExtra("id",recentExperiences.get(Integer.parseInt(v.getTag().toString())).getId());
+                        startActivity(i);
+                    }
+                    
+            	});
+             }
+            
             ImageButton upvote = (ImageButton) view.findViewById(R.id.ex_upvote);
             upvote.setTag(new Integer(position));
             upvote.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +219,33 @@ public class MainFragment extends Fragment{
         		downvote.setImageResource(R.drawable.arrow_down_inactive);
         	}
             
+            //WEB api spam için açılıp deploy edince açalım.
+            
+//            ImageButton spam = (ImageButton) view.findViewById(R.id.ex_spam);
+//            spam.setTag(new Integer(position));
+//            spam.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                	int pos = Integer.parseInt(v.getTag().toString());
+//                	ImageButton spamButton = (ImageButton) v;
+//                	if(recentExperiences.get(pos).isUserMarkedSpam()){
+//                		spamButton.setImageResource(R.drawable.spam_inactive);                    	
+//                	}else{
+//                		spamButton.setImageResource(R.drawable.spam);
+//                		
+//                	}
+//                	new MyAsyncTask().execute(SPAM_EXP,v.getTag().toString());
+//                	
+//                }
+//                });
+//            spam.setVisibility(View.VISIBLE);
+//            
+//            if(recentExperiences.get(position).isUserMarkedSpam()){
+//        		spam.setImageResource(R.drawable.spam);                    	
+//        	}else{
+//        		spam.setImageResource(R.drawable.spam_inactive);
+//        	}
+            
             ImageButton delete = (ImageButton) view.findViewById(R.id.btn_delete);
             delete.setTag(new Integer(position));
             delete.setOnClickListener(new View.OnClickListener() {
@@ -215,7 +277,7 @@ public class MainFragment extends Fragment{
             Log.i("name experience user",experience.getAuthor().getUsername());
             if(experience.getAuthor().getUsername().equals(session.getUserDetails().get("name"))){
             	delete.setVisibility(View.VISIBLE);
-            	//verify.setVisibility(View.INVISIBLE);
+            	//spam.setVisibility(View.INVISIBLE);
             	upvote.setVisibility(View.INVISIBLE);
             	downvote.setVisibility(View.INVISIBLE);
             }
@@ -235,6 +297,7 @@ public class MainFragment extends Fragment{
 		private boolean upvote = false;
 		private boolean downvote = false;
 		private boolean delete = false;
+		private boolean spam = false;
 		private boolean undo = false;   
 		private int position;
 		    @Override
@@ -263,6 +326,9 @@ public class MainFragment extends Fragment{
 			    }else if(params[0]==DELETE_EXP){
 			    	delete = true;
 			    	deleteExp(params[1]);
+			    }else if(params[0]==SPAM_EXP){
+			    	spam=true;
+			    	spamExp(params[1]);
 			    }
 				
 				
@@ -289,7 +355,7 @@ public class MainFragment extends Fragment{
 							alert.setMessage("You liked the experience");
 							alert.show();
 			    		} 
-						adapter.notifyDataSetChanged();
+						
 					}else{
 						alert.setTitle("error");
 						alert.setMessage(myObject.getString("error"));
@@ -316,7 +382,7 @@ public class MainFragment extends Fragment{
 				    		alert.setMessage("You disliked the experience");
 				    		alert.show();  
 				    	}
-						adapter.notifyDataSetChanged();
+						
 						
 					}else{
 						alert.setTitle("error");
@@ -344,6 +410,31 @@ public class MainFragment extends Fragment{
 					recentExperiences.remove(position);
 					adapter.notifyDataSetChanged();
 				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}else if(spam){
+				try {
+					JSONObject myObject = new JSONObject(responseText);
+					
+					if(myObject.getBoolean("success")){
+						alert.setTitle("success");
+						
+						if(undo){
+							alert.setMessage("You took back the spam alert");
+							undo = false;
+							alert.show();
+				    	}else{
+				    		alert.setMessage("You marked the experience as spam");
+				    		alert.show();  
+				    	}
+						
+					}else{
+						alert.setTitle("error");
+						alert.setMessage(myObject.getString("error"));
+			    		alert.show();  
+					}
+				}catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	
@@ -510,6 +601,66 @@ public class MainFragment extends Fragment{
 					e.printStackTrace();
 				}
 		}
+		
+		public void spamExp(String pos){
+			
+			int exp_pos = Integer.parseInt(pos);
+			position = exp_pos;
+			// Create a new HttpClient and Post Header
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httpPost;
+			if(recentExperiences.get(exp_pos).isUserMarkedSpam()){
+				httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/mobileunmarkSpam");
+				
+			}else{
+			    httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/mobilemarkSpam");
+			
+			}
+			undo = recentExperiences.get(exp_pos).isUserMarkedSpam();
+			if(undo){
+				 recentExperiences.get(exp_pos).setUserMarkedSpam(false);
+			}else{
+				recentExperiences.get(exp_pos).setUserMarkedSpam(true);
+			}
+			try {
+					
+				JSONObject jsonobj = new JSONObject();
+				jsonobj.put("username",session.getUserDetails().get("name"));
+				
+				jsonobj.put("IsLoggedIn", session.isLoggedIn());
+				jsonobj.put("id",recentExperiences.get(exp_pos).getId());
+				 
+				
+				
+				StringEntity se = new StringEntity(jsonobj.toString());    
+				se.setContentType("application/json;charset=UTF-8");
+				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+				httpPost.setHeader("Content-Type", "application/json");
+				httpPost.setHeader("Accept", "application/json");
+			
+				httpPost.setEntity(se);
+					// Execute HTTP Post Request
+				HttpResponse response = httpclient.execute(httpPost);
+					
+				 HttpEntity entity = response.getEntity();
+				 
+				 String text = getASCIIContentFromEntity(entity);
+				 responseText=text;
+				 
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
  
 		public void getData(){
 			// Create a new HttpClient and Post Header
@@ -554,7 +705,11 @@ public class MainFragment extends Fragment{
 					 //exp.setModificationTime(Timestamp.valueOf(jsonObj.getString("modificationTime")));
 				     exp.setSpam(jsonObj.getInt("spam"));
 				     exp.setUserMarkedSpam(jsonObj.getBoolean("userMarkedSpam"));
-				     //USER çekme tarafı ileride ayrı method yap kolay olsun.
+				     exp.setUpvotedByUser(jsonObj.getBoolean("upvotedByUser"));
+				     exp.setDownvotedByUser(jsonObj.getBoolean("downvotedByUser"));
+				     exp.setNumberOfComments(jsonObj.getInt("numberOfComments"));
+				     
+					 //USER çekme tarafı ileride ayrı method yap kolay olsun.
 				     JSONObject userJ = new JSONObject(jsonObj.getString("author"));
 				     u.setId(userJ.getInt("id"));
 				     u.setCommentPoints(userJ.getInt("commentPoints"));
