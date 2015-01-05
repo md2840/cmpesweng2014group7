@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/ex_username"
+        android:layout_below="@+id/ex_mood"
         android:layout_toLeftOf="@+id/ex_upvote"
         android:ems="10"
         android:height="80dp"
@@ -45,15 +45,44 @@
         android:ems="10"
         android:text="--tags--" />
 
+    <TextView
+        android:id="@+id/ex_mood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ex_username"
+        android:text="Neutral Experience" />
+
+    <ImageButton
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/ex_mood"
+        android:background="#FFFFFF"
+        android:src="@android:drawable/ic_delete" />
+
+    <ImageButton
+        android:id="@+id/ex_spam"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_above="@+id/ex_downvote"
+        android:layout_alignLeft="@+id/ex_upvote"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/btn_delete"
+        android:background="#00000000"
+        android:scaleType="fitXY"
+        android:src="@drawable/spam_inactive" />
+
     <ImageButton
         android:id="@+id/ex_downvote"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_alignBottom="@+id/ex_tags"
+        android:layout_above="@+id/ex_tags"
         android:layout_alignParentRight="true"
         android:background="#00000000"
         android:scaleType="fitXY"
-        android:src="@drawable/arrow_down" />
+        android:src="@drawable/arrow_down_inactive" />
 
     <ImageButton
         android:id="@+id/ex_upvote"
@@ -63,23 +92,15 @@
         android:layout_toLeftOf="@+id/ex_downvote"
         android:background="#00000000"
         android:scaleType="fitXY"
-        android:src="@drawable/arrow_up" />
+        android:src="@drawable/arrow_up_inactive" />
 
-    <ImageButton
-        android:id="@+id/btn_delete"
+    <TextView
+        android:id="@+id/ex_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/ex_upvote"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/ex_content"
-        android:background="#FFFFFF"
-        android:src="@android:drawable/ic_delete" />
-
-    <CheckBox
-        android:id="@+id/ex_verify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/ex_downvote"
-        android:layout_alignParentRight="true" />
+        android:layout_alignBaseline="@+id/ex_tags"
+        android:layout_alignBottom="@+id/ex_tags"
+        android:layout_alignRight="@+id/ex_content"
+        android:text="TextView" />
 
 </RelativeLayout>
