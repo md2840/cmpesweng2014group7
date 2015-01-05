@@ -429,8 +429,7 @@ public class JDBCExperienceDAO {
 	}
 	
 	public boolean markSpamMobile(Experience e,User u) {
-		if (e.isUserMarkedSpam())
-			return false;
+		
 		try {
 			jdbcTemplate.update("INSERT INTO experience_spam (experience_id, user_id) VALUES(?, ?)", new Object[] {e.getId(), u.getId()});
 			e.incrementSpam();
