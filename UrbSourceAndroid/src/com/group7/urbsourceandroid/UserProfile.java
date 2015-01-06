@@ -2,6 +2,7 @@ package com.group7.urbsourceandroid;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -22,10 +23,17 @@ import com.group7.urbsourceandroid.models.Tag;
 import com.group7.urbsourceandroid.models.User;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class UserProfile extends Activity {
@@ -35,14 +43,19 @@ public class UserProfile extends Activity {
 	private String responseText;
 	private final String GET_USER = "gu";
 	private final String GET_EXP = "ge";
+	final String UPVOTE_EXP="ue";
+	final String DOWNVOTE_EXP="de";
+	final String DELETE_EXP="dele";
+	final String SPAM_EXP = "se";
 	private List<Experience> userExperiences;
 	private String usernameOfTheDesiredUser;
 	private TextView fullname;
 	private TextView exppoint;
 	private TextView compoint;
 	private TextView numOfExp;
-	
-	
+	private ListView explist;
+	private ActionListAdapter adapter;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,10 +65,15 @@ public class UserProfile extends Activity {
 		session = new SessionManager(getApplicationContext());
 		session.checkLogin();
 		username = session.getUserDetails().get("name");
-		
+
 		responseText="";
 		Log.i("username", username);
 		user = new User();
+		userExperiences = new ArrayList<Experience>();
+		adapter = new ActionListAdapter(this, R.id.pro_list, userExperiences);
+		explist = (ListView) findViewById(R.id.pro_list);
+		explist.setAdapter(adapter);
+
 		Intent i = getIntent();
 		// getting attached intent data
 		usernameOfTheDesiredUser = i.getStringExtra("username");
@@ -71,10 +89,211 @@ public class UserProfile extends Activity {
 		compoint = (TextView) findViewById(R.id.pro_compoint);
 		fullname = (TextView) findViewById(R.id.pro_name);
 		numOfExp = (TextView) findViewById(R.id.pro_numexp);
-		
+
 		new MyAsyncTask().execute(GET_USER, usernameOfTheDesiredUser);
+		new MyAsyncTask().execute(GET_EXP, usernameOfTheDesiredUser);
 
 	}
+
+	private class ActionListAdapter extends ArrayAdapter<Experience> {
+		private List<Experience> experiences;
+
+		public ActionListAdapter(Context context, int resourceId, 
+				List<Experience> experiences) {
+			super(context, resourceId, experiences);
+			this.experiences = experiences;
+
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View view = convertView;
+			if (view == null) {
+				LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				view = inflater.inflate(R.layout.experience, null);
+			}
+
+			Experience experience = userExperiences.get(position);
+			if (experience != null) {
+
+
+				TextView username = (TextView) view.findViewById(R.id.ex_username);
+				if(username!=null){
+					username.setText(experience.getAuthor().getUsername());
+					username.setTag(new Integer(position));
+
+					username.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent i = new Intent(getApplicationContext(), UserProfile.class);
+							i.putExtra("username",userExperiences.get(Integer.parseInt(v.getTag().toString())).getAuthor().getUsername());
+							startActivity(i);
+						}
+
+					});
+				}
+				TextView location = (TextView) view.findViewById(R.id.ex_location);
+				//location add
+				location.setText("");
+				TextView mood = (TextView) view.findViewById(R.id.ex_mood);
+
+
+				mood.setText(experience.getMood()+" Experience");
+				TextView content = (TextView) view.findViewById(R.id.ex_content);
+				if(content!=null){
+					content.setText(experience.getText());
+				}
+				TextView tags = (TextView) view.findViewById(R.id.ex_tags);
+				if(tags!=null){
+					StringBuilder build = new StringBuilder();
+					build.append(experience.getTags().get(0).getName());
+					for(int i=1;i<experience.getTags().size();i++){
+						build.append(",");
+						build.append(experience.getTags().get(i).getName());
+					}
+
+					tags.setText(build.toString());
+				}
+
+				TextView comment = (TextView) view.findViewById(R.id.ex_comment);
+				if(comment!=null){
+					if(experience.getNumberOfComments()==0){
+						comment.setText("No comments");
+					}else if(experience.getNumberOfComments()==1){
+						comment.setText("1 comment");
+					}else{
+						comment.setText(experience.getNumberOfComments()+" comments");            		
+					}
+					comment.setTag(new Integer(position));
+
+					comment.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent i = new Intent(getApplicationContext(), ShowExperience.class);
+							i.putExtra("id",userExperiences.get(Integer.parseInt(v.getTag().toString())).getId());
+							startActivity(i);
+						}
+
+					});
+				}
+
+				ImageButton upvote = (ImageButton) view.findViewById(R.id.ex_upvote);
+				upvote.setTag(new Integer(position));
+				upvote.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						int pos = Integer.parseInt(v.getTag().toString());
+						ImageButton upButton = (ImageButton) v;
+						if(userExperiences.get(pos).isUpvotedByUser()){
+							upButton.setImageResource(R.drawable.arrow_up_inactive);                    	
+						}else{
+							upButton.setImageResource(R.drawable.arrow_up);
+
+						}
+						new MyAsyncTask().execute(UPVOTE_EXP,v.getTag().toString());
+
+					}
+				});
+				upvote.setVisibility(View.VISIBLE);
+
+				if(userExperiences.get(position).isUpvotedByUser()){
+					upvote.setImageResource(R.drawable.arrow_up);                    	
+				}else{
+					upvote.setImageResource(R.drawable.arrow_up_inactive);
+				}
+
+				ImageButton downvote = (ImageButton) view.findViewById(R.id.ex_downvote);
+				downvote.setTag(new Integer(position));
+				downvote.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						int pos = Integer.parseInt(v.getTag().toString());
+						ImageButton downButton = (ImageButton) v;
+						if(userExperiences.get(pos).isDownvotedByUser()){
+							downButton.setImageResource(R.drawable.arrow_down_inactive);                    	
+						}else{
+							downButton.setImageResource(R.drawable.arrow_down);
+						}
+						new MyAsyncTask().execute(DOWNVOTE_EXP,v.getTag().toString());
+					}
+				});
+				downvote.setVisibility(View.VISIBLE);
+
+				if(userExperiences.get(position).isDownvotedByUser()){
+					downvote.setImageResource(R.drawable.arrow_down);                    	
+				}else{
+					downvote.setImageResource(R.drawable.arrow_down_inactive);
+				}
+
+				//WEB api spam için açılıp deploy edince açalım.
+
+				//            ImageButton spam = (ImageButton) view.findViewById(R.id.ex_spam);
+				//            spam.setTag(new Integer(position));
+				//            spam.setOnClickListener(new View.OnClickListener() {
+				//                @Override
+				//                public void onClick(View v) {
+				//                	int pos = Integer.parseInt(v.getTag().toString());
+				//                	ImageButton spamButton = (ImageButton) v;
+				//                	if(recentExperiences.get(pos).isUserMarkedSpam()){
+				//                		spamButton.setImageResource(R.drawable.spam_inactive);                    	
+				//                	}else{
+				//                		spamButton.setImageResource(R.drawable.spam);
+				//                		
+				//                	}
+				//                	new MyAsyncTask().execute(SPAM_EXP,v.getTag().toString());
+				//                	
+				//                }
+				//                });
+				//            spam.setVisibility(View.VISIBLE);
+				//            
+				//            if(recentExperiences.get(position).isUserMarkedSpam()){
+				//        		spam.setImageResource(R.drawable.spam);                    	
+				//        	}else{
+				//        		spam.setImageResource(R.drawable.spam_inactive);
+				//        	}
+
+				ImageButton delete = (ImageButton) view.findViewById(R.id.btn_delete);
+				delete.setTag(new Integer(position));
+				delete.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						//delete httppost
+						new MyAsyncTask().execute(DELETE_EXP,v.getTag().toString());
+					}
+				});
+
+				delete.setVisibility(View.INVISIBLE);
+				//            CheckBox verify = (CheckBox) view.findViewById(R.id.ex_verify);
+				//            verify.setOnClickListener(new View.OnClickListener() {
+				//
+				//                @Override
+				//                public void onClick(View v) {
+				//                          
+				//                  if (((CheckBox) v).isChecked()) {
+				//                            //verify http post
+				//                		Log.i("experience verify","okk");
+				//                  }
+				//                  else {
+				//                	  //unverify http post
+				//              		Log.i("experience unverify","step back");
+				//
+				//                  }
+				//                }
+				//              });
+				Log.i("name experience user",experience.getAuthor().getUsername());
+				if(experience.getAuthor().getUsername().equals(session.getUserDetails().get("name"))){
+					delete.setVisibility(View.VISIBLE);
+					//spam.setVisibility(View.INVISIBLE);
+					upvote.setVisibility(View.INVISIBLE);
+					downvote.setVisibility(View.INVISIBLE);
+				}
+			}
+
+
+			return view;
+		}
+	}
+
 	private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		private boolean getuser = false;
 		private boolean getexp = false;
@@ -87,6 +306,7 @@ public class UserProfile extends Activity {
 				getUserData(params[1]);
 			}else if(params[0]==GET_EXP){
 				getexp = true;
+				Log.i("username for exp", params[1]);
 				getUserExperiences(params[1]);
 			}
 			return null;
@@ -100,26 +320,24 @@ public class UserProfile extends Activity {
 				fullname.setText(user.getFirstName() + " " + user.getLastName());
 
 			}else if(getexp){
-				//listview eklenince adapter.notifydatasetchanged de
+				adapter.notifyDataSetChanged();
 			}
 		}
 
-		public void getUserExperiences(String username)  {
+		public void getUserExperiences(String usernameOfTheDesiredUser)  {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
 			//HttpGet httpGet = new HttpGet("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/recent");
-			HttpPost httpPost = new HttpPost("http://10.0.3.2/UrbSource/user/mobile"); //for genymotion
+			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/user"); //for genymotion
 			try {
 				// Add your data
 				JSONObject jsonobj = new JSONObject();
+
 				jsonobj.put("username", username);
+				jsonobj.put("wantedUsername",usernameOfTheDesiredUser);
 
-				if(usernameOfTheDesiredUser==null){
-					jsonobj.put("wantedUsername", username);
-
-				}else{
-					jsonobj.put("wantedUsername",usernameOfTheDesiredUser);
-				}
+				Log.i("wanted username", usernameOfTheDesiredUser);
+				Log.i("login olan user", username);
 
 				StringEntity se = new StringEntity(jsonobj.toString());    
 				se.setContentType("application/json;charset=UTF-8");
@@ -186,17 +404,17 @@ public class UserProfile extends Activity {
 				e.printStackTrace();
 			}
 		}
-		public void getUserData(String username)  {
+		public void getUserData(String usernameOfTheDesiredUser)  {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobileuserinfo"); //for genymotion
 			try {
 				// Add your data
 
-				Log.i("username3", username);
-				
+				Log.i("username3", usernameOfTheDesiredUser);
+
 				JSONObject jsonobj = new JSONObject();
-				jsonobj.put("username", username);
+				jsonobj.put("username", usernameOfTheDesiredUser);
 
 				StringEntity se = new StringEntity(jsonobj.toString());    
 				se.setContentType("application/json;charset=UTF-8");
@@ -204,17 +422,17 @@ public class UserProfile extends Activity {
 				httpPost.setHeader("Content-Type", "application/json");
 				httpPost.setHeader("Accept", "application/json");
 				httpPost.setEntity(se);
-				
+
 				HttpResponse response = httpclient.execute(httpPost);
 				HttpEntity entity = (HttpEntity) response.getEntity(); 
 				Log.i("res", response.getStatusLine().toString());
-				
-				
-				
+
+
+
 				responseText = getASCIIContentFromEntity(entity);
 				Log.i("res",responseText);
-				
-				
+
+
 				JSONObject obj = new JSONObject(responseText);
 				String suc = String.valueOf(obj.getBoolean("success"));
 				Log.i("suc", suc);
@@ -229,7 +447,7 @@ public class UserProfile extends Activity {
 				user.setPassword(userJ.getString("password"));
 				user.setPassword2(userJ.getString("password2"));
 				user.setUsername(userJ.getString("username"));
-				
+
 				Log.i("response", user.getEmail());
 
 			} catch (ClientProtocolException e) {

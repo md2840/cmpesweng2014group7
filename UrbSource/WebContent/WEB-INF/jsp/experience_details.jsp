@@ -64,6 +64,30 @@
 			el.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "block";
 		}
 	</script>
+	<script>
+		function initialize() {
+		  var num=document.getElementById('loc').value; 
+		  var latlngStr = num.split(',', 2);
+		  var lat = parseFloat(latlngStr[0]);
+		  var lng = parseFloat(latlngStr[1]);
+		  console.log(num);
+		  var myLatlng2 = new google.maps.LatLng(lat,lng);
+		  var mapOptions2 = {
+		    zoom: 12,
+		    center: myLatlng2
+		  }
+		  var map2 = new google.maps.Map(document.getElementById('map-canvas-2'), mapOptions2);
+		
+		  var marker2 = new google.maps.Marker({
+		      position: myLatlng2,
+		      map: map2,
+		      title: 'Hello World!'
+		  });
+		}
+		
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
 </jsp:attribute>
 	<jsp:attribute name="mainPanel">
 		<div id="experience-list">
@@ -87,6 +111,7 @@
 						Tags: <span>${experience.tagNames}</span>
 					</p>
 				</div>
+				<div id="map-canvas-2" style="position:relative;z-index:9999;width:100%; height:300px;"></div>
 				<div class="panel-footer clearfix">
 					<div class="pull-left">
 						<div class="btn-toolbar" style="display: inline-block !important;">
@@ -122,6 +147,7 @@
 						</div>
 					</div>
 				</div>
+				<input id="loc" type="hidden" value="${experience.location}"></input>
 			</div>
 		</div>
 </jsp:attribute>

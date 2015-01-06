@@ -2,10 +2,13 @@ package com.group7.urbsourceandroid;
 
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,9 +26,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.LoaderManager;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -37,9 +45,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -47,6 +58,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -57,12 +69,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class CreateExperienceFragment extends Fragment implements LocationListener {
+public class CreateExperienceFragment extends Fragment implements LocationListener,GoogleMap.OnMapClickListener {
 
 	private EditText Text,Tags;
 	private Button save;
 	private Spinner MoodS;
-    private EditText LocationText;
+
 
     private LocationManager locationManager;
     private GoogleMap mMap;
@@ -77,7 +89,7 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
     double longitude;
     ImageButton locButton;
     Marker marker;
-    String locationName;
+    LatLng currentLatLing;
 
 
 
@@ -88,12 +100,13 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
         final View view = inflater.inflate(R.layout.createexp, container, false);
 
 
+
         session = new SessionManager(getActivity().getApplicationContext());
 
         Text = (EditText) view.findViewById(R.id.editText1);
         Tags = (EditText) view.findViewById(R.id.editText2);
         MoodS = (Spinner) view.findViewById(R.id.spinner1);
-        LocationText = (EditText) view.findViewById(R.id.location);
+
 
         List<String> moodList = new ArrayList<String>();
     	moodList.add("Good");
@@ -107,6 +120,9 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
         fragmentManager = getFragmentManager();
         setUpMapIfNeeded();
         locButton = (ImageButton) view.findViewById(R.id.locationBut);
+
+        // Setting click event listener for the find button
+
         locButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -118,29 +134,19 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
                         marker.remove();
                     }
 
-                    Geocoder gcd = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
-                    List<Address> addresses = null;
-                    try {
-                        addresses = gcd.getFromLocation(latitude, longitude, 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (addresses.size() > 0) {
 
-                        locationName = addresses.get(0).getSubLocality() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getCountryName();
 
-                    }
                         latitude = gps.getLatitude();
                         longitude = gps.getLongitude();
                         marker = mMap.addMarker(new MarkerOptions()
                                      .position(new LatLng(latitude, longitude))
-                                     .title(locationName)
+                                     .title(Text.getText().toString())
                                      .icon(BitmapDescriptorFactory.fromResource(R.drawable.markerlogo))
                         );
 
-                        LocationText.setText(locationName);
 
-                        LatLng currentLatLing=new LatLng(latitude,longitude);
+
+                        currentLatLing=new LatLng(latitude,longitude);
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLing));
                         mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
@@ -185,10 +191,14 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
      * is not null.
      */
     String provider;
+
     private  void setUpMap() {
         // For showing a move to my loction button
         locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
         provider=locationManager.GPS_PROVIDER;
+
+        mMap.setOnMapClickListener(this);
+
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             showGPSDisabledAlertToUser();
@@ -201,12 +211,25 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 		String exptext = Text.getText().toString();
 		String tags = Tags.getText().toString();
 		String mood = MoodS.getSelectedItem().toString();
-        String location=LocationText.getText().toString();
-
+        String location="";
+        if(currentLatLing!=null) {
+             location= currentLatLing.toString();
+        }
 
 
         //Here we need to pass data as parameters to MyAsyncTask together with location
-		new MyAsyncTask().execute(exptext,tags,mood);
+        if(exptext.equals("")){
+            Toast.makeText(getActivity().getBaseContext(), "Place Enter Your Experience Text!",
+                    Toast.LENGTH_SHORT).show();
+        }else if(tags.equals("")){
+            Toast.makeText(getActivity().getBaseContext(), "Place Enter Your Experience Tags!",
+                    Toast.LENGTH_SHORT).show();
+        }else if(location.equals("")){
+            new MyAsyncTask1().execute(exptext,tags,mood);
+        }
+        else{
+		    new MyAsyncTask().execute(exptext,tags,mood,location);
+        }
 	}
 
     @Override
@@ -229,6 +252,22 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 
     }
 
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if(marker!=null){
+            marker.remove();
+        }
+        latitude=latLng.latitude;
+        longitude=latLng.longitude;
+        marker = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(Text.getText().toString())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.markerlogo))
+        );
+        currentLatLing=latLng;
+
+    }
+
     private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		 
 		
@@ -244,7 +283,7 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 		@Override
 		protected Double doInBackground(String... params) {
 				try {
-					sendData(params[0],params[1],params[2]);
+					sendData(params[0],params[1],params[2],params[3]);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -254,14 +293,20 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 		protected void onPostExecute(Double result){
 			
 			Log.i("result",responseString);
+
+            Text.setText("");
+            Tags.setText("");
+            Toast.makeText(getActivity().getBaseContext(), "You Have Created an Experience",
+                    Toast.LENGTH_SHORT).show();
+
 			
 		}
 		
 
-		public void sendData(String Text,String Tags, String Mood) throws JSONException {
+		public void sendData(String Text,String Tags, String Mood,String Location) throws JSONException {
 			
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost("http://10.0.3.2/UrbSource/experience/mobilecreate");
+			HttpPost httppost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobilecreate");
 			
 			try {
 			
@@ -270,6 +315,7 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 				jsonobj.put("IsLoggedIn", session.isLoggedIn());
 				jsonobj.put("text", Text);
 				jsonobj.put("mood", Mood);
+                jsonobj.put("location", Location);
 				JSONArray jsona = new JSONArray();
 				
 				if(Tags.contains(",")){
@@ -314,6 +360,96 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
  
 	}
 
+    private class MyAsyncTask1 extends AsyncTask<String, Integer, Double>{
+
+
+        @Override
+
+        protected void onPreExecute() {
+
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected Double doInBackground(String... params) {
+            try {
+                sendData(params[0],params[1],params[2]);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Double result){
+
+            Log.i("result",responseString);
+
+            Text.setText("");
+            Tags.setText("");
+            Toast.makeText(getActivity().getBaseContext(), "You Have Created an Experience",
+                    Toast.LENGTH_SHORT).show();
+
+        }
+
+
+        public void sendData(String Text,String Tags, String Mood) throws JSONException {
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobilecreate");
+
+            try {
+
+                JSONObject jsonobj = new JSONObject();
+                jsonobj.put("username",session.getUserDetails().get("name"));
+                jsonobj.put("IsLoggedIn", session.isLoggedIn());
+                jsonobj.put("text", Text);
+                jsonobj.put("mood", Mood);
+
+                JSONArray jsona = new JSONArray();
+
+                if(Tags.contains(",")){
+                    String[] splitTags = Tags.split(",");
+                    for(int i=0;i<splitTags.length;i++){
+                        jsona.put(splitTags[i]);
+                    }
+                }else{
+                    jsona.put(Tags);
+                }
+
+                jsonobj.put("tags", jsona);
+
+
+
+
+
+                StringEntity se = new StringEntity(jsonobj.toString());
+                se.setContentType("application/json;charset=UTF-8");
+                se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+                httppost.setHeader("Content-Type", "application/json");
+                httppost.setHeader("Accept", "application/json");
+
+                httppost.setEntity(se);
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httppost);
+
+                HttpEntity entity = response.getEntity();
+
+                String text = getASCIIContentFromEntity(entity);
+                responseString = text;
+
+
+
+
+            } catch (ClientProtocolException e) {
+                // TODO Auto-generated catch block
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+            }
+        }
+
+    }
     private void showGPSDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setMessage("Please enable your GPS.")
@@ -353,7 +489,11 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 
 		return out.toString();
 		}
-	
+
 
 
 }
+	
+
+
+
