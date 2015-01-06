@@ -17,7 +17,6 @@ body{
 
 .searchPanel {
 	position:absolute;
-	height: 300px;
 		left:50%;
 	margin-left:-350px;
 }
