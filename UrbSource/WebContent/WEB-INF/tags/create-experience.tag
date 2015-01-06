@@ -1,6 +1,14 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <div id="create-experience-panel" class="panel panel-primary">
-	<div class="panel-heading">Share a new experience:</div>
+  <div class="panel panel-default">
+	<div class="panel-heading" style="cursor: pointer;z-index:9999" data-toggle="collapse" data-target="#collapseOne"> 
+    <h4 class="panel-title">
+	<a class="accordion-toggle">
+          Share a new experience:
+        </a>
+        </h4>
+        </div>
+	<div id="collapseOne" class="panel-collapse collapse">
 	<div class="panel-body">
 	<p>
 	<label for="experience-text">Tell us about your experience:</label><br/>
@@ -29,11 +37,13 @@
 		<input type="date" name="expires-date" id="expires-date">
 	</p>
 	<small><em>Leave expiration date empty if experience is permanent.</em></small><br>
-	<label for="experience-locations">Location:</label><br>
+	<label for="experience-locations">Location: (Click on the place where the experience has happened.)</label><br>
 	<input id="pac-input" class="controls" type="text" placeholder="Search Box">
   	<div id="map-canvas" style="left:0;right:0;margin-left:auto;margin-right:auto;margin-bottom:2em;height:300px;top:20px"></div>
   	<div id="latbox"></div>
   	<div id="lngbox"></div>
+	</div>
+	</div>
 	</div>
 	<div class="panel-footer">
 		<button type="button" class="btn btn-primary" id="create-experience">Share!</button>
