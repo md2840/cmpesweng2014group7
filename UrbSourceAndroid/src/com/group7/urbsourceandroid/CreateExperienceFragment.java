@@ -74,6 +74,7 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 	private EditText Text,Tags;
 	private Button save;
 	private Spinner MoodS;
+    private EditText etLocation;
 
 
     private LocationManager locationManager;
@@ -167,6 +168,26 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
                 	createExp();
                 }
                 });
+        Button btn_find = (Button) view.findViewById(R.id.btn_find);
+
+        // Defining button click event listener for the find button
+        btn_find.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Getting reference to EditText to get the user input location
+                etLocation = (EditText) getActivity().findViewById(R.id.et_location);
+
+                // Getting user input location
+                String location = etLocation.getText().toString();
+
+                if(location!=null && !location.equals("")){
+                    new GeocoderTask().execute(location);
+                }
+            }
+        });
+
+
+
         return view;
 	}
     public  void setUpMapIfNeeded() {
@@ -296,6 +317,7 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 
             Text.setText("");
             Tags.setText("");
+            etLocation.setText("");
             Toast.makeText(getActivity().getBaseContext(), "You Have Created an Experience",
                     Toast.LENGTH_SHORT).show();
 
@@ -388,6 +410,7 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 
             Text.setText("");
             Tags.setText("");
+            etLocation.setText("");
             Toast.makeText(getActivity().getBaseContext(), "You Have Created an Experience",
                     Toast.LENGTH_SHORT).show();
 
@@ -490,8 +513,60 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 		return out.toString();
 		}
 
+    // An AsyncTask class for accessing the GeoCoding Web Service
+    private class GeocoderTask extends AsyncTask<String, Void, List<Address>> {
 
+        @Override
+        protected List<Address> doInBackground(String... locationName) {
+            // Creating an instance of Geocoder class
+            Geocoder geocoder = new Geocoder(getActivity().getBaseContext());
+            List<Address> addresses = null;
 
+            try {
+                // Getting a maximum of 3 Address that matches the input text
+                addresses = geocoder.getFromLocationName(locationName[0], 3);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return addresses;
+        }
+        @Override
+        protected void onPostExecute(List<Address> addresses) {
+
+            if(addresses==null || addresses.size()==0){
+                Toast.makeText(getActivity().getBaseContext(), "No Location found", Toast.LENGTH_SHORT).show();
+            }
+
+            // Clears all the existing markers on the map
+            mMap.clear();
+
+            // Adding Markers on Google Map for each matching address
+            for(int i=0;i<addresses.size();i++){
+
+                Address address = (Address) addresses.get(i);
+
+                // Creating an instance of GeoPoint, to display in Google Map
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+
+                String addressText = String.format("%s, %s",
+                        address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
+                        address.getCountryName());
+
+//                markerOptions = new MarkerOptions();
+//                markerOptions.position(latLng);
+//                markerOptions.title(addressText);
+
+                marker = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(Text.getText().toString())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.markerlogo)));
+
+                // Locate the first location
+                if(i==0)
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            }
+        }
+    }
 }
 	
 
