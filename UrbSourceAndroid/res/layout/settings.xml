@@ -11,15 +11,10 @@
         android:layout_height="wrap_content"
         android:text="User Profile" />
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/searchpage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add New Button" />
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add New Button" />
+        android:text="Search" />
     <Button
         android:id="@+id/logout"
         android:layout_width="match_parent"

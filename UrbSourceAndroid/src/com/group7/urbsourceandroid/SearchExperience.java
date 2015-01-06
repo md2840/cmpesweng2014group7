@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -24,7 +25,6 @@ import com.group7.urbsourceandroid.models.Tag;
 import com.group7.urbsourceandroid.models.User;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -34,79 +34,84 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class UserProfile extends Activity {
+public class SearchExperience extends Activity{
 	private SessionManager session;
 	private String username;
 	private User user;
 	private String responseText;
-	private final String GET_USER = "gu";
 	private final String GET_EXP = "ge";
 	private final String UPVOTE_EXP="ue";
 	private final String DOWNVOTE_EXP="de";
 	private final String DELETE_EXP="dele";
 	private final String SPAM_EXP = "se";
-	private List<Experience> userExperiences;
-	private String usernameOfTheDesiredUser;
-	private TextView fullname;
-	private TextView exppoint;
-	private TextView compoint;
-	private TextView numOfExp;
+	private List<Experience> searchResults;
 	private ListView explist;
+	private EditText searchText;
+	private Button SearchExperience;
 	private ActionListAdapter adapter;
-	private AlertDialog.Builder alert ;
+	private List<String> tags;
+	private String searchString;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.userprofile);
+		setContentView(R.layout.search);
 
 		session = new SessionManager(getApplicationContext());
 		session.checkLogin();
 		username = session.getUserDetails().get("name");
 
+		searchResults = new ArrayList<Experience>();
 		responseText="";
-		Log.i("username", username);
-		user = new User();
-		userExperiences = new ArrayList<Experience>();
-		adapter = new ActionListAdapter(this, R.id.pro_list, userExperiences);
-		explist = (ListView) findViewById(R.id.pro_list);
+		searchString = "";
+
+		searchText = (EditText) findViewById(R.id.searchtext);
+		searchText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				searchText.setText("");
+			}
+		});
+
+		adapter = new ActionListAdapter(this, R.id.search_list, searchResults);
+		explist = (ListView) findViewById(R.id.search_list);
 		explist.setAdapter(adapter);
-		
-		alert =  new AlertDialog.Builder(this);
-
-		Intent i = getIntent();
-		// getting attached intent data
-		usernameOfTheDesiredUser = i.getStringExtra("username");
-
-		TextView username = (TextView) findViewById(R.id.pro_username);
-		if(usernameOfTheDesiredUser==null){
-			usernameOfTheDesiredUser = this.username;
-			username.setText(this.username);
-		}else{
-			username.setText(usernameOfTheDesiredUser);
-		}
-		exppoint = (TextView) findViewById(R.id.pro_exppoint);
-		compoint = (TextView) findViewById(R.id.pro_compoint);
-		fullname = (TextView) findViewById(R.id.pro_name);
-		numOfExp = (TextView) findViewById(R.id.pro_numexp);
-
-		new MyAsyncTask().execute(GET_USER, usernameOfTheDesiredUser);
-		new MyAsyncTask().execute(GET_EXP, usernameOfTheDesiredUser);
+		SearchExperience = (Button) findViewById(R.id.btn_search);
+		SearchExperience.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				searchString = searchText.getText().toString();
+				startSearch();
+			}
+		});
 
 	}
 
+	private void startSearch(){
+		searchString = searchText.getText().toString();
+
+		tags = Arrays.asList(searchString.split(","));
+		Log.i("search", tags.toString());
+		
+		searchResults.clear();
+
+		new MyAsyncTask().execute(GET_EXP);
+	}
+
 	private class ActionListAdapter extends ArrayAdapter<Experience> {
-		private List<Experience> experiences;
+		private List<Experience> searchResults;
 
 		public ActionListAdapter(Context context, int resourceId, 
-				List<Experience> experiences) {
-			super(context, resourceId, experiences);
-			this.experiences = experiences;
+				List<Experience> searchResults) {
+			super(context, resourceId, searchResults);
+			this.searchResults = searchResults;
 
 		}
 
@@ -118,7 +123,7 @@ public class UserProfile extends Activity {
 				view = inflater.inflate(R.layout.experience, null);
 			}
 
-			Experience experience = userExperiences.get(position);
+			Experience experience = searchResults.get(position);
 			if (experience != null) {
 
 
@@ -131,7 +136,7 @@ public class UserProfile extends Activity {
 						@Override
 						public void onClick(View v) {
 							Intent i = new Intent(getApplicationContext(), UserProfile.class);
-							i.putExtra("username",userExperiences.get(Integer.parseInt(v.getTag().toString())).getAuthor().getUsername());
+							i.putExtra("username",searchResults.get(Integer.parseInt(v.getTag().toString())).getAuthor().getUsername());
 							startActivity(i);
 						}
 
@@ -175,7 +180,7 @@ public class UserProfile extends Activity {
 						@Override
 						public void onClick(View v) {
 							Intent i = new Intent(getApplicationContext(), ShowExperience.class);
-							i.putExtra("id",userExperiences.get(Integer.parseInt(v.getTag().toString())).getId());
+							i.putExtra("id",searchResults.get(Integer.parseInt(v.getTag().toString())).getId());
 							startActivity(i);
 						}
 
@@ -189,7 +194,7 @@ public class UserProfile extends Activity {
 					public void onClick(View v) {
 						int pos = Integer.parseInt(v.getTag().toString());
 						ImageButton upButton = (ImageButton) v;
-						if(userExperiences.get(pos).isUpvotedByUser()){
+						if(searchResults.get(pos).isUpvotedByUser()){
 							upButton.setImageResource(R.drawable.arrow_up_inactive);                    	
 						}else{
 							upButton.setImageResource(R.drawable.arrow_up);
@@ -201,7 +206,7 @@ public class UserProfile extends Activity {
 				});
 				upvote.setVisibility(View.VISIBLE);
 
-				if(userExperiences.get(position).isUpvotedByUser()){
+				if(searchResults.get(position).isUpvotedByUser()){
 					upvote.setImageResource(R.drawable.arrow_up);                    	
 				}else{
 					upvote.setImageResource(R.drawable.arrow_up_inactive);
@@ -214,7 +219,7 @@ public class UserProfile extends Activity {
 					public void onClick(View v) {
 						int pos = Integer.parseInt(v.getTag().toString());
 						ImageButton downButton = (ImageButton) v;
-						if(userExperiences.get(pos).isDownvotedByUser()){
+						if(searchResults.get(pos).isDownvotedByUser()){
 							downButton.setImageResource(R.drawable.arrow_down_inactive);                    	
 						}else{
 							downButton.setImageResource(R.drawable.arrow_down);
@@ -224,7 +229,7 @@ public class UserProfile extends Activity {
 				});
 				downvote.setVisibility(View.VISIBLE);
 
-				if(userExperiences.get(position).isDownvotedByUser()){
+				if(searchResults.get(position).isDownvotedByUser()){
 					downvote.setImageResource(R.drawable.arrow_down);                    	
 				}else{
 					downvote.setImageResource(R.drawable.arrow_down_inactive);
@@ -239,7 +244,7 @@ public class UserProfile extends Activity {
 					public void onClick(View v) {
 						int pos = Integer.parseInt(v.getTag().toString());
 						ImageButton spamButton = (ImageButton) v;
-						if(userExperiences.get(pos).isUserMarkedSpam()){
+						if(searchResults.get(pos).isUserMarkedSpam()){
 							spamButton.setImageResource(R.drawable.spam_inactive);                    	
 						}else{
 							spamButton.setImageResource(R.drawable.spam);
@@ -251,7 +256,7 @@ public class UserProfile extends Activity {
 				});
 				spam.setVisibility(View.VISIBLE);
 
-				if(userExperiences.get(position).isUserMarkedSpam()){
+				if(searchResults.get(position).isUserMarkedSpam()){
 					spam.setImageResource(R.drawable.spam);                    	
 				}else{
 					spam.setImageResource(R.drawable.spam_inactive);
@@ -300,7 +305,6 @@ public class UserProfile extends Activity {
 	}
 
 	private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
-		private boolean getuser = false;
 		private boolean getexp = false;
 		private boolean get = false;
 		private boolean upvote = false;
@@ -312,14 +316,9 @@ public class UserProfile extends Activity {
 		@Override
 		protected Double doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			if(params[0]==GET_USER){
-				getuser = true;
-				Log.i("username2", params[1]);
-				getUserData(params[1]);
-			}else if(params[0]==GET_EXP){
+			if(params[0]==GET_EXP){
 				getexp = true;
-				Log.i("username for exp", params[1]);
-				getUserExperiences(params[1]);
+				getExperiences();
 			}else if(params[0]==UPVOTE_EXP){
 				upvote=true;
 				upvoteExp(params[1]);
@@ -336,133 +335,31 @@ public class UserProfile extends Activity {
 			return null;
 		}
 		protected void onPostExecute(Double result){
-			if(getuser){
-				Log.i("user", user.getFirstName());
-				exppoint.setText(Integer.toString(user.getExperiencePoints()));
-				compoint.setText(Integer.toString(user.getCommentPoints()));
-				numOfExp.setText(Integer.toString(user.getNumberOfExperiences()));
-				fullname.setText(user.getFirstName() + " " + user.getLastName());
-
-			}else if(getexp){
+			if(getexp){
 				adapter.notifyDataSetChanged();
-			}else if(upvote){
-				try {
-					JSONObject myObject = new JSONObject(responseText);
-
-					if(myObject.getBoolean("success")){
-						alert.setTitle("Success");
-
-						if(undo){
-
-							alert.setMessage("You unliked the experience");
-							undo =false;
-							alert.show();
-						}else{
-							alert.setMessage("You liked the experience");
-							alert.show();
-						} 
-
-					}else{
-						alert.setTitle("error");
-						alert.setMessage(myObject.getString("error"));
-						alert.show();  
-					}
-
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-
-			}else if(downvote){
-				try {
-					JSONObject myObject = new JSONObject(responseText);
-
-					if(myObject.getBoolean("success")){
-						alert.setTitle("success");
-
-						if(undo){
-							alert.setMessage("You took back the dislike");
-							undo = false;
-							alert.show();
-						}else{
-							alert.setMessage("You disliked the experience");
-							alert.show();  
-						}
-
-
-					}else{
-						alert.setTitle("error");
-						alert.setMessage(myObject.getString("error"));
-						alert.show();  
-					}
-
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-			}else if(delete){
-				try {
-					JSONObject myObject = new JSONObject(responseText);
-
-					if(myObject.getBoolean("success")){
-						alert.setTitle("success");
-						alert.setMessage("You deleted your experience");
-						alert.show();  
-					}else{
-						alert.setTitle("error");
-						alert.setMessage(myObject.getString("error"));
-						alert.show();  
-					}
-					userExperiences.remove(position);
-					adapter.notifyDataSetChanged();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-			}else if(spam){
-				try {
-					JSONObject myObject = new JSONObject(responseText);
-
-					if(myObject.getBoolean("success")){
-						alert.setTitle("success");
-
-						if(undo){
-							alert.setMessage("You took back the spam alert");
-							undo = false;
-							alert.show();
-						}else{
-							alert.setMessage("You marked the experience as spam");
-							alert.show();  
-						}
-
-					}else{
-						alert.setTitle("error");
-						alert.setMessage(myObject.getString("error"));
-						alert.show();  
-					}
-				}catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
 			}
 		}
 
-		public void getUserExperiences(String usernameOfTheDesiredUser)  {
+		public void getExperiences()  {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
 			//HttpGet httpGet = new HttpGet("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/recent");
-			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/user"); //for genymotion
+			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/searchExperienceText"); //for genymotion
 			try {
 				// Add your data
+//				JSONArray jsonArray = new JSONArray(tags);
+//				JSONObject jsonobj = new JSONObject();
+//
+//				jsonobj.put("tags", jsonArray);
+				
 				JSONObject jsonobj = new JSONObject();
+				jsonobj.put("text", searchString);
+				Log.i("tag", searchString);
+				
+				JSONObject jsonobj2 = new JSONObject();
+				jsonobj2.put("params", jsonobj);
 
-				jsonobj.put("username", username);
-				jsonobj.put("wantedUsername",usernameOfTheDesiredUser);
-
-				Log.i("wanted username", usernameOfTheDesiredUser);
-				Log.i("login olan user", username);
-
-				StringEntity se = new StringEntity(jsonobj.toString());    
+				StringEntity se = new StringEntity(jsonobj2.toString());    
 				se.setContentType("application/json;charset=UTF-8");
 				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
 				httpPost.setHeader("Content-Type", "application/json");
@@ -473,7 +370,7 @@ public class UserProfile extends Activity {
 				responseText = getASCIIContentFromEntity(entity);
 
 				JSONObject myObject = new JSONObject(responseText);
-				JSONArray jsona = new JSONArray(myObject.getString("experiences"));
+				JSONArray jsona = new JSONArray(myObject.getString("experienceList"));
 
 				for(int i=0; i<jsona.length();i++){  // teker teker experience e gir.
 					JSONObject jsonObj = jsona.getJSONObject(i);
@@ -513,7 +410,7 @@ public class UserProfile extends Activity {
 						t.setName(tagObj.getString("name"));
 						exp.addTag(t);
 					}
-					userExperiences.add(exp);
+					searchResults.add(exp);
 
 				}
 
@@ -542,15 +439,15 @@ public class UserProfile extends Activity {
 				jsonobj.put("username",session.getUserDetails().get("name"));
 
 				jsonobj.put("IsLoggedIn", session.isLoggedIn());
-				jsonobj.put("id",userExperiences.get(exp_pos).getId());
-				jsonobj.put("undo",userExperiences.get(exp_pos).isUpvotedByUser());
+				jsonobj.put("id",searchResults.get(exp_pos).getId());
+				jsonobj.put("undo",searchResults.get(exp_pos).isUpvotedByUser());
 
-				undo = userExperiences.get(exp_pos).isUpvotedByUser();
+				undo = searchResults.get(exp_pos).isUpvotedByUser();
 
-				if(userExperiences.get(exp_pos).isUpvotedByUser()){
-					userExperiences.get(exp_pos).setUpvotedByUser(false);
+				if(searchResults.get(exp_pos).isUpvotedByUser()){
+					searchResults.get(exp_pos).setUpvotedByUser(false);
 				}else{
-					userExperiences.get(exp_pos).setUpvotedByUser(true);
+					searchResults.get(exp_pos).setUpvotedByUser(true);
 				}
 				StringEntity se = new StringEntity(jsonobj.toString());    
 				se.setContentType("application/json;charset=UTF-8");
@@ -597,14 +494,14 @@ public class UserProfile extends Activity {
 				jsonobj.put("username",session.getUserDetails().get("name"));
 
 				jsonobj.put("IsLoggedIn", session.isLoggedIn());
-				jsonobj.put("id",userExperiences.get(exp_pos).getId());
-				jsonobj.put("undo",userExperiences.get(exp_pos).isDownvotedByUser());
-				undo = userExperiences.get(exp_pos).isDownvotedByUser();
+				jsonobj.put("id",searchResults.get(exp_pos).getId());
+				jsonobj.put("undo",searchResults.get(exp_pos).isDownvotedByUser());
+				undo = searchResults.get(exp_pos).isDownvotedByUser();
 
-				if(userExperiences.get(exp_pos).isDownvotedByUser()){
-					userExperiences.get(exp_pos).setDownvotedByUser(false);
+				if(searchResults.get(exp_pos).isDownvotedByUser()){
+					searchResults.get(exp_pos).setDownvotedByUser(false);
 				}else{
-					userExperiences.get(exp_pos).setDownvotedByUser(true);
+					searchResults.get(exp_pos).setDownvotedByUser(true);
 				}
 				StringEntity se = new StringEntity(jsonobj.toString());    
 				se.setContentType("application/json;charset=UTF-8");
@@ -653,7 +550,7 @@ public class UserProfile extends Activity {
 				jsonobj.put("IsLoggedIn", session.isLoggedIn());
 				JSONObject innerJson = new JSONObject();
 
-				innerJson.put("id",userExperiences.get(exp_pos).getId());
+				innerJson.put("id",searchResults.get(exp_pos).getId());
 
 				jsonobj.put("params", innerJson);
 
@@ -695,18 +592,18 @@ public class UserProfile extends Activity {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httpPost;
-			if(userExperiences.get(exp_pos).isUserMarkedSpam()){
+			if(searchResults.get(exp_pos).isUserMarkedSpam()){
 				httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobileunmarkSpam");
 
 			}else{
 				httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobilemarkSpam");
 
 			}
-			undo = userExperiences.get(exp_pos).isUserMarkedSpam();
+			undo = searchResults.get(exp_pos).isUserMarkedSpam();
 			if(undo){
-				userExperiences.get(exp_pos).setUserMarkedSpam(false);
+				searchResults.get(exp_pos).setUserMarkedSpam(false);
 			}else{
-				userExperiences.get(exp_pos).setUserMarkedSpam(true);
+				searchResults.get(exp_pos).setUserMarkedSpam(true);
 			}
 			try {
 
@@ -714,7 +611,7 @@ public class UserProfile extends Activity {
 				jsonobj.put("username",session.getUserDetails().get("name"));
 
 				jsonobj.put("IsLoggedIn", session.isLoggedIn());
-				jsonobj.put("id",userExperiences.get(exp_pos).getId());
+				jsonobj.put("id",searchResults.get(exp_pos).getId());
 
 
 
@@ -747,61 +644,6 @@ public class UserProfile extends Activity {
 				e.printStackTrace();
 			}
 		}
-		public void getUserData(String usernameOfTheDesiredUser)  {
-			// Create a new HttpClient and Post Header
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobileuserinfo"); //for genymotion
-			try {
-				// Add your data
-
-				Log.i("username3", usernameOfTheDesiredUser);
-
-				JSONObject jsonobj = new JSONObject();
-				jsonobj.put("username", usernameOfTheDesiredUser);
-
-				StringEntity se = new StringEntity(jsonobj.toString());    
-				se.setContentType("application/json;charset=UTF-8");
-				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
-				httpPost.setHeader("Content-Type", "application/json");
-				httpPost.setHeader("Accept", "application/json");
-				httpPost.setEntity(se);
-
-				HttpResponse response = httpclient.execute(httpPost);
-				HttpEntity entity = (HttpEntity) response.getEntity(); 
-				Log.i("res", response.getStatusLine().toString());
-
-
-
-				responseText = getASCIIContentFromEntity(entity);
-				Log.i("res",responseText);
-
-
-				JSONObject obj = new JSONObject(responseText);
-				String suc = String.valueOf(obj.getBoolean("success"));
-				Log.i("suc", suc);
-				JSONObject userJ = new JSONObject(obj.getString("user"));
-				user.setId(userJ.getInt("id"));
-				user.setCommentPoints(userJ.getInt("commentPoints"));
-				user.setEmail(userJ.getString("email"));
-				user.setExperiencePoints(userJ.getInt("experiencePoints"));
-				user.setFirstName(userJ.getString("firstName"));
-				user.setLastName(userJ.getString("lastName"));
-				user.setNumberOfExperiences(userJ.getInt("numberOfExperiences"));
-				user.setPassword(userJ.getString("password"));
-				user.setPassword2(userJ.getString("password2"));
-				user.setUsername(userJ.getString("username"));
-
-				Log.i("response", user.getEmail());
-
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		public String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
 			InputStream in = entity.getContent();
 			StringBuffer out = new StringBuffer();
@@ -815,4 +657,5 @@ public class UserProfile extends Activity {
 		}
 
 	}
+
 }
