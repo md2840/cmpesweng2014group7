@@ -27,10 +27,10 @@
 			</div>
 		</c:if>
 		
-		<p>
+		<p style="z-index:99999">
 			<label>Username: <form:input path="username" /></label>
 		</p>
-		<p>
+		<p style="z-index:99999">
 			<label>E-mail address: <form:input path="email" /></label>
 		</p>
 		<p>
