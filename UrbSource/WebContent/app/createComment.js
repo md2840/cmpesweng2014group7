@@ -35,3 +35,26 @@ jQuery(function($) {
         });
     });
 });
+
+function deleteComment(id, elem) {
+    $.ajax({
+        'type': 'POST',
+        'url': '/UrbSource/comment/delete',
+        'contentType': 'application/json; charset=utf-8',
+        'data': JSON.stringify({
+            id: id
+        }),
+        'dataType': 'json'
+    }).done(function (resp) {
+        if (resp.success) {
+        	location.reload();
+        }
+        else {
+            alert('An internal error ocurred:\n\n' + resp.error);
+        }
+    }).fail(function () {
+        alert('An internal error has occurred. Please try again later');
+    }).always(function (resp) {
+    	console.log(resp);
+    });
+}

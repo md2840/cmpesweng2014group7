@@ -100,6 +100,7 @@
 							<button type="button" ng-click="downvote(experience.id, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down" ng-if="!experience.downvotedByUser"></button>
 						</div>
 					</div>
+					~ {{experience.points}} Points -
 					<a href="/UrbSource/experience/id/{{experience.id}}">{{experience.numberOfComments}} Comments</a>
 				</div>
 				<div class="btn-toolbar pull-right">

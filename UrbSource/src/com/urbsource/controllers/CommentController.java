@@ -88,7 +88,7 @@ public class CommentController {
 			}
 			int id;
 			try {
-				id = json.getJSONObject("params").getInt("id");
+				id = json.getInt("id");
 			} catch (JSONException e) {
 				map.put("success", false);
 				map.put("error", "Comment ID is not given or not int, check how you call the API!");
