@@ -1,10 +1,9 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <div id="create-experience-panel" class="panel panel-primary">
-  <div class="panel panel-default">
 	<div class="panel-heading" style="cursor: pointer;z-index:9999" data-toggle="collapse" data-target="#collapseOne"> 
     <h4 class="panel-title">
 	<a class="accordion-toggle">
-          Share a new experience:
+          Click to share a new experience:
         </a>
         </h4>
         </div>
@@ -42,10 +41,9 @@
   	<div id="map-canvas" style="left:0;right:0;margin-left:auto;margin-right:auto;margin-bottom:2em;height:300px;top:20px"></div>
   	<div id="latbox"></div>
   	<div id="lngbox"></div>
-	</div>
-	</div>
-	</div>
 	<div class="panel-footer">
 		<button type="button" class="btn btn-primary" id="create-experience">Share!</button>
+	</div>
+	</div>
 	</div>
 </div>
