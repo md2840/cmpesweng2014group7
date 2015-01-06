@@ -2,6 +2,7 @@ package com.group7.urbsourceandroid;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.group7.urbsourceandroid.models.Tag;
 import com.group7.urbsourceandroid.models.User;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -43,10 +45,10 @@ public class UserProfile extends Activity {
 	private String responseText;
 	private final String GET_USER = "gu";
 	private final String GET_EXP = "ge";
-	final String UPVOTE_EXP="ue";
-	final String DOWNVOTE_EXP="de";
-	final String DELETE_EXP="dele";
-	final String SPAM_EXP = "se";
+	private final String UPVOTE_EXP="ue";
+	private final String DOWNVOTE_EXP="de";
+	private final String DELETE_EXP="dele";
+	private final String SPAM_EXP = "se";
 	private List<Experience> userExperiences;
 	private String usernameOfTheDesiredUser;
 	private TextView fullname;
@@ -55,6 +57,7 @@ public class UserProfile extends Activity {
 	private TextView numOfExp;
 	private ListView explist;
 	private ActionListAdapter adapter;
+	private AlertDialog.Builder alert ;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class UserProfile extends Activity {
 		adapter = new ActionListAdapter(this, R.id.pro_list, userExperiences);
 		explist = (ListView) findViewById(R.id.pro_list);
 		explist.setAdapter(adapter);
+		
+		alert =  new AlertDialog.Builder(this);
 
 		Intent i = getIntent();
 		// getting attached intent data
@@ -227,30 +232,30 @@ public class UserProfile extends Activity {
 
 				//WEB api spam için açılıp deploy edince açalım.
 
-				//            ImageButton spam = (ImageButton) view.findViewById(R.id.ex_spam);
-				//            spam.setTag(new Integer(position));
-				//            spam.setOnClickListener(new View.OnClickListener() {
-				//                @Override
-				//                public void onClick(View v) {
-				//                	int pos = Integer.parseInt(v.getTag().toString());
-				//                	ImageButton spamButton = (ImageButton) v;
-				//                	if(recentExperiences.get(pos).isUserMarkedSpam()){
-				//                		spamButton.setImageResource(R.drawable.spam_inactive);                    	
-				//                	}else{
-				//                		spamButton.setImageResource(R.drawable.spam);
-				//                		
-				//                	}
-				//                	new MyAsyncTask().execute(SPAM_EXP,v.getTag().toString());
-				//                	
-				//                }
-				//                });
-				//            spam.setVisibility(View.VISIBLE);
-				//            
-				//            if(recentExperiences.get(position).isUserMarkedSpam()){
-				//        		spam.setImageResource(R.drawable.spam);                    	
-				//        	}else{
-				//        		spam.setImageResource(R.drawable.spam_inactive);
-				//        	}
+				ImageButton spam = (ImageButton) view.findViewById(R.id.ex_spam);
+				spam.setTag(new Integer(position));
+				spam.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						int pos = Integer.parseInt(v.getTag().toString());
+						ImageButton spamButton = (ImageButton) v;
+						if(userExperiences.get(pos).isUserMarkedSpam()){
+							spamButton.setImageResource(R.drawable.spam_inactive);                    	
+						}else{
+							spamButton.setImageResource(R.drawable.spam);
+
+						}
+						new MyAsyncTask().execute(SPAM_EXP,v.getTag().toString());
+
+					}
+				});
+				spam.setVisibility(View.VISIBLE);
+
+				if(userExperiences.get(position).isUserMarkedSpam()){
+					spam.setImageResource(R.drawable.spam);                    	
+				}else{
+					spam.setImageResource(R.drawable.spam_inactive);
+				}
 
 				ImageButton delete = (ImageButton) view.findViewById(R.id.btn_delete);
 				delete.setTag(new Integer(position));
@@ -283,7 +288,7 @@ public class UserProfile extends Activity {
 				Log.i("name experience user",experience.getAuthor().getUsername());
 				if(experience.getAuthor().getUsername().equals(session.getUserDetails().get("name"))){
 					delete.setVisibility(View.VISIBLE);
-					//spam.setVisibility(View.INVISIBLE);
+					spam.setVisibility(View.INVISIBLE);
 					upvote.setVisibility(View.INVISIBLE);
 					downvote.setVisibility(View.INVISIBLE);
 				}
@@ -297,6 +302,13 @@ public class UserProfile extends Activity {
 	private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		private boolean getuser = false;
 		private boolean getexp = false;
+		private boolean get = false;
+		private boolean upvote = false;
+		private boolean downvote = false;
+		private boolean delete = false;
+		private boolean spam = false;
+		private boolean undo = false;   
+		private int position;
 		@Override
 		protected Double doInBackground(String... params) {
 			// TODO Auto-generated method stub
@@ -308,6 +320,18 @@ public class UserProfile extends Activity {
 				getexp = true;
 				Log.i("username for exp", params[1]);
 				getUserExperiences(params[1]);
+			}else if(params[0]==UPVOTE_EXP){
+				upvote=true;
+				upvoteExp(params[1]);
+			}else if(params[0]==DOWNVOTE_EXP){
+				downvote = true;
+				downvoteExp(params[1]);
+			}else if(params[0]==DELETE_EXP){
+				delete = true;
+				deleteExp(params[1]);
+			}else if(params[0]==SPAM_EXP){
+				spam=true;
+				spamExp(params[1]);
 			}
 			return null;
 		}
@@ -321,6 +345,105 @@ public class UserProfile extends Activity {
 
 			}else if(getexp){
 				adapter.notifyDataSetChanged();
+			}else if(upvote){
+				try {
+					JSONObject myObject = new JSONObject(responseText);
+
+					if(myObject.getBoolean("success")){
+						alert.setTitle("Success");
+
+						if(undo){
+
+							alert.setMessage("You unliked the experience");
+							undo =false;
+							alert.show();
+						}else{
+							alert.setMessage("You liked the experience");
+							alert.show();
+						} 
+
+					}else{
+						alert.setTitle("error");
+						alert.setMessage(myObject.getString("error"));
+						alert.show();  
+					}
+
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+
+			}else if(downvote){
+				try {
+					JSONObject myObject = new JSONObject(responseText);
+
+					if(myObject.getBoolean("success")){
+						alert.setTitle("success");
+
+						if(undo){
+							alert.setMessage("You took back the dislike");
+							undo = false;
+							alert.show();
+						}else{
+							alert.setMessage("You disliked the experience");
+							alert.show();  
+						}
+
+
+					}else{
+						alert.setTitle("error");
+						alert.setMessage(myObject.getString("error"));
+						alert.show();  
+					}
+
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}else if(delete){
+				try {
+					JSONObject myObject = new JSONObject(responseText);
+
+					if(myObject.getBoolean("success")){
+						alert.setTitle("success");
+						alert.setMessage("You deleted your experience");
+						alert.show();  
+					}else{
+						alert.setTitle("error");
+						alert.setMessage(myObject.getString("error"));
+						alert.show();  
+					}
+					userExperiences.remove(position);
+					adapter.notifyDataSetChanged();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}else if(spam){
+				try {
+					JSONObject myObject = new JSONObject(responseText);
+
+					if(myObject.getBoolean("success")){
+						alert.setTitle("success");
+
+						if(undo){
+							alert.setMessage("You took back the spam alert");
+							undo = false;
+							alert.show();
+						}else{
+							alert.setMessage("You marked the experience as spam");
+							alert.show();  
+						}
+
+					}else{
+						alert.setTitle("error");
+						alert.setMessage(myObject.getString("error"));
+						alert.show();  
+					}
+				}catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
 			}
 		}
 
@@ -400,6 +523,226 @@ public class UserProfile extends Activity {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		public void upvoteExp(String pos){
+
+			int exp_pos = Integer.parseInt(pos);
+			position = exp_pos;
+			// Create a new HttpClient and Post Header
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobileupvote");
+
+
+			try {
+
+				JSONObject jsonobj = new JSONObject();
+				jsonobj.put("username",session.getUserDetails().get("name"));
+
+				jsonobj.put("IsLoggedIn", session.isLoggedIn());
+				jsonobj.put("id",userExperiences.get(exp_pos).getId());
+				jsonobj.put("undo",userExperiences.get(exp_pos).isUpvotedByUser());
+
+				undo = userExperiences.get(exp_pos).isUpvotedByUser();
+
+				if(userExperiences.get(exp_pos).isUpvotedByUser()){
+					userExperiences.get(exp_pos).setUpvotedByUser(false);
+				}else{
+					userExperiences.get(exp_pos).setUpvotedByUser(true);
+				}
+				StringEntity se = new StringEntity(jsonobj.toString());    
+				se.setContentType("application/json;charset=UTF-8");
+				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+				httpPost.setHeader("Content-Type", "application/json");
+				httpPost.setHeader("Accept", "application/json");
+
+				httpPost.setEntity(se);
+				// Execute HTTP Post Request
+				HttpResponse response = httpclient.execute(httpPost);
+
+				HttpEntity entity = response.getEntity();
+
+				String text = getASCIIContentFromEntity(entity);
+				responseText=text;
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		public void downvoteExp(String pos){
+			int exp_pos = Integer.parseInt(pos);
+			position = exp_pos;
+
+			// Create a new HttpClient and Post Header
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobiledownvote");
+
+
+			try {
+
+				JSONObject jsonobj = new JSONObject();
+				jsonobj.put("username",session.getUserDetails().get("name"));
+
+				jsonobj.put("IsLoggedIn", session.isLoggedIn());
+				jsonobj.put("id",userExperiences.get(exp_pos).getId());
+				jsonobj.put("undo",userExperiences.get(exp_pos).isDownvotedByUser());
+				undo = userExperiences.get(exp_pos).isDownvotedByUser();
+
+				if(userExperiences.get(exp_pos).isDownvotedByUser()){
+					userExperiences.get(exp_pos).setDownvotedByUser(false);
+				}else{
+					userExperiences.get(exp_pos).setDownvotedByUser(true);
+				}
+				StringEntity se = new StringEntity(jsonobj.toString());    
+				se.setContentType("application/json;charset=UTF-8");
+				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+				httpPost.setHeader("Content-Type", "application/json");
+				httpPost.setHeader("Accept", "application/json");
+
+				httpPost.setEntity(se);
+				// Execute HTTP Post Request
+				HttpResponse response = httpclient.execute(httpPost);
+
+				HttpEntity entity = response.getEntity();
+
+				String text = getASCIIContentFromEntity(entity);
+				responseText=text;
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		public void deleteExp(String pos){
+
+			int exp_pos = Integer.parseInt(pos);
+			position = exp_pos;
+			// Create a new HttpClient and Post Header
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobiledelete");
+
+
+			try {
+
+				JSONObject jsonobj = new JSONObject();
+				jsonobj.put("username",session.getUserDetails().get("name"));
+
+				jsonobj.put("IsLoggedIn", session.isLoggedIn());
+				JSONObject innerJson = new JSONObject();
+
+				innerJson.put("id",userExperiences.get(exp_pos).getId());
+
+				jsonobj.put("params", innerJson);
+
+
+				StringEntity se = new StringEntity(jsonobj.toString());    
+				se.setContentType("application/json;charset=UTF-8");
+				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+				httpPost.setHeader("Content-Type", "application/json");
+				httpPost.setHeader("Accept", "application/json");
+
+				httpPost.setEntity(se);
+				// Execute HTTP Post Request
+				HttpResponse response = httpclient.execute(httpPost);
+
+				HttpEntity entity = response.getEntity();
+
+				String text = getASCIIContentFromEntity(entity);
+				responseText=text;
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		public void spamExp(String pos){
+
+			int exp_pos = Integer.parseInt(pos);
+			position = exp_pos;
+			// Create a new HttpClient and Post Header
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httpPost;
+			if(userExperiences.get(exp_pos).isUserMarkedSpam()){
+				httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobileunmarkSpam");
+
+			}else{
+				httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/mobile/mobilemarkSpam");
+
+			}
+			undo = userExperiences.get(exp_pos).isUserMarkedSpam();
+			if(undo){
+				userExperiences.get(exp_pos).setUserMarkedSpam(false);
+			}else{
+				userExperiences.get(exp_pos).setUserMarkedSpam(true);
+			}
+			try {
+
+				JSONObject jsonobj = new JSONObject();
+				jsonobj.put("username",session.getUserDetails().get("name"));
+
+				jsonobj.put("IsLoggedIn", session.isLoggedIn());
+				jsonobj.put("id",userExperiences.get(exp_pos).getId());
+
+
+
+				StringEntity se = new StringEntity(jsonobj.toString());    
+				se.setContentType("application/json;charset=UTF-8");
+				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+				httpPost.setHeader("Content-Type", "application/json");
+				httpPost.setHeader("Accept", "application/json");
+
+				httpPost.setEntity(se);
+				// Execute HTTP Post Request
+				HttpResponse response = httpclient.execute(httpPost);
+
+				HttpEntity entity = response.getEntity();
+
+				String text = getASCIIContentFromEntity(entity);
+				responseText=text;
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
