@@ -47,8 +47,8 @@ public class JDBCCommentDAO {
 		super();
 		this.userDao = userDao;
 		this.insert = new SimpleJdbcInsert(jdbcTemplate)
-						.withTableName("experience")
-						.usingColumns("text", "author_id", "mood", "creation_time","location")
+						.withTableName("comment")
+						.usingColumns("text", "author_id", "experience_id", "creation_time")
 						.usingGeneratedKeyColumns("id");
 	}
 	
