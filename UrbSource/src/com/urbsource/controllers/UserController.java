@@ -169,7 +169,7 @@ public class UserController {
 		JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
 		String username;
 		try {
-			username = json.getJSONObject("params").getString("username");
+			username = json.getString("username");
 			User u = userDao.getMobileUser(username);
 			map.put("user", u);
 			map.put("success",true );

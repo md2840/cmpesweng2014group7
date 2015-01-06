@@ -27,9 +27,32 @@
             android:text="---username---"
             android:textColor="#333"
             android:textSize="18sp" />
+        <TextView
+            android:id="@+id/pro_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="---username---"
+            android:textColor="#333"
+            android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/pro_point"
+            android:id="@+id/pro_exppoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="---point---"
+            android:textColor="#6699CC"
+            android:textSize="14sp" />
+        
+        <TextView
+            android:id="@+id/pro_compoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="---point---"
+            android:textColor="#6699CC"
+            android:textSize="14sp" />
+        
+        <TextView
+            android:id="@+id/pro_numexp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="---point---"
