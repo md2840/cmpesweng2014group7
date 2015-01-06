@@ -114,20 +114,24 @@
 		-moz-border-radius: 0 0 4px 0;
 		border-radius: 0 0 4px 0;
 	}
+	@import url('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css');
+	
 </style>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 <script>
 	var activewindow = null;
 	var newmarker = null;
+	var count=0;
 	function initialize() {
 	
 	  var markers = [];
 	  var map = new google.maps.Map(document.getElementById('map-canvas'), {
 	    mapTypeId: google.maps.MapTypeId.ROADMAP
 	  });
-	
+
 	  var defaultBounds = new google.maps.LatLngBounds(
 		      new google.maps.LatLng(40.793827, 28.301845),
 		      new google.maps.LatLng(41.285832, 29.838557));
@@ -141,6 +145,10 @@
 	  // create new marker when clicked
 	  google.maps.event.addListener(map, 'click', function(event) {
 		  getCoordinates(event.latLng);
+		  });
+	  google.maps.event.addListener(map, 'drag', function(event) {
+		  google.maps.event.trigger(map, 'resize');
+
 		  });
 	
 		function getCoordinates(location) {
@@ -225,7 +233,6 @@
 	  });
 	}
 	
-	google.maps.event.addDomListener(window, 'load', initialize);
 
 	
 Date.prototype.toDateInputValue = (function() {
@@ -235,6 +242,12 @@ Date.prototype.toDateInputValue = (function() {
 });
 
 jQuery(function($) {
+	$('.accordion-toggle').click(function(){
+		count++;
+		console.log(count%2);
+		if(count==1||count%2==0){
+		  initialize();}
+		});
 	$("#experience-date").each(function() {
 		if ($(this).val() === '')
 			$(this).val(new Date().toDateInputValue());
