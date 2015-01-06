@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,16 +18,22 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.urbsource.db.JDBCCommentDAO;
 import com.urbsource.db.JDBCExperienceDAO;
 import com.urbsource.db.JDBCExperienceVoteDAO;
 import com.urbsource.db.JDBCTagDAO;
 import com.urbsource.db.JDBCUserDAO;
+import com.urbsource.models.Comment;
 import com.urbsource.models.Experience;
 import com.urbsource.models.Tag;
 import com.urbsource.models.User;
@@ -37,12 +46,14 @@ public class MobileUserController {
 	JDBCTagDAO tagDao;
 	JDBCExperienceDAO expDao;
 	JDBCExperienceVoteDAO voteDao;
+	JDBCCommentDAO commentDao;
 	
 	public MobileUserController(){
 		userDao = new JDBCUserDAO();
 		tagDao = new JDBCTagDAO();
 		expDao = new JDBCExperienceDAO(userDao, tagDao);
 		voteDao = new JDBCExperienceVoteDAO(); 
+		commentDao = new JDBCCommentDAO(userDao);
 	}
 
 	/**
@@ -375,6 +386,121 @@ public class MobileUserController {
 		expDao.saveExperience(exp);
 		map.put("success", true);
 		return map;
+	}
+	
+	@RequestMapping(value="/createcomment", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> createComment(HttpServletRequest request, HttpServletResponse response) {
+		HashMap<String, Object> map= new HashMap<String, Object>();;
+		try {
+			
+			JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+			
+			String username = json.getString("username");
+			boolean hasAuthority = json.getBoolean("IsLoggedIn");
+			if(!hasAuthority){
+				map.put("success", false);
+				map.put("error", "You must log in to create experience");
+				return map;
+			}
+
+			
+			User u = userDao.getLoginUser(username);
+			Timestamp date;
+			try {
+			    DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+		        java.util.Date creationDate = df.parse(json.getString("creationTime"));
+				date = new Timestamp(creationDate.getTime());
+			} catch (Exception e) {
+				date = new Timestamp(new java.util.Date().getTime());
+			}
+			Comment comment = new Comment(u, json.getString("text"), json.getInt("experienceId")).setCreationTime(date);
+			map.put("success", commentDao.createComment(comment));
+		} catch (JSONException e) {
+			
+			map.put("success", false);
+			map.put("error", e.getMessage());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return map;
+		
+	}
+
+	@RequestMapping(value="/delete", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> delete(HttpServletRequest request, HttpServletResponse response) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		try {
+			
+			JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+			String username = json.getString("username");
+			boolean hasAuthority = json.getBoolean("IsLoggedIn");
+			if(!hasAuthority){
+				map.put("success", false);
+				map.put("error", "You must log in to create experience");
+				return map;
+			}
+
+			int id;
+			try {
+				id = json.getInt("id");
+			} catch (JSONException e) {
+				map.put("success", false);
+				map.put("error", "Comment ID is not given or not int, check how you call the API!");
+				return map;
+			}
+			User u = userDao.getLoginUser(username);
+			Comment comment = commentDao.getComment(id);
+			if (u.getId() != comment.getAuthor().getId()) {
+				map.put("success", false);
+				map.put("error", "You cannot delete others' comments");
+				return map;
+			}
+			map.put("success", commentDao.deleteComment(comment));
+		} catch (JSONException e) {
+			map.put("success", false);
+			map.put("error", e.getMessage());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return map;
+	}
+	
+	@RequestMapping(value="/getcomments", method=RequestMethod.POST)
+	public @ResponseBody HashMap<String, Object> getComments(HttpServletRequest request, HttpServletResponse response) {
+		HashMap<String, Object> map= new HashMap<String, Object>();;
+		try {
+			
+			JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
+			
+			String username = json.getString("username");
+			boolean hasAuthority = json.getBoolean("IsLoggedIn");
+			if(!hasAuthority){
+				map.put("success", false);
+				map.put("error", "You must log in to see comments");
+				return map;
+			}
+
+			int id = json.getInt("id");
+			Experience exp = expDao.getExperience(id);
+			
+			map.put("comments",commentDao.getComments(exp));
+			map.put("success", true);
+			
+			
+		} catch (JSONException e) {
+			
+			map.put("success", false);
+			map.put("error", e.getMessage());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			map.put("success", false);
+			map.put("error", e1.getMessage());
+			
+		}
+		return map;
+		
 	}
 
 
