@@ -13,7 +13,7 @@
 	<label for="experience-text">Tell us about your experience:</label><br/>
 	<textarea name="experience-text" id="experience-text" style="width:100%" maxlength="10000"></textarea>
 	</p>
-	<small><em>Experience text can be maximum 10,000 characters.</em></small>
+	<small><em>Experience text can be at most 10,000 characters.</em></small>
 	<p>
 	<label for="experience-tags">Tags:</label><br>
 	<input type="text" name="experience-tags" id="experience-tags" />

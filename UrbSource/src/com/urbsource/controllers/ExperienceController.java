@@ -38,12 +38,14 @@ public class ExperienceController {
 	JDBCTagDAO tagDao;
 	JDBCExperienceDAO expDao;
 	JDBCExperienceVoteDAO voteDao;
+	JDBCCommentDAO commentDao;
 	
 	public ExperienceController(){
 		userDao = new JDBCUserDAO();
 		tagDao = new JDBCTagDAO();
 		expDao = new JDBCExperienceDAO(userDao, tagDao);
-		voteDao = new JDBCExperienceVoteDAO(); 
+		voteDao = new JDBCExperienceVoteDAO();
+		commentDao = new JDBCCommentDAO(userDao);
 	}
 
 	@RequestMapping(value="/recent", method=RequestMethod.GET)
@@ -78,8 +80,10 @@ public class ExperienceController {
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
 		}
+		Experience exp = expDao.getExperience(id);
 		model.addAttribute("user", u);
-		return new ModelAndView("experience_details", "experience", expDao.getExperience(id));
+		model.addAttribute("comments", commentDao.getComments(exp));
+		return new ModelAndView("experience_details", "experience", exp);
 	}
 
 	@RequestMapping(value="/create", method=RequestMethod.POST)

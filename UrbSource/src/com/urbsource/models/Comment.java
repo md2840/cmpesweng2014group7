@@ -34,7 +34,7 @@ public class Comment implements Serializable {
 		this();
 		this.text = text;
 		this.author = author;
-		this.setExperienceId(exp);
+		this.setExperienceId(experienceId);
 	}
 
 	public Comment(int id, User author, String text, int experienceId) {

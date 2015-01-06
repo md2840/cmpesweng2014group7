@@ -24,7 +24,7 @@ public class JDBCCommentDAO {
 		@Override
 		public Comment mapRow(ResultSet rs, int rowNumber) throws SQLException {
 			int id = rs.getInt("id");
-			User u = userDao.getUser(rs.getInt("author_id"));
+			User u = userDao.getUser(rs.getInt("user_id"));
 			String text = rs.getString("text");
 			Comment comment = new Comment(id, u, text, rs.getInt("experience_id"))
 				.setCreationTime(rs.getTimestamp("creation_time"))
@@ -48,7 +48,7 @@ public class JDBCCommentDAO {
 		this.userDao = userDao;
 		this.insert = new SimpleJdbcInsert(jdbcTemplate)
 						.withTableName("comment")
-						.usingColumns("text", "author_id", "experience_id", "creation_time")
+						.usingColumns("text", "user_id", "experience_id", "creation_time")
 						.usingGeneratedKeyColumns("id");
 	}
 	
@@ -81,7 +81,7 @@ public class JDBCCommentDAO {
 	 * @return List of comments belonging given experience
 	 */
 	public List<Comment> getComments(Experience exp) {
-		String sql = "SELECT * FROM comment WHERE experience_id = ? ORDER BY creation_time DESC";
+		String sql = "SELECT * FROM comment WHERE experience_id = ? ORDER BY creation_time ASC";
 		return jdbcTemplate.query(sql, new Object[] { exp.getId() }, new CommentRowMapper());
 	}
 	
@@ -101,7 +101,7 @@ public class JDBCCommentDAO {
 		// Save experience to database
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("text", comment.getText());
-		parameters.put("author_id", comment.getAuthor().getId());
+		parameters.put("user_id", comment.getAuthor().getId());
 		parameters.put("experience_id", comment.getExperienceId());
 		parameters.put("creation_time", new java.sql.Timestamp(new java.util.Date().getTime()));
 		comment.setId(insert.executeAndReturnKey(parameters).intValue());
@@ -121,7 +121,7 @@ public class JDBCCommentDAO {
 		}
 		
 		// Save comment to database
-		String sql = "UPDATE comment SET text=?, author_id=? WHERE id=?";
+		String sql = "UPDATE comment SET text=?, user_id=? WHERE id=?";
 		jdbcTemplate.update(sql, comment.getText(), comment.getAuthor().getId(), comment.getId());
 		comment.setAsSaved();
 		return true;

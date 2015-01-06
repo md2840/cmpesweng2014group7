@@ -63,6 +63,8 @@
 			el.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[2].setAttribute("contentEditable","true");
 			el.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[3].style.display = "block";
 		}
+		
+		window.experienceId = ${experience.id};
 	</script>
 	<script>
 		function initialize() {
@@ -88,6 +90,7 @@
 		google.maps.event.addDomListener(window, 'load', initialize);
 
     </script>
+    <script src="/UrbSource/app/createComment.js"></script>
 </jsp:attribute>
 	<jsp:attribute name="mainPanel">
 		<div id="experience-list">
@@ -149,6 +152,42 @@
 				</div>
 				<input id="loc" type="hidden" value="${experience.location}"></input>
 			</div>
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					Comment on this experience
+				</div>
+				<div class="panel-body">
+				<p>
+				<label for="comment-text">What do you think about this experience?</label><br/>
+				<textarea name="comment-text" id="comment-text" style="width:100%" rows="10" maxlength="1000"></textarea>
+				</p>
+				<small><em>Comment text can be at most 1,000 characters.</em></small>
+				</div>
+				<div class="panel-footer clearfix">
+					<div class="btn-toolbar pull-right">
+						<button type="button" class="btn btn-primary btn-xs" id="add-comment">Add Comment</button>  
+					</div>
+				</div>
+				<input id="loc" type="hidden" value="${experience.location}"></input>
+			</div>
+			<c:forEach items="${comments}" var="comment">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Comment by <a href="/UrbSource/user/info/${comment.author.id}">${comment.author.username}</a>
+					on ${comment.creationTime}
+				</div>
+				<div class="panel-body">
+					<p>
+						<p>${comment.text}</p>
+					</p>
+				</div>
+				<div class="panel-footer clearfix">
+					<div class="btn-toolbar pull-right">
+					</div>
+				</div>
+				<input id="loc" type="hidden" value="${experience.location}"></input>
+			</div>
+			</c:forEach>
 		</div>
 </jsp:attribute>
 </us:page>
