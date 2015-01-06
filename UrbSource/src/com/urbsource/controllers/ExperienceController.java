@@ -98,6 +98,7 @@ public class ExperienceController {
 		for (int i = 0, len = tagArray.length(); i < len; ++i)
 			tags[i] = tagDao.getTag(tagArray.getString(i));
 		Experience exp = new Experience(u, json.getString("text"), tags).setMood(json.getString("mood"));
+		exp.setLocation(json.getString("location"));
 		map.put("success", expDao.createExperience(exp));
 		return map;
 		

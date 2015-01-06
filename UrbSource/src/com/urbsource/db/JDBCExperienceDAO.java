@@ -50,7 +50,8 @@ public class JDBCExperienceDAO {
 				.setExpirationDate(rs.getDate("expiration_date"))
 			    .setMood(rs.getString("mood"))
 			    .setPoints(rs.getInt("points"))
-			    .setSpam(rs.getInt("spam"));
+			    .setSpam(rs.getInt("spam"))
+			    .setLocation(rs.getString("location"));
 			// Try to set source of experience. If source is not given, default to empty
 			// string.
 			try {
@@ -91,7 +92,7 @@ public class JDBCExperienceDAO {
 		this.tagDao = tagDao;
 		this.insert = new SimpleJdbcInsert(jdbcTemplate)
 						.withTableName("experience")
-						.usingColumns("text", "author_id", "mood", "creation_time")
+						.usingColumns("text", "author_id", "mood", "creation_time","location")
 						.usingGeneratedKeyColumns("id");
 	}
 	
@@ -290,6 +291,7 @@ public class JDBCExperienceDAO {
 		parameters.put("text", exp.getText());
 		parameters.put("author_id", exp.getAuthor().getId());
 		parameters.put("mood", exp.getMood());
+		parameters.put("location", exp.getLocation());
 		parameters.put("creation_time", new java.sql.Timestamp(new java.util.Date().getTime()));
 		exp.setId(insert.executeAndReturnKey(parameters).intValue());
 		SimpleJdbcInsert insertTag = new SimpleJdbcInsert(jdbcTemplate)

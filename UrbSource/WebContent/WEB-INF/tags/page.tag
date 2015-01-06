@@ -116,79 +116,118 @@
 	}
 </style>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
 <script>
+	var activewindow = null;
+	var newmarker = null;
+	function initialize() {
+	
+	  var markers = [];
+	  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+	    mapTypeId: google.maps.MapTypeId.ROADMAP
+	  });
+	
+	  var defaultBounds = new google.maps.LatLngBounds(
+		      new google.maps.LatLng(40.793827, 28.301845),
+		      new google.maps.LatLng(41.285832, 29.838557));
+	  map.fitBounds(defaultBounds);
+	
+	  // Create the search box and link it to the UI element.
+	  var input = /** @type {HTMLInputElement} */(
+	      document.getElementById('pac-input'));
+	  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+	  
+	  // create new marker when clicked
+	  google.maps.event.addListener(map, 'click', function(event) {
+		  getCoordinates(event.latLng);
+		  });
+	
+		function getCoordinates(location) {
+			if(newmarker != null)
+				newmarker.setMap(null);
+			if(activewindow != null)
+				activewindow.close();
+			newmarker = new google.maps.Marker({
+			    position: location,
+			    map: map,
+			  });
+			var lat = location.lat();
+			var lon = location.lng();
+			console.log(lat+","+lon);
+			fillLatLon(lat, lon);
+			
+		}
+		function fillLatLon(lat, lon)
+		{ 
+		     $('#latbox').val(lat);
+		     $('#lngbox').val(lon);
+		}
+		
+	
+		
 
-function initialize() { 
-  var markers = [];
-  var map = new google.maps.Map(document.getElementById('map-canvas'), {
-	zoom: 11,
-	center: new google.maps.LatLng(41.018990, 29.001056),
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  });
+	  var searchBox = new google.maps.places.SearchBox(
+	    /** @type {HTMLInputElement} */(input));
+	
+	  // [START region_getplaces]
+	  // Listen for the event fired when the user selects an item from the
+	  // pick list. Retrieve the matching places for that item.
+	  google.maps.event.addListener(searchBox, 'places_changed', function() {
+	    var places = searchBox.getPlaces();
+	
+	    if (places.length == 0) {
+	      return;
+	    }
+	    for (var i = 0, marker; marker = markers[i]; i++) {
+	      marker.setMap(null);
+	    }
+	
+	    // For each place, get the icon, place name, and location.
+	    markers = [];
+	    var bounds = new google.maps.LatLngBounds();
+	    for (var i = 0, place; place = places[i]; i++) {
+	      var image = {
+	        url: place.icon,
+	        size: new google.maps.Size(71, 71),
+	        origin: new google.maps.Point(0, 0),
+	        anchor: new google.maps.Point(17, 34),
+	        scaledSize: new google.maps.Size(25, 25)
+	      };
+	
+	      // Create a marker for each place.
+	      var marker = new google.maps.Marker({
+	        map: map,
+	        icon: image,
+	        title: place.name,
+	        position: place.geometry.location
+	      });
+	
+	      markers.push(marker);
+	
+	      bounds.extend(place.geometry.location);
+	    }
+		if(places.length == 1)
+		{
+			map.setCenter(places[0].geometry.location);
+			map.setZoom(11);
+		}else {
+	   		map.fitBounds(bounds);
+		}
+	  });
+	  // [END region_getplaces]
+	
+	  // Bias the SearchBox results towards places that are within the bounds of the
+	  // current map's viewport.
+	  google.maps.event.addListener(map, 'bounds_changed', function() {
+	    var bounds = map.getBounds();
+	    searchBox.setBounds(bounds);
+	  });
+	}
+	
+	google.maps.event.addDomListener(window, 'load', initialize);
 
-  var defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(40.793827, 28.301845),
-      new google.maps.LatLng(41.285832, 29.838557));
- 
-
-  // Create the search box and link it to the UI element.
-  var input = /** @type {HTMLInputElement} */(
-      document.getElementById('pac-input'));
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  var searchBox = new google.maps.places.SearchBox(
-    /** @type {HTMLInputElement} */(input));
-
-  // [START region_getplaces]
-  // Listen for the event fired when the user selects an item from the
-  // pick list. Retrieve the matching places for that item.
-  google.maps.event.addListener(searchBox, 'places_changed', function() {
-    var places = searchBox.getPlaces();
-    if (places.length == 0) {
-      return;
-    }
-    for (var i = 0, marker; marker = markers[i]; i++) {
-      marker.setMap(null);
-    }
-
-    // For each place, get the icon, place name, and location.
-    markers = [];
-    var bounds = new google.maps.LatLngBounds();
-    for (var i = 0, place; place = places[i]; i++) {
-      var image = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
-      };
-
-      // Create a marker for each place.
-      var marker = new google.maps.Marker({
-        map: map,
-        icon: image,
-        title: place.name,
-        position: place.geometry.location
-      });
-
-      markers.push(marker);
-
-      bounds.extend(place.geometry.location);
-    }
-
-    map.fitBounds(bounds);
-  });
-  // [END region_getplaces]
-
-  // Bias the SearchBox results towards places that are within the bounds of the
-  // current map's viewport.
-  google.maps.event.addListener(map, 'bounds_changed', function() {
-    var bounds = map.getBounds();
-    searchBox.setBounds(bounds);
-  });
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
-
+	
 Date.prototype.toDateInputValue = (function() {
     var local = new Date(this);
     local.setMinutes(this.getMinutes() - this.getTimezoneOffset());

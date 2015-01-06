@@ -9,6 +9,10 @@ jQuery(function($) {
         var text = $('textarea#experience-text').val().trim();
         var date = $('#experience-date').val();
         var expirationDate = $("#expires-date").val();
+        var lat=$("#latbox").val();
+        var lng=$("#lngbox").val();
+     //   console.log(lat);
+        var coord=lat+","+lng;
         if (date === '') {
             alert('Please enter a date for experience');
         	return;
@@ -31,7 +35,8 @@ jQuery(function($) {
                 tags: tags,
                 date: date,
                 expirationDate: expirationDate,
-                mood: mood
+                mood: mood,
+                location:coord
             }),
             'dataType': 'json'
         }).done(function (resp) {

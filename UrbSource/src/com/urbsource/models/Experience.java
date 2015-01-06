@@ -33,6 +33,7 @@ public class Experience implements Serializable {
 	private boolean downvotedByUser=false;
 	private String source;
 	private int points;
+	private String location;
 	
 	/**
 	 * To be a bean.
@@ -305,4 +306,12 @@ public class Experience implements Serializable {
 		}
 		return tagNames.toString();
 	}
+	public Experience setLocation(String location) {
+		this.location = location;
+		return this;
+	}
+	public String getLocation() {
+		return location;
+	}
+	
 }
