@@ -137,7 +137,7 @@
 							</c:choose>
 							</div>
 						</div>
-						~${experience.points} Points
+						~ ${experience.points} Points -
 						<a href="/UrbSource/experience/id/${experience.id}">${experience.numberOfComments} Comments</a>
 					</div>
 					<div class="btn-toolbar pull-right">
@@ -183,6 +183,9 @@
 				</div>
 				<div class="panel-footer clearfix">
 					<div class="btn-toolbar pull-right">
+					<c:if test="${user.id == comment.author.id}">
+						<button type="button" class="btn btn-danger btn-xs" id="delete-comment" onclick="deleteComment(${comment.id}, this)">Delete Comment</button>  
+					</c:if>
 					</div>
 				</div>
 				<input id="loc" type="hidden" value="${experience.location}"></input>
