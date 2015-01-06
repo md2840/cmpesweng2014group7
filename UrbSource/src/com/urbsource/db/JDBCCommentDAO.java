@@ -43,7 +43,7 @@ public class JDBCCommentDAO {
 	public JDBCCommentDAO() {
 	}
 	
-	public JDBCCommentDAO(JDBCUserDAO userDao, JDBCTagDAO tagDao) {
+	public JDBCCommentDAO(JDBCUserDAO userDao) {
 		super();
 		this.userDao = userDao;
 		this.insert = new SimpleJdbcInsert(jdbcTemplate)
@@ -115,25 +115,25 @@ public class JDBCCommentDAO {
 	 * @param comment The experience to be saved.
 	 * @return true if success, false if failure
 	 */
-	public boolean saveExperience(Comment comment) {
+	public boolean saveComment(Comment comment) {
 		if (comment.getId() < 0) {
 			return createComment(comment);
 		}
 		
 		// Save comment to database
-		String sql = "UPDATE experience SET text=?, author_id=? WHERE id=?";
+		String sql = "UPDATE comment SET text=?, author_id=? WHERE id=?";
 		jdbcTemplate.update(sql, comment.getText(), comment.getAuthor().getId(), comment.getId());
 		comment.setAsSaved();
 		return true;
 	}
 	
-	public boolean deleteExperience(Experience exp) {
-		if (exp.getId() < 0)
+	public boolean deleteComment(Comment comment) {
+		if (comment.getId() < 0)
 			return false;
 
-		String sql = "DELETE FROM experience WHERE id = ?";
-		jdbcTemplate.update(sql, new Object[] {exp.getId()});
-		exp.setId(-1);
+		String sql = "DELETE FROM comment WHERE id = ?";
+		jdbcTemplate.update(sql, new Object[] {comment.getId()});
+		comment.setId(-1);
 		return true;
 	}
 }
