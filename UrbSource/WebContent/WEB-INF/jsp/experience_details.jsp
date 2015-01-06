@@ -67,7 +67,7 @@
 		window.experienceId = ${experience.id};
 	</script>
 	<script>
-		function initialize() {
+		function initialize2() {
 		  var num=document.getElementById('loc').value; 
 		  var latlngStr = num.split(',', 2);
 		  var lat = parseFloat(latlngStr[0]);
@@ -87,7 +87,7 @@
 		  });
 		}
 		
-		google.maps.event.addDomListener(window, 'load', initialize);
+		google.maps.event.addDomListener(window, 'load', initialize2);
 
     </script>
     <script src="/UrbSource/app/createComment.js"></script>
