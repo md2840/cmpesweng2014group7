@@ -27,6 +27,9 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 	<bean id="JDBCExperienceDAO" class="com.urbsource.db.JDBCExperienceDAO">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
+	<bean id="JDBCCommentDAO" class="com.urbsource.db.JDBCCommentDAO">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
 	<bean id="JDBCUserDAO" class="com.urbsource.db.JDBCUserDAO">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
