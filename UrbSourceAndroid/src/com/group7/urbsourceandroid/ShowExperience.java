@@ -19,6 +19,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.group7.urbsourceandroid.models.Comment;
+import com.group7.urbsourceandroid.models.Experience;
+import com.group7.urbsourceandroid.models.Tag;
+import com.group7.urbsourceandroid.models.User;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -37,10 +42,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.urbsourcemyedition.models.Comment;
-import com.example.urbsourcemyedition.models.Experience;
-import com.example.urbsourcemyedition.models.Tag;
-import com.example.urbsourcemyedition.models.User;
 
 public class ShowExperience extends Activity{
 
