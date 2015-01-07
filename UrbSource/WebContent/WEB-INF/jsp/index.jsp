@@ -76,7 +76,7 @@
 					<span ng-switch-default>{{experience.mood}} Experience</span>
 				</span>
 				by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
-				on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
+					on {{ experience.creationTime | date:'yyyy-MM-dd' }}<span ng-if="experience.expirationDate != null && experience.expirationDate != undefined && experience.expirationDate"> - valid until {{ experience.expirationDate | date:'yyyy-MM-dd' }}</span>
 			</div>
 			<div class="{{experience.source}}"></div>
 			<div class="panel-body">
