@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -251,10 +252,23 @@ public class MainFragment extends Fragment{
                 ImageButton delete = (ImageButton) view.findViewById(R.id.btn_delete);
                 delete.setTag(new Integer(position));
                 delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //delete httppost
-                        new MyAsyncTask().execute(DELETE_EXP,v.getTag().toString());
+                	@Override
+                    public void onClick(final View v) {
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("Delete entry")
+                                .setMessage("Are you sure you want to delete this experience?")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        new MyAsyncTask().execute(DELETE_EXP,v.getTag().toString());
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // do nothing
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
                     }
                 });
 
