@@ -251,7 +251,7 @@ jQuery(function($) {
 	$('.accordion-toggle').click(function(){
 		count++;
 		console.log(count%2);
-		if(count==1||count%2==0){
+		if((count==1&& !document.URL.includes("experience/id"))|| (count == 2 && document.URL.includes("experience/id"))){
 		  initialize();}
 		});
 	$("#experience-date").each(function() {
