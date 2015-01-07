@@ -103,7 +103,7 @@ public class MobileUserController {
 
 		List<Experience> list = expDao.getRecentAndPopularExperiences(10);
 		for(int i=0; i<list.size(); i++){
-			expDao.configureVotes(username, list.get(i));
+//			expDao.configureVotes(username, list.get(i));
 		}
 		map.put("experiences", list);
 		return map;
@@ -155,7 +155,7 @@ public class MobileUserController {
 
 		Experience e = expDao.getExperience(expId);
 
-		expDao.configureVotes(username, e);
+//		expDao.configureVotes(username, e);
 		map.put("experiences", e);
 		return map;
 	}
@@ -174,7 +174,7 @@ public class MobileUserController {
 		List<Experience> list = expDao.getExperiences(userDao.getMobileUser(wantedUsername));
 		if(!username.equalsIgnoreCase(wantedUsername)){
 			for(int i=0; i<list.size(); i++){
-				expDao.configureVotes(username, list.get(i));
+//				expDao.configureVotes(username, list.get(i));
 			}
 		}
 		map.put("experiences", list );
