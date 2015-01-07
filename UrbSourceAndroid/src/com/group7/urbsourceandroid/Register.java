@@ -12,8 +12,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +27,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.group7.urbsourceandroid.models.User;
 
 /**
  * 
@@ -150,7 +147,7 @@ public class Register extends Activity {
 		public void postData(String username, String firstName,String lastName,String email,String password,String password2) throws JSONException {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost("http://10.0.3.2/UrbSource/signup/mobileconfirm");
+			HttpPost httppost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/signup/mobileconfirm");
 			try {
 				// Add your data
 				JSONObject jsonobj = new JSONObject();
@@ -201,7 +198,7 @@ public class Register extends Activity {
 
 		return out.toString();
 		}
+      
+       
+ }
 
-
-
-}
