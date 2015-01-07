@@ -8,7 +8,8 @@
 				<span ng-switch on="experience.mood">
 					<span ng-switch-when="good" style="color: green">Good Experience</span>
 					<span ng-switch-when="bad" style="color: red">Bad Experience</span>
-					<span ng-switch-default></span>
+					<span ng-switch-when="neutral">Neutral Experience</span>
+					<span ng-switch-default>{{experience.mood}}</span>
 				</span>
 				by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
 					on {{ experience.creationTime | date:'yyyy-MM-dd' }}<span ng-if="experience.expirationDate != null && experience.expirationDate != undefined && experience.expirationDate"> - valid until {{ experience.expirationDate | date:'yyyy-MM-dd' }}</span>
