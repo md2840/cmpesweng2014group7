@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+ <RelativeLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+     android:layout_height="197dp" >
+
+    <TextView
+        android:id="@+id/exp_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:text="---username---"
+        android:width="180dp" />
+
+    <TextView
+        android:id="@+id/exp_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:gravity="center_vertical|right"
+        android:text="--loc--"
+        android:width="100dp" />
+
+    <TextView
+        android:id="@+id/exp_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/exp_mood"
+        android:layout_toLeftOf="@+id/button_delete"
+        android:ems="10"
+        android:height="80dp"
+        android:inputType="textMultiLine"
+        android:text="---content---" />
+
+    <TextView
+        android:id="@+id/exp_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/exp_content"
+        android:layout_toLeftOf="@+id/exp_comment"
+        android:ems="10"
+        android:text="--tags--" />
+    
+    <EditText
+        android:id="@+id/edit_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/exp_mood"
+        android:layout_toLeftOf="@+id/button_delete"
+        android:ems="10"
+        android:height="80dp"
+        android:inputType="textMultiLine"
+        android:text="---content---" />
+
+    <EditText
+        android:id="@+id/edit_tags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/exp_content"
+        android:ems="10"
+        android:text="--tags--" />
+
+    <TextView
+        android:id="@+id/exp_mood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/exp_username"
+        android:text="Neutral Experience" />
+
+    <ImageButton
+        android:id="@+id/button_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/exp_mood"
+        android:background="#FFFFFF"
+        android:src="@android:drawable/ic_delete" />
+    
+
+     <TextView
+        android:id="@+id/exp_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/exp_tags"
+        android:layout_alignBottom="@+id/exp_tags"
+        android:layout_alignRight="@+id/exp_content"
+        android:text="TextView" />
+
+     <Button
+         android:id="@+id/button_edit"
+         style="?android:attr/buttonStyleSmall"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/exp_content"
+         android:layout_toLeftOf="@+id/exp_location"
+         android:text="Edit" />
+     <Button
+         android:id="@+id/button_save"
+         style="?android:attr/buttonStyleSmall"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/exp_content"
+         android:layout_toLeftOf="@+id/exp_location"
+         android:text="Save" />
+
+     
+
+</RelativeLayout>
+
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+ 
+ <EditText
+         android:id="@+id/cmt_content"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_below="@+id/edit_tags"
+         android:ems="10" >
+    
+     </EditText>
+
+     <Button
+         android:id="@+id/cmt_save"
+         style="?android:attr/buttonStyleSmall"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignBottom="@+id/cmt_content"
+         android:layout_alignLeft="@+id/exp_comment"
+         android:layout_alignRight="@+id/exp_comment"
+         android:layout_below="@+id/edit_tags"
+         android:text="Button" />
+     
+     </LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+	<ListView
+       android:id="@+id/cmt_list"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:background="@drawable/button_border" />
+
+
+</LinearLayout>
+
+
+
+</LinearLayout>
