@@ -27,35 +27,32 @@
 			</div>
 		</c:if>
 		
-		<p style="z-index:99999">
-			<label>Username: <form:input path="username" /></label>
-		</p>
-		<p style="z-index:99999">
-			<label>E-mail address: <form:input path="email" /></label>
-		</p>
-		<p>
-			<label>First Name: <form:input path="firstName" /></label>
-		</p>
-		<p>
-			<label>Last Name: <form:input path="lastName" /></label>
-		</p>
-		<p>
-			<label>Password: <form:password path="password" /></label>
-		</p>
-		<p>
-			<label>Password (again): <form:password path="password2" /></label>
-		</p>
-		     
-		<p>
+		<div style="z-index:99999" class="form-group">
+			<label for="username">Username:</label>
+			<form:input path="username" class="form-control" />
+		</div>
+		<div style="z-index:99999" class="form-group">
+			<label>E-mail address: <form:input path="email"  class="form-control"/></label>
+		</div>
+		<div style="z-index:99999" class="form-group">
+			<label>First Name: <form:input path="firstName" class="form-control" /></label>
+		</div>
+		<div style="z-index:99999" class="form-group">
+			<label>Last Name: <form:input path="lastName" class="form-control" /></label>
+		</div>
+		<div style="z-index:99999" class="form-group">
+			<label>Password: <form:password path="password"  class="form-control"/></label>
+		</div>
+		<div style="z-index:99999" class="form-group">
+			<label>Password (again): <form:password path="password2"  class="form-control"/></label>
+		</div>
+		<div style="z-index:99999" class="form-group">
 			<sc:captcha/>
-		</p>
-		
-		
-		<p>
-			
-			<input type="submit" value="Sign Up!">
-			<input type="reset" value="Clear Form">
-		</p>
+		</div>
+		<div style="z-index:99999" class="form-group">
+			<input type="submit" class="btn btn-primary" value="Sign Up!">
+			<input type="reset" class="btn btn-danger" value="Clear Form">
+		</div>
 	</form:form>
 	
 </jsp:attribute>

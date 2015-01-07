@@ -15,9 +15,6 @@
 		Welcome <a href="/UrbSource/user/info">${user.firstName} ${user.lastName}</a>
 	</h3>
 	<p>
-		Your experience point is 0.
-	</p>
-	<p>
 	<c:url var="logoutUrl" value="../logout.html"/>
 	<form action="${logoutUrl}" method="post">
 		<input type="submit" value="Log out"  class="btn btn-danger"/>

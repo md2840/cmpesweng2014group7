@@ -102,8 +102,14 @@
     .recent::before {
 		content: "Recent";
 	}
+    .search::before {
+		content: "Search";
+	}
+    .semantic::before {
+		content: "Search";
+	}
 	
-	.popular::before, .recent::before {
+	.popular::before, .recent::before, .search::before, .semantic::before  {
 		padding: 2px 7px;
 		font-size: 12px;
 		font-weight: bold;

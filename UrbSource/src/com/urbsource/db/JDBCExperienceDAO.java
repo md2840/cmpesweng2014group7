@@ -150,6 +150,9 @@ public class JDBCExperienceDAO {
 	}
 	
 	private List<Experience> fillUsingSemanticTagging(List<Experience> experiences, Tag[] tags) {
+		for (Experience exp : experiences)
+			if (exp.getSource() == null || exp.getSource().isEmpty())
+				exp.setSource("search");
 		HttpURLConnection http = null;
 		HashSet<String> semanticTagNames = new HashSet<String>();
 		for (Tag tag : tags) {
@@ -193,6 +196,10 @@ public class JDBCExperienceDAO {
 			semanticTags.add(tagDao.getTag(tagName));
 			
 		experiences.addAll(getExperiences(semanticTags, QUERY_LIMIT - experiences.size()));
+		
+		for (Experience exp : experiences)
+			if (exp.getSource() == null || exp.getSource().isEmpty())
+				exp.setSource("semantic");
 		
 		if (experiences.size() >= QUERY_LIMIT)
 			return experiences;
@@ -366,7 +373,7 @@ public class JDBCExperienceDAO {
 	 */
 	public List<Experience> getRecentAndPopularExperiences(int n) {
 		List<Experience> experiences = jdbcTemplate.query(
-				"(SELECT 'recent' AS source, experience.* FROM experience ORDER BY id DESC LIMIT ?) "
+				"(SELECT 'recent' AS source, experience.* FROM experience ORDER BY modification_time DESC LIMIT ?) "
 				+ "UNION ALL (SELECT 'popular', experience.* FROM experience ORDER BY points DESC LIMIT ?)",
 				new Object[] { n/2, n - n/2 /* in case n is odd, there will be one more popular experience */ },
 				new ExperienceRowMapper());
