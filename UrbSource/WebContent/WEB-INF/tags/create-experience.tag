@@ -11,7 +11,7 @@
 	<div class="panel-body">
 	<p>
 	<label for="experience-text">Tell us about your experience:</label><br/>
-	<textarea name="experience-text" id="experience-text" style="width:100%" maxlength="10000"></textarea>
+	<textarea name="experience-text" id="experience-text" style="width:100%" rows="10" maxlength="10000"></textarea>
 	</p>
 	<small><em>Experience text can be at most 10,000 characters.</em></small>
 	<p>
@@ -25,6 +25,11 @@
 		<option value="good" selected>Good</option>
 		<option value="bad">Bad</option>
 		<option>Neutral</option>
+		<option>Angry</option>
+		<option>Confused</option>
+		<option>Safe</option>
+		<option>Afraid</option>
+		<option>Annoyed</option>
 	</select>
 	</p>
 	<p>
