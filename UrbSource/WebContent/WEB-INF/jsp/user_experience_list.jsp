@@ -77,7 +77,7 @@
 						<span ng-switch-default>{{experience.mood}} Experience</span>
 					</span>
 					by <a href="/UrbSource/user/info/{{experience.author.id}}">{{experience.author.username}}</a>
-					on {{ experience.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}
+					on {{ experience.creationTime | date:'yyyy-MM-dd' }}<span ng-if="experience.expirationDate != null && experience.expirationDate != undefined && experience.expirationDate"> - valid until {{ experience.expirationDate | date:'yyyy-MM-dd' }}</span>
 				</div>
 				<div class="{{experience.source}}"></div>
 				<div class="panel-body">
@@ -90,7 +90,6 @@
 					</p>
 				</div>				
 
-				
 				<div class="panel-footer clearfix">
 					<div class="pull-left">
 						<div class="btn-toolbar" style="display: inline-block !important;">
@@ -101,6 +100,7 @@
 								<button type="button" ng-click="downvote(experience.id, $event)" class="btn btn-xs btn-default glyphicon glyphicon-thumbs-down" ng-if="!experience.downvotedByUser"></button>
 							</div>
 						</div>
+						~ {{experience.points}} Points -
 						<a href="/UrbSource/experience/id/{{experience.id}}">{{experience.numberOfComments}} Comments</a>
 					</div>
 					<div class="btn-toolbar pull-right">

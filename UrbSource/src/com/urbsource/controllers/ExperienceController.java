@@ -1,5 +1,9 @@
 package com.urbsource.controllers;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -101,7 +105,23 @@ public class ExperienceController {
 		Tag tags[] = new Tag[tagArray.length()];
 		for (int i = 0, len = tagArray.length(); i < len; ++i)
 			tags[i] = tagDao.getTag(tagArray.getString(i));
-		Experience exp = new Experience(u, json.getString("text"), tags).setMood(json.getString("mood"));
+		
+		Timestamp date;
+		try {
+		    DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
+	        java.util.Date creationDate = df.parse(json.getString("date"));
+			date = new Timestamp(creationDate.getTime());
+		} catch (Exception e) {
+			date = new Timestamp(new java.util.Date().getTime());
+		}
+		Experience exp = new Experience(u, json.getString("text"), tags).setMood(json.getString("mood")).setCreationTime(date);
+		try {
+		    DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
+	        java.util.Date expirationDate = df.parse(json.getString("expirationDate"));
+			exp.setExpirationDate(new Date(expirationDate.getTime()));
+		} catch (Exception e) {
+			exp.setExpirationDate(null);
+		}
 		exp.setLocation(json.getString("location"));
 		map.put("success", expDao.createExperience(exp));
 		return map;

@@ -92,7 +92,7 @@ public class JDBCExperienceDAO {
 		this.tagDao = tagDao;
 		this.insert = new SimpleJdbcInsert(jdbcTemplate)
 						.withTableName("experience")
-						.usingColumns("text", "author_id", "mood", "creation_time","location")
+						.usingColumns("text", "author_id", "mood", "creation_time","location", "expiration_date")
 						.usingGeneratedKeyColumns("id");
 	}
 	
@@ -292,7 +292,8 @@ public class JDBCExperienceDAO {
 		parameters.put("author_id", exp.getAuthor().getId());
 		parameters.put("mood", exp.getMood());
 		parameters.put("location", exp.getLocation());
-		parameters.put("creation_time", new java.sql.Timestamp(new java.util.Date().getTime()));
+		parameters.put("creation_time", exp.getCreationTime());
+		parameters.put("expiration_date", exp.getExpirationDate());
 		exp.setId(insert.executeAndReturnKey(parameters).intValue());
 		SimpleJdbcInsert insertTag = new SimpleJdbcInsert(jdbcTemplate)
 			.withTableName("rel_experience_tag")
