@@ -12,6 +12,8 @@ jQuery(function($) {
         var lat=$("#latbox").val();
         var lng=$("#lngbox").val();
      //   console.log(lat);
+        if(lat=="")lat="41.085756";
+        if(lng=="")lng="29.043439";
         var coord=lat+","+lng;
         if (date === '') {
             alert('Please enter a date for experience');
