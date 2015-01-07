@@ -19,11 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.group7.urbsourceandroid.models.Comment;
-import com.group7.urbsourceandroid.models.Experience;
-import com.group7.urbsourceandroid.models.Tag;
-import com.group7.urbsourceandroid.models.User;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -41,6 +36,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.group7.urbsourceandroid.models.Comment;
+import com.group7.urbsourceandroid.models.Experience;
+import com.group7.urbsourceandroid.models.Tag;
+import com.group7.urbsourceandroid.models.User;
+
 
 
 public class ShowExperience extends Activity{
@@ -124,6 +125,14 @@ public class ShowExperience extends Activity{
             }
             });
        
+       exp_delete.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+           	
+           	new MyAsyncTask().execute(DELETE_EXP);
+           }
+           });
+       
        save_exp.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -142,7 +151,8 @@ public class ShowExperience extends Activity{
 				t.setName(tags);
 				exp.addTag(t);
 			}
-			
+        	exp_content.setVisibility(View.VISIBLE);
+           	exp_tags.setVisibility(View.VISIBLE);
            	exp_edittext.setVisibility(View.GONE);
            	exp_edittags.setVisibility(View.GONE);
            	edit_exp.setVisibility(View.VISIBLE);
@@ -213,7 +223,7 @@ public class ShowExperience extends Activity{
             LayoutInflater inflater =
                     (LayoutInflater) 
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.experience, null);
+            view = inflater.inflate(R.layout.comment, null);
         }
 
         Comment comment = comments.get(position);
@@ -412,11 +422,14 @@ public class ShowExperience extends Activity{
 				
 				alert.setMessage("You deleted your comment");
 				alert.show();
+				adapter.notifyDataSetChanged();
 			}else if(addCmt){
 				alert.setMessage("You created a comment");
 				alert.show();
 				 Comment newCmt = new Comment();
-				 newCmt.getAuthor().setUsername(session.getUserDetails().get("name"));
+				 User u = new User();
+				 u.setUsername(session.getUserDetails().get("name"));
+				 newCmt.setAuthor(u);
 				 newCmt.setText(commentTxt);
 				 comments.add(newCmt);
 				adapter.notifyDataSetChanged();
@@ -617,6 +630,7 @@ public class ShowExperience extends Activity{
 				 
 				 String text = getASCIIContentFromEntity(entity);
 				 responseText=text;
+				 comments.remove(position);
 				 
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
