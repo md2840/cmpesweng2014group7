@@ -35,6 +35,10 @@
                   android:label="User Profile">
              
          </activity>
+         <activity android:name=".ShowOnMap"
+                  android:label="Show On Map">
+             
+         </activity>
          <activity android:name=".HomePage"
              android:label="@string/app_name" />
          <activity android:name=".ShowExperience"
