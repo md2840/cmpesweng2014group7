@@ -1,8 +1,8 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <div id="create-experience-panel" class="panel panel-primary">
-	<div class="panel-heading" style="cursor: pointer;z-index:9999" data-toggle="collapse" data-target="#collapseOne"> 
+	<div class="panel-heading accordion-toggle" style="cursor: pointer;z-index:9999" data-toggle="collapse" data-target="#collapseOne"> 
     <h4 class="panel-title">
-	<a class="accordion-toggle">
+	<a>
           Click to share a new experience:
         </a>
         </h4>
