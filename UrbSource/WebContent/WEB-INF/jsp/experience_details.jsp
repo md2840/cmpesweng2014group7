@@ -102,7 +102,7 @@
 						<span ng-switch-default>${experience.mood} Experience</span>
 					</span>
 					by <a href="/UrbSource/user/info/${experience.author.id}">${experience.author.username}</a>
-					on ${experience.creationTime}
+					on ${experience.creationTime}<c:if test="${experience.expirationDate != null}"> - valid until ${experience.expirationDate}</c:if>
 				</div>
 				<div class="${experience.source}"></div>
 				<div class="panel-body">

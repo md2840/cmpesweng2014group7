@@ -57,7 +57,7 @@ public class CommentController {
 			User u = userDao.getLoginUser(((UserDetails) auth.getPrincipal()).getUsername());
 			Timestamp date;
 			try {
-			    DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+			    DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
 		        java.util.Date creationDate = df.parse(json.getString("creationTime"));
 				date = new Timestamp(creationDate.getTime());
 			} catch (Exception e) {
