@@ -76,7 +76,7 @@ public class UserProfile extends Activity {
 		adapter = new ActionListAdapter(this, R.id.pro_list, userExperiences);
 		explist = (ListView) findViewById(R.id.pro_list);
 		explist.setAdapter(adapter);
-		
+
 		alert =  new AlertDialog.Builder(this);
 
 		Intent i = getIntent();
@@ -151,13 +151,17 @@ public class UserProfile extends Activity {
 				TextView tags = (TextView) view.findViewById(R.id.ex_tags);
 				if(tags!=null){
 					StringBuilder build = new StringBuilder();
-					build.append(experience.getTags().get(0).getName());
-					for(int i=1;i<experience.getTags().size();i++){
-						build.append(",");
-						build.append(experience.getTags().get(i).getName());
-					}
+					if(experience.getTags() != null){
+						build.append(experience.getTags().get(0).getName());
+						for(int i=1;i<experience.getTags().size();i++){
+							build.append(",");
+							build.append(experience.getTags().get(i).getName());
+						}
 
-					tags.setText(build.toString());
+						tags.setText(build.toString());
+					}else{
+						tags.setText("");
+					}
 				}
 
 				TextView comment = (TextView) view.findViewById(R.id.ex_comment);
