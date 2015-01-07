@@ -141,7 +141,7 @@ public class JDBCExperienceDAO {
 			return new ArrayList<Experience>();
 		StringBuilder tagSet = new StringBuilder("(").append(tags.get(0).getId());
 		for (int i = 1, iMax = tags.size(); i < iMax; ++i) {
-			tagSet.append(',').append(tags.get(0).getId());
+			tagSet.append(',').append(tags.get(i).getId());
 		}
 		tagSet.append(')');
 		
@@ -149,7 +149,7 @@ public class JDBCExperienceDAO {
 		return jdbcTemplate.query(sql, new Object[] { limit }, new ExperienceRowMapper());
 	}
 	
-	private List<Experience> fillUsingSemanticTagging(List<Experience> experiences, Tag[] tags) {
+	private List<Experience> fillUsingSemanticSearch(List<Experience> experiences, Tag[] tags) {
 		for (Experience exp : experiences)
 			if (exp.getSource() == null || exp.getSource().isEmpty())
 				exp.setSource("search");
@@ -220,7 +220,7 @@ public class JDBCExperienceDAO {
 		List<Experience> experiences = jdbcTemplate.query(sql, new Object[] { tag.getId() }, new ExperienceRowMapper());
 		if (experiences.size() >= QUERY_LIMIT)
 			return experiences;
-		return fillUsingSemanticTagging(experiences, new Tag[] { tag });
+		return fillUsingSemanticSearch(experiences, new Tag[] { tag });
 	}
 
 	/**
@@ -250,7 +250,7 @@ public class JDBCExperienceDAO {
 		if (experiences.size() >= QUERY_LIMIT)
 			return experiences;
 		
-		return fillUsingSemanticTagging(experiences, tags);
+		return fillUsingSemanticSearch(experiences, tags);
 	}
 	
 	/**
@@ -277,7 +277,7 @@ public class JDBCExperienceDAO {
 				continue;
 			tags.add(tagDao.getTag(word));
 		}
-		return fillUsingSemanticTagging(experiences, tags.toArray(new Tag[] {}));
+		return fillUsingSemanticSearch(experiences, tags.toArray(new Tag[] {}));
 	}
 	
 	/**
