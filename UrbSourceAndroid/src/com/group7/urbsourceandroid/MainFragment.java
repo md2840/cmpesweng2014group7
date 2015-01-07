@@ -252,7 +252,7 @@ public class MainFragment extends Fragment{
                 ImageButton delete = (ImageButton) view.findViewById(R.id.btn_delete);
                 delete.setTag(new Integer(position));
                 delete.setOnClickListener(new View.OnClickListener() {
-                	@Override
+                    @Override
                     public void onClick(final View v) {
                         new AlertDialog.Builder(getActivity())
                                 .setTitle("Delete entry")
