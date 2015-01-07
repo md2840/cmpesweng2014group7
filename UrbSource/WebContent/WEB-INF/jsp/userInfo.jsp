@@ -58,13 +58,13 @@
 		</p>
 		<p>
 			Karma Points: ${user.karma}
-		</p>
+		</p><!--
 		<p>
 			Experience Points: ${user.experiencePoints}
 		</p>
 		<p>
 			Comment Points: ${user.commentPoints}
-		</p>
+		</p>-->
 		<p>
 			<a href="/UrbSource/experience/user/${user.id}">You have shared ${user.numberOfExperiences} experiences</a>
 		</p>

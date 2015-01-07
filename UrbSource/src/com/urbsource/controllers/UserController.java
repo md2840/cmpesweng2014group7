@@ -76,7 +76,7 @@ public class UserController {
 	 * @param model The model passed to controller via Spring.
 	 * @return The response model-view pair
 	 */
-	@RequestMapping(value="/confirm", method=RequestMethod.POST)
+	@RequestMapping(value="/info", method=RequestMethod.POST)
 	public ModelAndView SignUp(@ModelAttribute User u, Model model) {
 		User user = new User();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
