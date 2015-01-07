@@ -15,7 +15,7 @@
 		Welcome <a href="/UrbSource/user/info">${user.firstName} ${user.lastName}</a>
 	</h3>
 	<p>
-	<c:url var="logoutUrl" value="../logout.html"/>
+	<c:url var="logoutUrl" value="/UrbSource/logout.html"/>
 	<form action="${logoutUrl}" method="post">
 		<input type="submit" value="Log out"  class="btn btn-danger"/>
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

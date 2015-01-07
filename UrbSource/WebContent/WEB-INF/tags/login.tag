@@ -34,7 +34,7 @@
 	</form>
 	<form action="/UrbSource/signup/confirm" method="GET">
 		<div style="margin-top: 1%" class="buttons">
-			Or you can <input type="submit" class="btn btn-primary"
+			<input type="submit" class="btn btn-primary"
 				value="sign up!" />
 		</div>
 	</form>

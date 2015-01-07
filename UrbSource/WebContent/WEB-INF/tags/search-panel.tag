@@ -8,8 +8,7 @@
 
 				<input type="radio" name="search" value="text" checked ng-click="selectBy('text')"> by Text
 				<input type="radio" name="search" value="tag" ng-click="selectBy('tag')">by Tag
-				<input type="radio" name="search" value="location" ng-click="selectBy('location')">by Location
-		</div>
+			</div>
 		<div style="margin-top: 2%;">
 		<div ng-show ="by == 'tag'" class="padded-row"
 			style="margin-top: 2%; width: 100%;">
