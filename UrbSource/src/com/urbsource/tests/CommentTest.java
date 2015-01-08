@@ -16,7 +16,7 @@ import com.urbsource.models.Experience;
 import com.urbsource.models.User;
 
 /**
- * @author akif
+ * @author Mehmet Emre
  *
  */
 public class CommentTest {

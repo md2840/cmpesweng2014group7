@@ -29,19 +29,34 @@ import com.urbsource.db.JDBCUserDAO;
 import com.urbsource.models.Comment;
 import com.urbsource.models.User;
 
+/**
+ * Controller class to expose Comment CRUD functionalities via web APIs.
+ * 
+ * @author Mehmet Emre
+ */
 @Controller
 @RequestMapping("/comment/*")
 public class CommentController {
-	
 	JDBCUserDAO userDao;
 	JDBCTagDAO tagDao;
 	JDBCCommentDAO commentDao;
 	
+	/**
+	 * Default constructor. Called by Spring framework to initialize controller.
+	 */
 	public CommentController(){
 		userDao = new JDBCUserDAO();
 		commentDao = new JDBCCommentDAO(userDao);
 	}
 
+	/**
+	 * Create a new comment to an experience. Comment content and experience ID are extracted from {@link request}
+	 * parameter.
+	 * 
+	 * @param request HTTP request to this address
+	 * @param response HTTP response object that this method will affect
+	 * @return A {@link HashMap} that will be converted to a JSON object containing result and error messages.
+	 */
 	@RequestMapping(value="/create", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> create(HttpServletRequest request, HttpServletResponse response) {
 		HashMap<String, Object> map;
@@ -74,6 +89,14 @@ public class CommentController {
 		
 	}
 
+	/**
+	 * Delete a comment from an experience. Comment and experience IDs are extracted from {@link request}
+	 * parameter.
+	 * 
+	 * @param request HTTP request to this address
+	 * @param response HTTP response object that this method will affect
+	 * @return A {@link HashMap} that will be converted to a JSON object containing result and error messages.
+	 */
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> delete(HttpServletRequest request, HttpServletResponse response) {
 		HashMap<String, Object> map;
@@ -110,6 +133,12 @@ public class CommentController {
 		return map;
 	}
 
+	/**
+	 * Extract body of given request and return the body embedded in a JSON-encoded string.
+	 * 
+	 * @param request HTTP request whose body will be extracted
+	 * @return a JSON-encoded string containing the request body
+	 */
 	public String getBody(HttpServletRequest request)
 	{
 		String body = null;
@@ -142,7 +171,15 @@ public class CommentController {
 		body = "{ \"result\": "+body + "}";
 		return body;
 	}
-	
+
+	/**
+	 * Update a comment. Comment ID and content are extracted from {@link request}
+	 * parameter.
+	 * 
+	 * @param request HTTP request to this address
+	 * @param response HTTP response objet that this method will affect
+	 * @return A {@link HashMap} that will be converted to a JSON object containing result and error messages.
+	 */
 	@RequestMapping(value="/update", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> update(HttpServletRequest request, HttpServletResponse response) {
 		HashMap<String, Object> map;
