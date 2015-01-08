@@ -11,6 +11,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.urbsource.models.Comment;
+import com.urbsource.models.Experience;
+import com.urbsource.models.User;
+
 /**
  * @author akif
  *
@@ -18,39 +22,14 @@ import org.junit.Test;
 public class CommentTest {
 
 	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
 	 * Test method for {@link com.urbsource.models.Comment#Comment()}.
 	 */
 	@Test
 	public final void testComment() {
-		fail("Not yet implemented"); // TODO
+		Comment comment = new Comment();
+		assertEquals("New comments created by Comment#Comment() shouldn't have an author.", comment.getAuthor(), null);
+		assertEquals(comment.getText(), "");
+		assertTrue("New comments' ID must be negative.", comment.getId() < 0);
 	}
 
 	/**
@@ -58,7 +37,12 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testCommentUserStringInt() {
-		fail("Not yet implemented"); // TODO
+		User u = new User();
+		Comment comment = new Comment(u, "Test String", 1357);
+		assertEquals(comment.getAuthor(), u);
+		assertEquals(comment.getText(), "Test String");
+		assertEquals(comment.getExperienceId(), 1357);
+		assertTrue("New comments' ID must be negative.", comment.getId() < 0);
 	}
 
 	/**
@@ -66,7 +50,12 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testCommentIntUserStringInt() {
-		fail("Not yet implemented"); // TODO
+		User u = new User();
+		Comment comment = new Comment(5, u, "Test String", 1357);
+		assertEquals(comment.getAuthor(), u);
+		assertEquals(comment.getText(), "Test String");
+		assertEquals(comment.getExperienceId(), 1357);
+		assertEquals(comment.getId(), 5);
 	}
 
 	/**
@@ -74,7 +63,14 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testCommentIntUserStringExperience() {
-		fail("Not yet implemented"); // TODO
+		User u = new User();
+		Experience e = new Experience();
+		e.setId(1234);
+		Comment comment = new Comment(5, u, "Test String", e);
+		assertEquals(comment.getAuthor(), u);
+		assertEquals(comment.getText(), "Test String");
+		assertEquals(comment.getExperienceId(), e.getId());
+		assertEquals(comment.getId(), 5);
 	}
 
 	/**
@@ -82,7 +78,14 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testCommentUserStringExperience() {
-		fail("Not yet implemented"); // TODO
+		User u = new User();
+		Experience e = new Experience();
+		e.setId(1234);
+		Comment comment = new Comment(u, "Test String", e);
+		assertEquals(comment.getAuthor(), u);
+		assertEquals(comment.getText(), "Test String");
+		assertEquals(comment.getExperienceId(), e.getId());
+		assertTrue(comment.getId() < 0);
 	}
 
 	/**
@@ -90,7 +93,10 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testGetId() {
-		fail("Not yet implemented"); // TODO
+		Comment comment = new Comment();
+		assertTrue(comment.getId() < 0);
+		comment.setId(5);
+		assertEquals(comment.getId(), 5);
 	}
 
 	/**
@@ -98,7 +104,9 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testSetId() {
-		fail("Not yet implemented"); // TODO
+		Comment comment = new Comment();
+		comment.setId(5);
+		assertEquals(comment.getId(), 5);
 	}
 
 	/**
@@ -106,7 +114,10 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testGetText() {
-		fail("Not yet implemented"); // TODO
+		Comment comment = new Comment();
+		assertEquals(comment.getText(), "");
+		comment.setText("4");
+		assertEquals(comment.getText(), "4");
 	}
 
 	/**
@@ -114,7 +125,9 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testSetText() {
-		fail("Not yet implemented"); // TODO
+		Comment comment = new Comment();
+		comment.setText("4");
+		assertEquals(comment.getText(), "4");
 	}
 
 	/**
@@ -122,7 +135,12 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testIsTextChanged() {
-		fail("Not yet implemented"); // TODO
+		Comment comment = new Comment();
+		comment.setText("4");
+		comment.setAsSaved();
+		assertFalse(comment.isTextChanged());
+		comment.setText("5");
+		assertTrue(comment.isTextChanged());
 	}
 
 	/**
@@ -130,7 +148,9 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testGetAuthor() {
-		fail("Not yet implemented"); // TODO
+		User u = new User();
+		Comment comment = new Comment(u, "Test String", 1);
+		assertEquals(comment.getAuthor(), u);
 	}
 
 	/**
@@ -138,7 +158,10 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testSetAuthor() {
-		fail("Not yet implemented"); // TODO
+		User u = new User();
+		Comment comment = new Comment();
+		comment.setAuthor(u);
+		assertEquals(comment.getAuthor(), u);
 	}
 
 	/**
@@ -146,7 +169,12 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testIsSaved() {
-		fail("Not yet implemented"); // TODO
+		Comment comment = new Comment();
+		comment.setText("4");
+		comment.setAsSaved();
+		assertTrue(comment.isSaved());
+		comment.setText("5");
+		assertFalse(comment.isSaved());
 	}
 
 	/**
@@ -154,7 +182,9 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testSetAsSaved() {
-		fail("Not yet implemented"); // TODO
+		Comment comment = new Comment();
+		comment.setAsSaved();
+		assertTrue(comment.isSaved());
 	}
 
 	/**
@@ -162,7 +192,10 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testGetCreationTime() {
-		fail("Not yet implemented"); // TODO
+		java.sql.Timestamp time = new java.sql.Timestamp(1234);
+		Comment comment = new Comment();
+		comment.setCreationTime(time);
+		assertEquals(comment.getCreationTime(), time);
 	}
 
 	/**
@@ -170,7 +203,13 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testSetCreationTime() {
-		fail("Not yet implemented"); // TODO
+		java.sql.Timestamp time = new java.sql.Timestamp(1234);
+		Comment comment = new Comment();
+		comment.setCreationTime(time);
+		assertEquals(comment.getCreationTime(), time);
+		time = new java.sql.Timestamp(new java.util.Date().getTime());
+		comment.setCreationTime(time);
+		assertEquals(comment.getCreationTime(), time);
 	}
 
 	/**
@@ -178,7 +217,10 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testGetModificationTime() {
-		fail("Not yet implemented"); // TODO
+		java.sql.Timestamp time = new java.sql.Timestamp(1234);
+		Comment comment = new Comment();
+		comment.setModificationTime(time);
+		assertEquals(comment.getModificationTime(), time);
 	}
 
 	/**
@@ -186,7 +228,10 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testSetModificationTime() {
-		fail("Not yet implemented"); // TODO
+		java.sql.Timestamp time = new java.sql.Timestamp(1234);
+		Comment comment = new Comment();
+		comment.setModificationTime(time);
+		assertEquals(comment.getModificationTime(), time);
 	}
 
 	/**
@@ -194,7 +239,13 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testGetExperienceId() {
-		fail("Not yet implemented"); // TODO
+		User u = new User();
+		Comment comment = new Comment(u, "Test String", 1357);
+		assertEquals(comment.getExperienceId(), 1357);
+		Experience e = new Experience();
+		e.setId(1234);
+		comment = new Comment(5, u, "Test String", e);
+		assertEquals(comment.getExperienceId(), e.getId());
 	}
 
 	/**
@@ -202,7 +253,9 @@ public class CommentTest {
 	 */
 	@Test
 	public final void testSetExperienceId() {
-		fail("Not yet implemented"); // TODO
+		Comment comment = new Comment();
+		comment.setExperienceId(12);
+		assertEquals(comment.getExperienceId(), 12);
 	}
 
 }

@@ -15,7 +15,7 @@ public class Comment implements Serializable {
 	private static final long serialVersionUID = 3254838824076890283L;
 	private int id=-1;
 	private User author;
-	private String text;
+	private String text="";
 	private boolean textChanged=false;
 	private boolean saved=false;
 	private Timestamp creationTime;
@@ -68,6 +68,7 @@ public class Comment implements Serializable {
 	public Comment setText(String text) {
 		this.text = text;
 		this.textChanged = true;
+		this.saved = false;
 		return this;
 	}
 
@@ -94,6 +95,7 @@ public class Comment implements Serializable {
 	}
 	
 	public Comment setAsSaved() {
+		this.textChanged = false;
 		this.saved = true;
 		return this;
 	}
