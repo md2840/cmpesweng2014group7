@@ -43,7 +43,10 @@ import com.group7.urbsourceandroid.models.Tag;
 import com.group7.urbsourceandroid.models.User;
 
 
-
+/**
+*@author Dilara Kekulluoglu
+*This page shows the individual experiences and their comments on one page.
+**/
 public class ShowExperience extends Activity{
 
 	private SessionManager session;
@@ -59,7 +62,8 @@ public class ShowExperience extends Activity{
 	private final String DELETE_CMT = "dc";
 	private final String ADD_COMMENT = "ac";
 	private String commentTxt;
-			
+	  
+  //experience id that we show on the page    
 	private int experience_id;
 	private Experience exp;
 	private TextView exp_username,exp_content,exp_tags,exp_mood,exp_comment,exp_location;
@@ -84,6 +88,7 @@ public class ShowExperience extends Activity{
         experience_id = i.getIntExtra("id", -1);
         Log.i("exp_id",Integer.toString(experience_id));
         
+        //initializing views
         exp = new Experience();
         
         exp_username = (TextView) findViewById(R.id.exp_username);
@@ -109,6 +114,7 @@ public class ShowExperience extends Activity{
         exp_delete.setVisibility(View.GONE);
         edit_exp.setVisibility(View.GONE);
         
+        //Edit experience button, when clicked allows user to edit the experience
        edit_exp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +130,7 @@ public class ShowExperience extends Activity{
             	
             }
             });
-       
+       //Delete experience button, when clicked allows user to delete the experience
        exp_delete.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -132,7 +138,7 @@ public class ShowExperience extends Activity{
            	new MyAsyncTask().execute(DELETE_EXP);
            }
            });
-       
+       //Save experience button, when clicked saves the edited experience on database and shows the edited experience.
        save_exp.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -162,6 +168,7 @@ public class ShowExperience extends Activity{
            }
            });
        
+       //add comment button , when clicked adds the edittext on the editview as comment on the experience.
        add_comment.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -179,6 +186,8 @@ public class ShowExperience extends Activity{
                 R.id.cmt_list, comments);
         listView.setAdapter(adapter);
         getExperience();
+        
+        //waits the system for 2 secs so async tasks wont do innerrun.
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
           @Override
@@ -189,7 +198,10 @@ public class ShowExperience extends Activity{
        
         
 	}
-	
+	/**
+   *@author Dilara Kekulluoglu
+   * This method gets the experience with given id to the screen.
+   */
 	private void getExperience(){
 		if(experience_id == -1){
 			alert.setMessage("Experience does not exist");
@@ -202,10 +214,17 @@ public class ShowExperience extends Activity{
 		
 	}
 	
+   /**
+   *@author Dilara Kekulluoglu
+   * This method gets the comments of the given experience.
+   */
 	private void getComments(){
 		new MyAsyncTask().execute(GET_COMMENTS);
 	}
-	
+	/**
+   *@author Dilara Kekulluoglu
+   * customized adapter for the comments to show as listview.
+   */
 	private class ActionListAdapter extends ArrayAdapter<Comment> {
 	    private List<Comment> comments;
 
@@ -271,6 +290,11 @@ public class ShowExperience extends Activity{
     }
 
 }
+/**
+*@author Dilara Kekulluoglu
+*Customized async task for the http post and gets the experience and comments, also deleting editing experience
+*adding deleting comments
+**/
 	private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		 
 	   	private boolean getExp = false;
