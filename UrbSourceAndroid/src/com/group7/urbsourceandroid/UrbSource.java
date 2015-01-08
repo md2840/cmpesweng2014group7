@@ -25,6 +25,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
  
+ /**
+ *@author Dilara Kekulluoglu
+ *The page that shows on the first time app is opened
+ *If there is a session apparent directs to homepage immediately.
+ **/
 public class UrbSource extends Activity {
 	
 	private Button login;
@@ -51,7 +56,7 @@ public class UrbSource extends Activity {
         
         
         session = new SessionManager(this.getApplicationContext());
-        
+        //if there is a login session apparent from before directs the app to homepage
         if(session.isLoggedIn()){
         	Intent i = new Intent(getApplicationContext(), HomePage.class);
             startActivity(i);
@@ -87,6 +92,10 @@ public class UrbSource extends Activity {
         passwordT = (EditText) findViewById(R.id.password);
         
     }
+    /**
+    *@author Dilara Kekulluoglu
+    *Login method which takes the username and password user enters and sends it to async task
+    */
     public void Login(){
     	//Check from the api if there exists such user
     	username = usernameT.getText().toString();
@@ -97,7 +106,11 @@ public class UrbSource extends Activity {
     	
     	
     }
-    
+    /**
+    *@author Dilara Kekulluoglu
+    *The async task which gets the username and password and sends it to api, if there is a match
+    *directs to homepage, if there is no match tells to the user.
+    */
     private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		 
    	
