@@ -12,6 +12,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.urbsource.db.JDBCUserDAO;
 import com.urbsource.models.User;
 
+/**
+ * 
+ * @author Setenay Ronael
+ *
+ */
 public class UrbSourceUserDetailsService implements UserDetailsService {
 	
 	private JDBCUserDAO userdao = new JDBCUserDAO();
@@ -21,8 +26,10 @@ public class UrbSourceUserDetailsService implements UserDetailsService {
 	}
 	
 	/**
-	 * Create UserDetails object to be checked for credentials using Spring Security framework.
-	 */
+	 * Create UserDetails object to be checked for credentials using Spring Security framework. Normally this will 
+	 * be helpful to get all information about user in spring. However we will not use it like this now. It has 
+	 * to be changed for more security.  
+ 	 */
 
 	@Override
 	public UserDetails loadUserByUsername(String username)

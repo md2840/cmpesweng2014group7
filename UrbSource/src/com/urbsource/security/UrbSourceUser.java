@@ -7,6 +7,11 @@ import org.springframework.security.core.GrantedAuthority;
 import com.urbsource.db.JDBCUserDAO;
 import com.urbsource.models.User;
 
+/**
+ * 
+ * @author Setenay Ronael
+ *
+ */
 public class UrbSourceUser extends org.springframework.security.core.userdetails.User {
 
 	/**
@@ -42,6 +47,16 @@ public class UrbSourceUser extends org.springframework.security.core.userdetails
 	}
 	
 
+	/**
+	 * This method overwrites the Spring User constructor, it is necessary to overwrite Spring User
+	 * @param u
+	 * @param dao
+	 * @param enabled
+	 * @param accountNonExpired
+	 * @param credentialsNonExpired
+	 * @param accountNonLocked
+	 * @param authorities
+	 */
 	public UrbSourceUser(User u,
 			JDBCUserDAO dao,
 			boolean enabled,
