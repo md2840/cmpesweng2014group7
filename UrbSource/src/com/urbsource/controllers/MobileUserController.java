@@ -38,6 +38,18 @@ import com.urbsource.models.Experience;
 import com.urbsource.models.Tag;
 import com.urbsource.models.User;
 
+
+/**
+	 * Handles HTTP get requests for user information page from mobile application.
+	 * 
+	 * 
+	 * @author Gokce Yesiltas 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 @Controller
 @RequestMapping("/mobile/*")
 public class MobileUserController {
@@ -57,9 +69,9 @@ public class MobileUserController {
 	}
 
 	/**
-	 * Handles HTTP get requests for user information page from mobile application.
+	 * Web API for mobile application.
 	 * 
-	 * 
+	 * @author Dilara Kekulluoglu
 	 * @author Gokce Yesiltas 
 	 * @param request
 	 * @param response
@@ -93,6 +105,17 @@ public class MobileUserController {
 	 * @author = dilara kekulluoglu
 	 * 
 	 *
+	 */
+    /**
+	 * Handles HTTP get requests for recent and popular experiences from mobile application.
+	 * 
+	 * 
+	 * @author Dilara KEkulluoglu 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
 	 */
 
 	@RequestMapping(value="/mobilerecent", method=RequestMethod.POST)
@@ -148,10 +171,18 @@ public class MobileUserController {
 		return body;
 	}
 
-
-	/**
+/**
 	 * Sends the experience of the given id with the details
-	 * */
+	 * 
+	 * 
+	 * @author Dilara Kekulluoglu
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	
 	@RequestMapping(value="/id/mobile", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> getExperienceMobile(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -167,6 +198,7 @@ public class MobileUserController {
 	}
 
 	/**
+   *@author Dilara Kekulluoglu
 	 * Method to return all the experiences of a given wantedUsername
 	 * Experiences will be returned after likes are configured.
 	 * */
@@ -254,7 +286,17 @@ public class MobileUserController {
 		return map;
 
 	}
-
+/**
+	 * Handles the downvotes from the mobile app
+	 * 
+	 * 
+	 * @author Dilara Kekulluoglu
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/mobiledownvote", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> mobileDownvote(HttpServletRequest request, HttpServletResponse response, Model model) throws JSONException, IOException {
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -285,6 +327,17 @@ public class MobileUserController {
 		return map;
 	}
 
+/**
+	 * Handles the upvotes from the mobile app
+	 * 
+	 * 
+	 * @author Dilara Kekulluoglu
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/mobileupvote", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> mobileUpvote(HttpServletRequest request, HttpServletResponse response, Model model) throws JSONException, IOException {
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -312,7 +365,17 @@ public class MobileUserController {
 		}
 		return map;
 	}
-
+/**
+	 * Handles the updates to the experiences from the mobile app
+	 * 
+	 * 
+	 * @author Dilara Kekulluoglu
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 
 	@RequestMapping(value="/mobileupdate", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> mobileUpdate(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
@@ -394,7 +457,17 @@ public class MobileUserController {
 		map.put("success", true);
 		return map;
 	}
-	
+	/**
+	 * Handles the request to create comments to an experience from the mobile app
+	 * 
+	 * 
+	 * @author Dilara Kekulluoglu
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/createcomment", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> createComment(HttpServletRequest request, HttpServletResponse response) {
 		HashMap<String, Object> map= new HashMap<String, Object>();;
@@ -433,6 +506,17 @@ public class MobileUserController {
 		return map;
 		
 	}
+   /**
+	 * Handles the deletion to comments from the mobile app
+	 * 
+	 * 
+	 * @author Dilara Kekulluoglu
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> delete(HttpServletRequest request, HttpServletResponse response) {
@@ -473,7 +557,17 @@ public class MobileUserController {
 		}
 		return map;
 	}
-	
+	/**
+	 * Returns the comments of a given experience to the mobile app
+	 * 
+	 * 
+	 * @author Dilara Kekulluoglu
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/getcomments", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> getComments(HttpServletRequest request, HttpServletResponse response) {
 		HashMap<String, Object> map= new HashMap<String, Object>();;
@@ -509,7 +603,17 @@ public class MobileUserController {
 		return map;
 		
 	}
-
+/**
+	 * Handles the spam markings from the mobile app
+	 * 
+	 * 
+	 * @author Dilara Kekulluoglu
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 
 	@RequestMapping(value="/mobilemarkSpam", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> mobileMarkSpam(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
@@ -537,6 +641,17 @@ public class MobileUserController {
 		map.put("success", expDao.markSpamMobile(exp,u));
 		return map;
 	}
+   /**
+	 * Handles the taking back spam mark from the mobile app
+	 * 
+	 * 
+	 * @author Dilara Kekulluoglu
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 
 	@RequestMapping(value="/mobileunmarkSpam", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> mobileUnmarkSpam(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
