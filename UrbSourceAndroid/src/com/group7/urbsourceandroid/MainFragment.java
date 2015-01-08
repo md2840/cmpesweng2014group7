@@ -589,6 +589,9 @@ public class MainFragment extends Fragment{
             }
 
         }
+        /*
+         * This method deletes experience
+         */
         public void deleteExp(String pos){
 
             int exp_pos = Integer.parseInt(pos);
@@ -700,6 +703,9 @@ public class MainFragment extends Fragment{
                 e.printStackTrace();
             }
         }
+        /*
+         * This method gets needed data from the server
+         */
 
         public void getData(){
             // Create a new HttpClient and Post Header

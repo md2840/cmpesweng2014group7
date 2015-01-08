@@ -68,6 +68,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+/**
+* @author Admir Nurkovic
+* MainFragment is the page that show when we login, it has 2 other sibling fragments
+* which we can go by swiping to right
+*/
 
 public class CreateExperienceFragment extends Fragment implements LocationListener,GoogleMap.OnMapClickListener {
 
@@ -228,6 +233,10 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LATLNG));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
     }
+    
+    /*
+     * This method creates the experience
+     */
 	private void createExp(){
 		String exptext = Text.getText().toString();
 		String tags = Tags.getText().toString();
@@ -288,7 +297,11 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
         currentLatLing=latLng;
 
     }
-
+/*
+ * @author Admir Nurkovic
+ * Here we perform the Json transition from the needed String objects and pass them to the 
+ * titan server. 
+ */
     private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		 
 		
@@ -381,7 +394,11 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
 		}
  
 	}
-
+    /*
+     * @author Admir Nurkovic
+     * Here we perform the Json translation from String object only if location is not provided by
+     * the users
+     */
     private class MyAsyncTask1 extends AsyncTask<String, Integer, Double>{
 
 
@@ -473,6 +490,10 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
         }
 
     }
+    /*
+     * Show an alert if GPS s not opened in the device
+     * and it can be enabled if the user wants
+     */
     private void showGPSDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setMessage("Please enable your GPS.")
@@ -552,9 +573,6 @@ public class CreateExperienceFragment extends Fragment implements LocationListen
                         address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
                         address.getCountryName());
 
-//                markerOptions = new MarkerOptions();
-//                markerOptions.position(latLng);
-//                markerOptions.title(addressText);
 
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latLng)

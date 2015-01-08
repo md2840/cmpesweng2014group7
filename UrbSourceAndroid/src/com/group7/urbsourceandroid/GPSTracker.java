@@ -20,6 +20,10 @@ import android.provider.Settings;
 import android.util.Log;
 
 
+/**
+*@author Admir Nurkovic
+*This class tracks our GPS location
+**/
 
 public class GPSTracker extends Service implements LocationListener {
     private final Context mContext;
@@ -42,6 +46,10 @@ public class GPSTracker extends Service implements LocationListener {
         this.mContext = context;
         getLocation();
     }
+    /*
+     * 
+     * This void method gets the location that gps reads
+     */
     public Location getLocation() {
         try {
             locationManager = (LocationManager) mContext

@@ -18,6 +18,9 @@ import static com.group7.urbsourceandroid.R.*;
 
 /**
  * Created by Admir Nurkovic on 1/7/15.
+ * @author Admir Nurkoivc
+ * This class is used if we want to show the experiences 
+ * even our ones or others on the map
  */
 public class ShowOnMap extends FragmentActivity {
 
@@ -62,9 +65,5 @@ public class ShowOnMap extends FragmentActivity {
 
         }
     }
-
-
-
-
 
 }
