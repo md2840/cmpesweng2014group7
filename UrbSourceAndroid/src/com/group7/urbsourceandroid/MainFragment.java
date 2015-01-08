@@ -43,6 +43,12 @@ import com.group7.urbsourceandroid.models.Tag;
 import com.group7.urbsourceandroid.models.User;
 
 
+/**
+* @author Dilara Kekulluoglu
+* MainFragment is the page that show when we login, it has 2 other sibling fragments
+* which we can go by swiping to right
+*/
+
 public class MainFragment extends Fragment{
 
     private ListView listView;
@@ -63,12 +69,15 @@ public class MainFragment extends Fragment{
 
         View view = inflater.inflate(R.layout.mainfragment, container, false);
 
+        //session management to see whether the user is logged in. Kicks out if not
         session = new SessionManager(getActivity().getApplicationContext());
         session.checkLogin();
 
         responseText="";
         alert =  new AlertDialog.Builder(getActivity());
-
+       
+        //listview to show the experiences on the screen as list
+        //we assign adapter to our experience list to watch the changes
         listView = (ListView) view.findViewById(R.id.exp_list);
         recentExperiences = new ArrayList<Experience>();
         adapter = new ActionListAdapter(getActivity(),
@@ -79,10 +88,20 @@ public class MainFragment extends Fragment{
         return view;
     }
 
+    /**
+    *@author Dilara Kekulluoglu
+    *gets the experiences from the server and adds it to list to show on page
+    */
     public void addExperiences(){
 
         new MyAsyncTask().execute(GET_EXPERIENCES);
     }
+    
+    /**
+    *@author Dilara Kekulluoglu
+    *customized adapter to go with our experience items.
+    *shows the elements of experience and assigns onclick listeners for it
+    */
 
     private class ActionListAdapter extends ArrayAdapter<Experience> {
         private List<Experience> recentExperiences;
@@ -304,7 +323,10 @@ public class MainFragment extends Fragment{
         }
 
     }
-
+    /**
+    * @author Dilara Kekulluoglu
+    * customized Async task for getting experiences; adding upvotes,downvotes and spam; view map
+    */
     private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 
         private final ProgressDialog dialog = new ProgressDialog(getActivity());
@@ -350,6 +372,7 @@ public class MainFragment extends Fragment{
 
             return null;
         }
+        //after the http post parses the results according to the method
 
         protected void onPostExecute(Double result){
             if(get){
