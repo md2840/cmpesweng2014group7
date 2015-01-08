@@ -10,6 +10,10 @@ import java.util.regex.Pattern;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+/**
+ * Model representing a comment in database.
+ * 
+ */
 public class User implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -129,9 +133,9 @@ public class User implements Serializable {
 	}
 	
 	/**
-	 * To be only used from DAO
+	 * Set number of experiences this user has.
 	 * 
-	 * @param numberOfExperiences
+	 * @param numberOfExperiences the number of experiences this user will have
 	 */
 	public void setNumberOfExperiences(int numberOfExperiences) {
 		this.numberOfExperiences = numberOfExperiences;
