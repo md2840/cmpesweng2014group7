@@ -26,6 +26,10 @@ import com.urbsource.db.JDBCTagDAO;
 import com.urbsource.db.JDBCUserDAO;
 import com.urbsource.models.User;
 
+/**
+ * Controller rendering index page and basic search AJAX APIs.
+ *
+ */
 @Controller
 @RequestMapping("/Index/*")
 public class IndexController {
@@ -33,7 +37,10 @@ public class IndexController {
 	JDBCUserDAO userDao;
 	JDBCIndexDAO jdb;
 	JDBCExperienceDAO expDao;
-	
+
+	/**
+	 * Default constructor. Called by Spring framework to initialize controller.
+	 */
 	public IndexController(){
 		jdb = new JDBCIndexDAO();
 		userDao = new JDBCUserDAO();

@@ -39,9 +39,10 @@ import com.urbsource.sendEmail.SendEmail;
 @RequestMapping("/signup/*")
 public class SignUpController {
 	JDBCUserDAO dao;
-    //@Autowired
-    //private ReCaptcha reCaptchaService = null;
-	     
+    
+	/**
+	 * Default constructor. Called by Spring framework to initialize controller.
+	 */
 	public SignUpController() {
 		// Initialize DB connection
 		dao = new JDBCUserDAO();
@@ -52,6 +53,7 @@ public class SignUpController {
 	 * 
 	 * @param model The model passed to controller via Spring.
 	 * @return The response model-view pair
+	 * @author Mehmet Emre
 	 */
 	@RequestMapping(value="/confirm", method=RequestMethod.POST)
 	public ModelAndView SignUp(@ModelAttribute User u,ServletRequest request, Model model) {
@@ -96,12 +98,14 @@ public class SignUpController {
 	 * 
 	 * @param model The model passed to controller via Spring.
 	 * @return The response model-view pair
+	 * @author Mehmet Emre
 	 */
 	@RequestMapping(value="/confirm", method=RequestMethod.GET)
 	public ModelAndView SignUpPage(Model model) {
 		model.addAttribute("user", null);
 		return new ModelAndView("signup", "command", new User());
 	}
+	
 	/**
 	 * Handles POST requests to SignUp page  form mobile app
 	 * 
