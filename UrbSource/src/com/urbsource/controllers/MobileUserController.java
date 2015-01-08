@@ -40,16 +40,16 @@ import com.urbsource.models.User;
 
 
 /**
-	 * Handles HTTP get requests for user information page from mobile application.
-	 * 
-	 * 
-	 * @author Gokce Yesiltas 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws JSONException
-	 * @throws IOException
-	 */
+ * Web API for mobile application. 
+ * 
+ * @author Gokce Yesiltas 
+ * @author Dilara Keküllüoğlu
+ * @param request
+ * @param response
+ * @return
+ * @throws JSONException
+ * @throws IOException
+ */
 @Controller
 @RequestMapping("/mobile/*")
 public class MobileUserController {
@@ -59,7 +59,7 @@ public class MobileUserController {
 	JDBCExperienceDAO expDao;
 	JDBCExperienceVoteDAO voteDao;
 	JDBCCommentDAO commentDao;
-	
+
 	public MobileUserController(){
 		userDao = new JDBCUserDAO();
 		tagDao = new JDBCTagDAO();
@@ -69,9 +69,8 @@ public class MobileUserController {
 	}
 
 	/**
-	 * Web API for mobile application.
+	 * Handles HTTP get requests for user information page from mobile application.
 	 * 
-	 * @author Dilara Kekulluoglu
 	 * @author Gokce Yesiltas 
 	 * @param request
 	 * @param response
@@ -106,7 +105,7 @@ public class MobileUserController {
 	 * 
 	 *
 	 */
-    /**
+	/**
 	 * Handles HTTP get requests for recent and popular experiences from mobile application.
 	 * 
 	 * 
@@ -126,7 +125,7 @@ public class MobileUserController {
 
 		List<Experience> list = expDao.getRecentAndPopularExperiences(10);
 		for(int i=0; i<list.size(); i++){
-//			expDao.configureVotes(username, list.get(i));
+			//			expDao.configureVotes(username, list.get(i));
 		}
 		map.put("experiences", list);
 		return map;
@@ -171,7 +170,7 @@ public class MobileUserController {
 		return body;
 	}
 
-/**
+	/**
 	 * Sends the experience of the given id with the details
 	 * 
 	 * 
@@ -182,7 +181,7 @@ public class MobileUserController {
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	
+
 	@RequestMapping(value="/id/mobile", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> getExperienceMobile(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -192,13 +191,13 @@ public class MobileUserController {
 
 		Experience e = expDao.getExperience(expId);
 
-//		expDao.configureVotes(username, e);
+		//		expDao.configureVotes(username, e);
 		map.put("experiences", e);
 		return map;
 	}
 
 	/**
-   *@author Dilara Kekulluoglu
+	 *@author Dilara Kekulluoglu
 	 * Method to return all the experiences of a given wantedUsername
 	 * Experiences will be returned after likes are configured.
 	 * */
@@ -212,7 +211,7 @@ public class MobileUserController {
 		List<Experience> list = expDao.getExperiences(userDao.getMobileUser(wantedUsername));
 		if(!username.equalsIgnoreCase(wantedUsername)){
 			for(int i=0; i<list.size(); i++){
-//				expDao.configureVotes(username, list.get(i));
+				//				expDao.configureVotes(username, list.get(i));
 			}
 		}
 		map.put("experiences", list );
@@ -243,7 +242,7 @@ public class MobileUserController {
 		for (int i = 0, len = tagArray.length(); i < len; ++i)
 			tags[i] = tagDao.getTag(tagArray.getString(i));
 		Experience exp = new Experience(u, json.getString("text"), tags).setMood(json.getString("mood"))
-																		.setLocation(json.getString("location"));
+				.setLocation(json.getString("location"));
 		map.put("success", expDao.createExperience(exp));
 		return map;
 
@@ -286,7 +285,7 @@ public class MobileUserController {
 		return map;
 
 	}
-/**
+	/**
 	 * Handles the downvotes from the mobile app
 	 * 
 	 * 
@@ -327,7 +326,7 @@ public class MobileUserController {
 		return map;
 	}
 
-/**
+	/**
 	 * Handles the upvotes from the mobile app
 	 * 
 	 * 
@@ -365,7 +364,7 @@ public class MobileUserController {
 		}
 		return map;
 	}
-/**
+	/**
 	 * Handles the updates to the experiences from the mobile app
 	 * 
 	 * 
@@ -472,9 +471,9 @@ public class MobileUserController {
 	public @ResponseBody HashMap<String, Object> createComment(HttpServletRequest request, HttpServletResponse response) {
 		HashMap<String, Object> map= new HashMap<String, Object>();;
 		try {
-			
+
 			JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
-			
+
 			String username = json.getString("username");
 			boolean hasAuthority = json.getBoolean("IsLoggedIn");
 			if(!hasAuthority){
@@ -483,12 +482,12 @@ public class MobileUserController {
 				return map;
 			}
 
-			
+
 			User u = userDao.getLoginUser(username);
 			Timestamp date;
 			try {
-			    DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
-		        java.util.Date creationDate = df.parse(json.getString("creationTime"));
+				DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+				java.util.Date creationDate = df.parse(json.getString("creationTime"));
 				date = new Timestamp(creationDate.getTime());
 			} catch (Exception e) {
 				date = new Timestamp(new java.util.Date().getTime());
@@ -496,7 +495,7 @@ public class MobileUserController {
 			Comment comment = new Comment(u, json.getString("text"), json.getInt("experienceId")).setCreationTime(date);
 			map.put("success", commentDao.createComment(comment));
 		} catch (JSONException e) {
-			
+
 			map.put("success", false);
 			map.put("error", e.getMessage());
 		} catch (IOException e1) {
@@ -504,9 +503,9 @@ public class MobileUserController {
 			e1.printStackTrace();
 		}
 		return map;
-		
+
 	}
-   /**
+	/**
 	 * Handles the deletion to comments from the mobile app
 	 * 
 	 * 
@@ -522,7 +521,7 @@ public class MobileUserController {
 	public @ResponseBody HashMap<String, Object> delete(HttpServletRequest request, HttpServletResponse response) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		try {
-			
+
 			JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
 			String username = json.getString("username");
 			boolean hasAuthority = json.getBoolean("IsLoggedIn");
@@ -572,9 +571,9 @@ public class MobileUserController {
 	public @ResponseBody HashMap<String, Object> getComments(HttpServletRequest request, HttpServletResponse response) {
 		HashMap<String, Object> map= new HashMap<String, Object>();;
 		try {
-			
+
 			JSONObject json = (new JSONObject(getBody(request))).getJSONObject("result");
-			
+
 			String username = json.getString("username");
 			boolean hasAuthority = json.getBoolean("IsLoggedIn");
 			if(!hasAuthority){
@@ -585,25 +584,25 @@ public class MobileUserController {
 
 			int id = json.getInt("id");
 			Experience exp = expDao.getExperience(id);
-			
+
 			map.put("comments",commentDao.getComments(exp));
 			map.put("success", true);
-			
-			
+
+
 		} catch (JSONException e) {
-			
+
 			map.put("success", false);
 			map.put("error", e.getMessage());
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			map.put("success", false);
 			map.put("error", e1.getMessage());
-			
+
 		}
 		return map;
-		
+
 	}
-/**
+	/**
 	 * Handles the spam markings from the mobile app
 	 * 
 	 * 
@@ -641,7 +640,7 @@ public class MobileUserController {
 		map.put("success", expDao.markSpamMobile(exp,u));
 		return map;
 	}
-   /**
+	/**
 	 * Handles the taking back spam mark from the mobile app
 	 * 
 	 * 
