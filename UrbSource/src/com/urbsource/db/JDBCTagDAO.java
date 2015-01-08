@@ -11,11 +11,21 @@ import org.springframework.stereotype.Repository;
 
 import com.urbsource.models.Tag;
 
+/**
+ * Data Access Object to do tag-related tasks via communicating with DB.
+ * 
+ * @author Mehmet Emre
+ */
 @Repository
 public class JDBCTagDAO {
 
 	private static JdbcTemplate jdbcTemplate;
 
+	/**
+	 * Set data source to be used by all {@link JDBCTagDAO} objects to access DB.
+	 * 
+	 * @param dataSource data source to be used for accessing the DB
+	 */
 	public void setDataSource(DataSource dataSource) {
 		try {
 			jdbcTemplate = new JdbcTemplate(dataSource);
@@ -27,8 +37,9 @@ public class JDBCTagDAO {
 
 	/**
 	 * Get tag from database, create the tag if it doesn't exist
+	 * 
 	 * @param tag The tag requested
-	 * @return
+	 * @return the created/fetched tag
 	 */
 	public Tag getTag(String tag) {
 		tag = tag.trim().toLowerCase(); // keep all tags lowercase and trimmed
@@ -51,6 +62,12 @@ public class JDBCTagDAO {
 		return t;
 	}
 
+	/**
+	 * Get tag from database, create the tag if it doesn't exist
+	 * 
+	 * @param experience_id ID of experience whose tags are requested
+	 * @return list of fetched tags
+	 */
 	public List<Tag> getTags(int experience_id) {
 		String sql = "SELECT tag.name AS name, tag.id AS id FROM tag, rel_experience_tag "
 				+ "WHERE tag.id = rel_experience_tag.tag_id AND rel_experience_tag.experience_id = ?";

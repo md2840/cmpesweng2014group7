@@ -15,11 +15,19 @@ import org.springframework.stereotype.Repository;
 
 import com.urbsource.models.User;
 
+/**
+ * Data Access Object to do user-related tasks via communicating with DB.
+ */
 @Repository
 public class JDBCUserDAO {
 
 	private static JdbcTemplate jdbcTemplate;
 
+	/**
+	 * Set data source to be used by all {@link JDBCUserDAO} objects to access DB.
+	 * 
+	 * @param dataSource data source to be used for accessing the DB
+	 */
 	public void setDataSource(DataSource dataSource) {
 
 		try {
@@ -61,6 +69,13 @@ public class JDBCUserDAO {
 		
 	}
 	
+	/**
+	 * Get a user from database, whose ID is given.
+	 * 
+	 * @param id ID of requested user
+	 * @return the fetched {@link User} object
+	 * @author Mehmet Emre
+	 */
 	public User getUser(int id){
 		String sql = "SELECT * FROM user WHERE id = ?";
 		User u = JDBCUserDAO.jdbcTemplate.queryForObject(
@@ -146,7 +161,14 @@ public class JDBCUserDAO {
 				user.getCommentPoints(),
 				user.getUsername());
 	}
-	
+
+	/**
+	 * Deletes a user from database.
+	 * 
+	 * @param user User object to be deleted
+	 * @return success of operation
+	 * @author Mehmet Emre
+	 */
 	public boolean deleteUser(User user) {
 		String sql = "DELETE user WHERE id = ?";
 		jdbcTemplate.update(sql, user.getId());

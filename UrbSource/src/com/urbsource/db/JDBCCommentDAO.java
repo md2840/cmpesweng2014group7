@@ -16,11 +16,29 @@ import com.urbsource.models.Comment;
 import com.urbsource.models.Experience;
 import com.urbsource.models.User;
 
+/**
+ * Data Access Object to do Comment-related tasks via communicating with DB.
+ * 
+ * @author Mehmet Emre
+ */
 @Repository
 public class JDBCCommentDAO {
 	final int QUERY_LIMIT = 10;
 	
+	/**
+	 * Row mapper class to convert query result rows to {@link Comment} objects.
+	 * 
+	 * @author Mehmet Emre
+	 */
 	private class CommentRowMapper implements RowMapper<Comment> {
+		
+		/**
+		 * Map given {@link ResultSet} object to a {@link Comment} object.
+		 * 
+		 * @param rs a row of result
+		 * @param rowNumber number of row in result table
+		 * @return created {@link Comment} object
+		 */
 		@Override
 		public Comment mapRow(ResultSet rs, int rowNumber) throws SQLException {
 			int id = rs.getInt("id");
@@ -43,6 +61,11 @@ public class JDBCCommentDAO {
 	public JDBCCommentDAO() {
 	}
 	
+	/**
+	 * The constructor to be used by controllers.
+	 * 
+	 * @param userDao {@link JDBCUserDAO} object to be used by this class to access users in DB
+	 */
 	public JDBCCommentDAO(JDBCUserDAO userDao) {
 		super();
 		this.userDao = userDao;
@@ -52,6 +75,11 @@ public class JDBCCommentDAO {
 						.usingGeneratedKeyColumns("id");
 	}
 	
+	/**
+	 * Set data source to be used by all {@link JDBCCommentDAO} objects to access DB.
+	 * 
+	 * @param dataSource data source to be used for accessing the DB
+	 */
 	public void setDataSource(DataSource dataSource) {
 		try {
 			jdbcTemplate = new JdbcTemplate(dataSource);
@@ -127,6 +155,12 @@ public class JDBCCommentDAO {
 		return true;
 	}
 	
+	/**
+	 * Delete given comment from DB.
+	 * 
+	 * @param comment Comment to be deleted
+	 * @return success of deletion
+	 */
 	public boolean deleteComment(Comment comment) {
 		if (comment.getId() < 0)
 			return false;

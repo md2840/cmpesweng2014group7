@@ -10,11 +10,19 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Data Access Object used by index controller to communicate with DB.
+ */
 @Repository
 public class JDBCIndexDAO {
 
 	private static JdbcTemplate jdbcTemplate;
-	
+
+	/**
+	 * Set data source to be used by all {@link JDBCIndexDAO} objects to access DB.
+	 * 
+	 * @param dataSource data source to be used for accessing the DB
+	 */
 	public void setDataSource(DataSource dataSource) {
 
 		try {

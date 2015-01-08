@@ -29,15 +29,34 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import com.urbsource.models.Comment;
 import com.urbsource.models.Tag;
 import com.urbsource.models.User;
 import com.urbsource.models.Experience;
 
+/**
+ * Data Access Object to do experience-related tasks via communicating with DB.
+ * 
+ * @author Mehmet Emre
+ */
 @Repository
 public class JDBCExperienceDAO {
 	final int QUERY_LIMIT = 10;
-	
+
+	/**
+	 * Row mapper class to convert query result rows to {@link Experience} objects.
+	 * 
+	 * @author Mehmet Emre
+	 */
 	private class ExperienceRowMapper implements RowMapper<Experience> {
+		
+		/**
+		 * Map given {@link ResultSet} object to a {@link Experience} object.
+		 * 
+		 * @param rs a row of result
+		 * @param rowNumber number of row in result table
+		 * @return created {@link Experience} object
+		 */
 		@Override
 		public Experience mapRow(ResultSet rs, int rowNumber) throws SQLException {
 			int id = rs.getInt("id");
@@ -86,6 +105,12 @@ public class JDBCExperienceDAO {
 	public JDBCExperienceDAO() {
 	}
 	
+	/**
+	 * The constructor to be used by controllers.
+	 * 
+	 * @param userDao {@link JDBCUserDAO} object to be used by this class to access users in DB
+	 * @param userDao {@link JDBCTagDAO} object to be used by this class to access tags in DB
+	 */
 	public JDBCExperienceDAO(JDBCUserDAO userDao, JDBCTagDAO tagDao) {
 		super();
 		this.userDao = userDao;
@@ -95,7 +120,12 @@ public class JDBCExperienceDAO {
 						.usingColumns("text", "author_id", "mood", "creation_time","location", "expiration_date")
 						.usingGeneratedKeyColumns("id");
 	}
-	
+
+	/**
+	 * Set data source to be used by all {@link JDBCExperienceDAO} objects to access DB.
+	 * 
+	 * @param dataSource data source to be used for accessing the DB
+	 */
 	public void setDataSource(DataSource dataSource) {
 		try {
 			jdbcTemplate = new JdbcTemplate(dataSource);
@@ -149,6 +179,14 @@ public class JDBCExperienceDAO {
 		return jdbcTemplate.query(sql, new Object[] { limit }, new ExperienceRowMapper());
 	}
 	
+	/**
+	 * Fill the rest of given experience list until its size reaches {@code QUERY_LIMIT} using
+	 * semantic search.
+	 * 
+	 * @param experiences list of experiences to be filled
+	 * @param tags tags that will be used by semantic search
+	 * @return updated list of experiences
+	 */
 	private List<Experience> fillUsingSemanticSearch(List<Experience> experiences, Tag[] tags) {
 		for (Experience exp : experiences)
 			if (exp.getSource() == null || exp.getSource().isEmpty())
@@ -157,6 +195,7 @@ public class JDBCExperienceDAO {
 		HashSet<String> semanticTagNames = new HashSet<String>();
 		for (Tag tag : tags) {
 			try {
+				// Query ConceptNet5 to get related words (tag names)
 				URL url = new URL("http://conceptnet5.media.mit.edu/data/5.2/assoc/c/en/" + URLEncoder.encode(tag.getName().replace(' ', '_')) + "?filter=/c/en");
 				http = (HttpURLConnection) url.openConnection();
 				http.setRequestMethod("GET");
@@ -356,6 +395,12 @@ public class JDBCExperienceDAO {
 		
 	}
 	
+	/**
+	 * Delete given experience from database.
+	 * 
+	 * @param exp experience to be deleted from database
+	 * @return success of delete operation
+	 */
 	public boolean deleteExperience(Experience exp) {
 		if (exp.getId() < 0)
 			return false;
@@ -368,6 +413,7 @@ public class JDBCExperienceDAO {
 
 	/**
 	 *  Get n experiences chosen among latest experiences and most popular experiences in the system.
+	 *  
 	 * @param n Number of experiences to return.
 	 * @return A selection of n experiences among latest and most popular experiences in the system.
 	 */
@@ -383,6 +429,7 @@ public class JDBCExperienceDAO {
 
 	/**
 	 * Get most popular n experiences in the system, which are the ones with maximum score.
+	 * 
 	 * @param n Number of experiences to return.
 	 * @return Most popular n experiences in the system.
 	 */
@@ -407,6 +454,7 @@ public class JDBCExperienceDAO {
 	
 	/**
 	 * Filter tags according to query.
+	 * 
 	 * @param query
 	 * @return
 	 */
@@ -416,11 +464,22 @@ public class JDBCExperienceDAO {
 		return resultList;
 	}
 	
+	/**
+	 * Remove expired transient experiences from database.
+	 * 
+	 * @return number of removed experiences
+	 */
 	public int cleanUpExpiredExperiences() {
 		String sql = "DELETE FROM experience WHERE expiration_date <> NULL AND expiration_date < NOW()";
 		return jdbcTemplate.update(sql);
 	}
 
+	/**
+	 * Mark given experience as spam by current user.
+	 * 
+	 * @param e experience to be marked as spam
+	 * @return success of operation
+	 */
 	public boolean markSpam(Experience e) {
 		if (e.isUserMarkedSpam())
 			return false;
@@ -465,6 +524,12 @@ public class JDBCExperienceDAO {
 		return true;
 	}
 
+	/**
+	 * Unmark given experience as spam by current user.
+	 * 
+	 * @param e experience whose spam mark will be removed
+	 * @return success of operation
+	 */
 	public boolean unmarkSpam(Experience e) {
 		if (! e.isUserMarkedSpam())
 			return false;
@@ -479,9 +544,9 @@ public class JDBCExperienceDAO {
 	}
 	
 	/**
-	 * Sets the upvotes,downvotes and spams for experiences given username
+	 * Sets the upvotes, downvotes and spams for experiences given username
 	 * for mobile users since userDao.getUser wont work for them.
-	 * */
+	 */
 	public void configureVotes(String username, Experience exp){
 		
 		User currentUser = userDao.getLoginUser(username);
