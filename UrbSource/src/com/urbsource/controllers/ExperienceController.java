@@ -108,7 +108,7 @@ public class ExperienceController {
 		
 		Timestamp date;
 		try {
-		    DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
+		    DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
 	        java.util.Date creationDate = df.parse(json.getString("date"));
 			date = new Timestamp(creationDate.getTime());
 		} catch (Exception e) {
@@ -116,7 +116,7 @@ public class ExperienceController {
 		}
 		Experience exp = new Experience(u, json.getString("text"), tags).setMood(json.getString("mood")).setCreationTime(date);
 		try {
-		    DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
+		    DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
 	        java.util.Date expirationDate = df.parse(json.getString("expirationDate"));
 			exp.setExpirationDate(new Date(expirationDate.getTime()));
 		} catch (Exception e) {
