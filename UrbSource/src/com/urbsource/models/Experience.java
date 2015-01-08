@@ -15,7 +15,7 @@ public class Experience implements Serializable {
 	private static final long serialVersionUID = 9212137404203406823L;
 	private int id=-1;
 	private User author;
-	private String text;
+	private String text="";
 	private String mood="good";
 	private ArrayList<Tag> tags;
 	private ArrayList<Tag> removedTags=new ArrayList<Tag>();
@@ -42,6 +42,7 @@ public class Experience implements Serializable {
 		creationTime = new Timestamp(new java.util.Date().getTime());
 		modificationTime = new Timestamp(new java.util.Date().getTime());
 		expirationDate = new Date(new java.util.Date().getTime());
+		this.tags = new ArrayList<Tag>();
 	}
 	
 	public Experience(int id, User author, String text, List<Tag> tags) {
@@ -86,6 +87,7 @@ public class Experience implements Serializable {
 	public Experience setText(String text) {
 		this.text = text;
 		this.textChanged = true;
+		this.saved = false;
 		return this;
 	}
 
@@ -116,7 +118,7 @@ public class Experience implements Serializable {
 		if (removedTags.contains(t))
 			return false;
 
-		tags.add(t);
+		tags.remove(t);
 		
 		if (addedTags.contains(t))
 			addedTags.remove(t);
