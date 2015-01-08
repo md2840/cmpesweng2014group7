@@ -8,6 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+/**
+*@author Dilara Kekulluoglu
+* The last fragment of the home page 
+* Shows settings ; user profile , search, and logout.
+*/
 public class SettingsFragment extends Fragment {
 
 	private Button UserProfile, Logout, SearchExperience;
