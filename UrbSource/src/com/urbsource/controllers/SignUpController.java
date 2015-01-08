@@ -145,7 +145,12 @@ public class SignUpController {
 		
 		return map;
 	}
-	
+	/**
+	 * @author Setenay Ronael
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
 	public String getBody(HttpServletRequest request) throws IOException
 	{
 		String body = null;

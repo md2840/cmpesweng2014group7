@@ -104,6 +104,7 @@ public class IndexController {
 	
 	/**
 	 * This method parse the request for the make getting parameters on request easy.
+	 * @author Setenay Ronael
 	 * @param request
 	 * @return
 	 * @throws IOException

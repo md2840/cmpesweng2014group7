@@ -176,6 +176,7 @@ public class CommentController {
 	 * Update a comment. Comment ID and content are extracted from {@link request}
 	 * parameter.
 	 * 
+	 * @author Setenay Ronael
 	 * @param request HTTP request to this address
 	 * @param response HTTP response objet that this method will affect
 	 * @return A {@link HashMap} that will be converted to a JSON object containing result and error messages.
