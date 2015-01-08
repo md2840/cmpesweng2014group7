@@ -28,7 +28,7 @@ import com.urbsource.models.User;
 
 /**
  * Controller rendering index page and basic search AJAX APIs.
- *
+ * @author Setenay Ronael
  */
 @Controller
 @RequestMapping("/Index/*")
@@ -58,11 +58,27 @@ public class IndexController {
 		return "index";
 	}
 	
+	/**
+	 * This method is for the first assignment. IT gets and lists the names in a grid.
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/getNames")
 	public @ResponseBody HashMap<String,Object> getNames(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		return jdb.getNames();
 	}
 	
+	/**
+	 * This method is for the first assignment. It adds the name to list.
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/addName")
 	public @ResponseBody String addNames(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		
@@ -71,12 +87,27 @@ public class IndexController {
 		
 	}
 	
+	/**
+	 * This method is a trial for search option.
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="searchName")
 	public @ResponseBody HashMap<String,Object> searchNames(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		JSONObject obj = new JSONObject(getBody(request));
 		return jdb.searchName(obj.getJSONObject("result").getJSONObject("params").getString("query"));
 	}
 	
+	
+	/**
+	 * This method parse the request for the make getting parameters on request easy.
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
 	public String getBody(HttpServletRequest request) throws IOException
 	{
 		String body = null;
