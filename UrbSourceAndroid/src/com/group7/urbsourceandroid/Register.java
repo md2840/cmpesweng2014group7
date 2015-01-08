@@ -29,28 +29,33 @@ import android.widget.Toast;
 
 
 /**
- * 
+ * Shows register page and registers the user by sending 
+ * information which are gathered from the form to WEB API.
  * 
  * @author Gokce Yesiltas
+ * @author Dilara Kekulluoglu
  *
  */
 
 public class Register extends Activity {
-	
 	private Button register;
 	private String responseString=null;
-	private EditText usernameT;
+	private EditText usernameT; 
 	private EditText emailT;
-	
+
+	/**
+	 * Creates a view for register page. 
+	 * Sets a click listener for the login link on the page.
+	 * Sets a click listener for the register button.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Set View to register.xml
 		setContentView(R.layout.register);
 
-
 		TextView loginScreen = (TextView) findViewById(R.id.link_to_login);
-		
+
 		// Listening to Login Screen link
 		loginScreen.setOnClickListener(new View.OnClickListener() {
 
@@ -60,16 +65,18 @@ public class Register extends Activity {
 				finish();
 			}
 		});
-		
+
 		register = (Button) findViewById(R.id.btnRegister);
 		register.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View arg0) {
+				//Calls the method to make http request
 				register(arg0);
-			
+
 			}
 		});
 	}
+
 	/**
 	 * Is called when the register button is clicked on the register page. 
 	 */
@@ -93,11 +100,17 @@ public class Register extends Activity {
 		}
 		if(!password.equals(password2))
 			passwordT.setError("Passwords aren't matched.");
-		
+
 		///////send'em all to API
 		new MyAsyncTask().execute(username,firstName,lastName,email,password,password2);	
 	}
-	
+	/**
+	 * Checks whether the parameter is in the format of e-mail address or not.
+	 * 
+	 * @author Gokce Yesiltas
+	 * @param target Text which is wanted to check
+	 * @return true if the target is in the format of an e-mail address, else false.
+	 */
 	public final static boolean isValidEmail(CharSequence target) {
 		if (TextUtils.isEmpty(target)) {
 			return false;
@@ -105,6 +118,7 @@ public class Register extends Activity {
 			return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
 		}
 	}
+
 	/**
 	 * @author dilara kekulluoglu
 	 *     AsyncTask class which does http post, get in background.
@@ -112,7 +126,7 @@ public class Register extends Activity {
 	 * 
 	 * */
 	private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
-		 
+
 		@Override
 		protected Double doInBackground(String... params) {
 			// TODO Auto-generated method stub
@@ -124,9 +138,9 @@ public class Register extends Activity {
 			}
 			return null;
 		}
- 
+
 		protected void onPostExecute(Double result){
-			
+
 			try {
 				JSONObject res = new JSONObject(responseString);
 				if(!res.getBoolean("success")){
@@ -142,8 +156,8 @@ public class Register extends Activity {
 				e.printStackTrace();
 			}
 		}
-		
- 
+
+
 		public void postData(String username, String firstName,String lastName,String email,String password,String password2) throws JSONException {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
@@ -161,25 +175,25 @@ public class Register extends Activity {
 				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
 				httppost.setHeader("Content-Type", "application/json");
 				httppost.setHeader("Accept", "application/json");
-			
+
 				httppost.setEntity(se);
 				// Execute HTTP Post Request
 				HttpResponse response = httpclient.execute(httppost);
-				
+
 				HttpEntity entity = response.getEntity();
-				 
+
 				String text = getASCIIContentFromEntity(entity);
 				responseString = text;
-				
-				  
- 
+
+
+
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 			}
 		}
- 
+
 	}
 	public String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
 		InputStream in = entity.getContent();
@@ -188,17 +202,17 @@ public class Register extends Activity {
 		StringBuffer out = new StringBuffer();
 		int n = 1;
 		while (n>0) {
-		byte[] b = new byte[4096];
-		n =  in.read(b);
+			byte[] b = new byte[4096];
+			n =  in.read(b);
 
 
-		if (n>0) out.append(new String(b, 0, n));
+			if (n>0) out.append(new String(b, 0, n));
 		}
 
 
 		return out.toString();
-		}
-      
-       
- }
+	}
+
+
+}
 

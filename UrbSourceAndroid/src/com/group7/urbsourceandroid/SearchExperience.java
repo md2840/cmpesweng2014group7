@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -40,6 +39,13 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * Shows search page and shows results by getting 
+ * information them from WEB API via HTTP requests. 
+ * 
+ * @author Gokce Yesiltas
+ *
+ */
 public class SearchExperience extends Activity{
 	private SessionManager session;
 	private String username;
@@ -55,7 +61,6 @@ public class SearchExperience extends Activity{
 	private EditText searchText;
 	private Button SearchExperience;
 	private ActionListAdapter adapter;
-	private List<String> tags;
 	private String searchString;
 
 	@Override
@@ -72,6 +77,7 @@ public class SearchExperience extends Activity{
 		responseText="";
 		searchString = "";
 
+		//clears text area on clicking 
 		searchText = (EditText) findViewById(R.id.searchtext);
 		searchText.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -79,15 +85,20 @@ public class SearchExperience extends Activity{
 				searchText.setText("");
 			}
 		});
-
+		//initializes the adapter for ActionListAdapter
 		adapter = new ActionListAdapter(this, R.id.search_list, searchResults);
 		explist = (ListView) findViewById(R.id.search_list);
+		//connects the adapter to related field in the xml file
 		explist.setAdapter(adapter);
+
+		//sets a click listener for the seach button
 		SearchExperience = (Button) findViewById(R.id.btn_search);
 		SearchExperience.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				//gets value from the text area
 				searchString = searchText.getText().toString();
+				//calls startSearch method to make HTTP request
 				startSearch();
 			}
 		});
@@ -97,14 +108,18 @@ public class SearchExperience extends Activity{
 	private void startSearch(){
 		searchString = searchText.getText().toString();
 
-		tags = Arrays.asList(searchString.split(","));
-		Log.i("search", tags.toString());
-		
 		searchResults.clear();
 
+		//executes asynchronized task to make HTTP requests 
+		//for getting search results
 		new MyAsyncTask().execute(GET_EXP);
 	}
 
+	/**
+	 * Creates a customized adapter for the list view which lists 
+	 * search results on the search page. Shows the elements of the 
+	 * experiences and assigns click listener for them.
+	 */
 	private class ActionListAdapter extends ArrayAdapter<Experience> {
 		private List<Experience> searchResults;
 
@@ -112,7 +127,6 @@ public class SearchExperience extends Activity{
 				List<Experience> searchResults) {
 			super(context, resourceId, searchResults);
 			this.searchResults = searchResults;
-
 		}
 
 		@Override
@@ -126,7 +140,6 @@ public class SearchExperience extends Activity{
 			Experience experience = searchResults.get(position);
 			if (experience != null) {
 
-
 				TextView username = (TextView) view.findViewById(R.id.ex_username);
 				if(username!=null){
 					username.setText(experience.getAuthor().getUsername());
@@ -139,14 +152,12 @@ public class SearchExperience extends Activity{
 							i.putExtra("username",searchResults.get(Integer.parseInt(v.getTag().toString())).getAuthor().getUsername());
 							startActivity(i);
 						}
-
 					});
 				}
 				TextView location = (TextView) view.findViewById(R.id.ex_location);
 				//location add
 				location.setText("");
 				TextView mood = (TextView) view.findViewById(R.id.ex_mood);
-
 
 				mood.setText(experience.getMood()+" Experience");
 				TextView content = (TextView) view.findViewById(R.id.ex_content);
@@ -161,7 +172,6 @@ public class SearchExperience extends Activity{
 						build.append(",");
 						build.append(experience.getTags().get(i).getName());
 					}
-
 					tags.setText(build.toString());
 				}
 
@@ -183,7 +193,6 @@ public class SearchExperience extends Activity{
 							i.putExtra("id",searchResults.get(Integer.parseInt(v.getTag().toString())).getId());
 							startActivity(i);
 						}
-
 					});
 				}
 
@@ -200,8 +209,9 @@ public class SearchExperience extends Activity{
 							upButton.setImageResource(R.drawable.arrow_up);
 
 						}
+						//executes asynchronized task to make HTTP requests 
+						//for upvoting the selected experience
 						new MyAsyncTask().execute(UPVOTE_EXP,v.getTag().toString());
-
 					}
 				});
 				upvote.setVisibility(View.VISIBLE);
@@ -211,7 +221,6 @@ public class SearchExperience extends Activity{
 				}else{
 					upvote.setImageResource(R.drawable.arrow_up_inactive);
 				}
-
 				ImageButton downvote = (ImageButton) view.findViewById(R.id.ex_downvote);
 				downvote.setTag(new Integer(position));
 				downvote.setOnClickListener(new View.OnClickListener() {
@@ -224,6 +233,8 @@ public class SearchExperience extends Activity{
 						}else{
 							downButton.setImageResource(R.drawable.arrow_down);
 						}
+						//executes asynchronized task to make HTTP requests 
+						//for downvoting the selected experience
 						new MyAsyncTask().execute(DOWNVOTE_EXP,v.getTag().toString());
 					}
 				});
@@ -234,8 +245,6 @@ public class SearchExperience extends Activity{
 				}else{
 					downvote.setImageResource(R.drawable.arrow_down_inactive);
 				}
-
-				//WEB api spam için açılıp deploy edince açalım.
 
 				ImageButton spam = (ImageButton) view.findViewById(R.id.ex_spam);
 				spam.setTag(new Integer(position));
@@ -250,6 +259,8 @@ public class SearchExperience extends Activity{
 							spamButton.setImageResource(R.drawable.spam);
 
 						}
+						//executes asynchronized task to make HTTP requests 
+						//for reporting the selected experience as spam
 						new MyAsyncTask().execute(SPAM_EXP,v.getTag().toString());
 
 					}
@@ -267,29 +278,13 @@ public class SearchExperience extends Activity{
 				delete.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						//delete httppost
+						//executes asynchronized task to make HTTP requests 
+						//for deleting the selected experience
 						new MyAsyncTask().execute(DELETE_EXP,v.getTag().toString());
 					}
 				});
 
 				delete.setVisibility(View.INVISIBLE);
-				//            CheckBox verify = (CheckBox) view.findViewById(R.id.ex_verify);
-				//            verify.setOnClickListener(new View.OnClickListener() {
-				//
-				//                @Override
-				//                public void onClick(View v) {
-				//                          
-				//                  if (((CheckBox) v).isChecked()) {
-				//                            //verify http post
-				//                		Log.i("experience verify","okk");
-				//                  }
-				//                  else {
-				//                	  //unverify http post
-				//              		Log.i("experience unverify","step back");
-				//
-				//                  }
-				//                }
-				//              });
 				Log.i("name experience user",experience.getAuthor().getUsername());
 				if(experience.getAuthor().getUsername().equals(session.getUserDetails().get("name"))){
 					delete.setVisibility(View.VISIBLE);
@@ -298,12 +293,16 @@ public class SearchExperience extends Activity{
 					downvote.setVisibility(View.INVISIBLE);
 				}
 			}
-
-
 			return view;
 		}
 	}
 
+	/**
+	 * Creates asynchronized task to make HTTP requests for getting 
+	 * search results, upvoting an experience, downvoting an experience, 
+	 * reporting an experience, or deleting an experience. Makes HTTP 
+	 * requests in background, and updates the page on the post execution.
+	 */
 	private class MyAsyncTask extends AsyncTask<String, Integer, Double>{
 		private boolean getexp = false;
 		private boolean get = false;
@@ -313,9 +312,11 @@ public class SearchExperience extends Activity{
 		private boolean spam = false;
 		private boolean undo = false;   
 		private int position;
+		/**
+		 * According to parameters calls necessary methods to make HTTP requests.
+		 */
 		@Override
 		protected Double doInBackground(String... params) {
-			// TODO Auto-generated method stub
 			if(params[0]==GET_EXP){
 				getexp = true;
 				getExperiences();
@@ -334,31 +335,30 @@ public class SearchExperience extends Activity{
 			}
 			return null;
 		}
+
 		protected void onPostExecute(Double result){
+			//notifies the adapter to lists the experiences on the page
 			if(getexp){
 				adapter.notifyDataSetChanged();
 			}
 		}
 
+		/**
+		 * Makes HTTP post request to get results of the searching.
+		 */
 		public void getExperiences()  {
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
-			//HttpGet httpGet = new HttpGet("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/recent");
-			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/searchExperienceText"); //for genymotion
+			HttpPost httpPost = new HttpPost("http://titan.cmpe.boun.edu.tr:8086/UrbSource/experience/searchExperienceText"); 
 			try {
-				// Add your data
-//				JSONArray jsonArray = new JSONArray(tags);
-//				JSONObject jsonobj = new JSONObject();
-//
-//				jsonobj.put("tags", jsonArray);
-				
 				JSONObject jsonobj = new JSONObject();
 				jsonobj.put("text", searchString);
 				Log.i("tag", searchString);
-				
+
 				JSONObject jsonobj2 = new JSONObject();
 				jsonobj2.put("params", jsonobj);
 
+				//sets header for http post request
 				StringEntity se = new StringEntity(jsonobj2.toString());    
 				se.setContentType("application/json;charset=UTF-8");
 				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
@@ -372,23 +372,23 @@ public class SearchExperience extends Activity{
 				JSONObject myObject = new JSONObject(responseText);
 				JSONArray jsona = new JSONArray(myObject.getString("experienceList"));
 
-				for(int i=0; i<jsona.length();i++){  // teker teker experience e gir.
+				//adds experiences to the list one by one
+				for(int i=0; i<jsona.length();i++){ 
 					JSONObject jsonObj = jsona.getJSONObject(i);
 					Experience exp = new Experience();
 					User u = new User();
+
+					//gets the experience
 					exp.setId(jsonObj.getInt("id"));
 					exp.setText(jsonObj.getString("text"));
 					exp.setMood(jsonObj.getString("mood"));
-					//exp.setCreationTime(Timestamp.valueOf(jsonObj.getString("creationTime")));
-					//exp.setExpirationDate(Date.valueOf(jsonObj.getString("expirationDate")));
-					//exp.setModificationTime(Timestamp.valueOf(jsonObj.getString("modificationTime")));
 					exp.setSpam(jsonObj.getInt("spam"));
 					exp.setUserMarkedSpam(jsonObj.getBoolean("userMarkedSpam"));
 					exp.setUpvotedByUser(jsonObj.getBoolean("upvotedByUser"));
 					exp.setDownvotedByUser(jsonObj.getBoolean("downvotedByUser"));
 					exp.setNumberOfComments(jsonObj.getInt("numberOfComments"));
 
-					//USER çekme tarafı ileride ayrı method yap kolay olsun.
+					//gets author of the experience
 					JSONObject userJ = new JSONObject(jsonObj.getString("author"));
 					u.setId(userJ.getInt("id"));
 					u.setCommentPoints(userJ.getInt("commentPoints"));
@@ -401,7 +401,8 @@ public class SearchExperience extends Activity{
 					u.setPassword2(userJ.getString("password2"));
 					u.setUsername(userJ.getString("username"));
 					exp.setAuthor(u);
-					//TAG çekme tarafı
+
+					//gets tags of the experience
 					JSONArray Tags = new JSONArray(jsonObj.getString("tags"));
 					for(int j=0;j<Tags.length();j++){
 						JSONObject tagObj = Tags.getJSONObject(j);
@@ -416,14 +417,18 @@ public class SearchExperience extends Activity{
 
 
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+
+		/**
+		 * Makes HTTP post request to upvote the selected experience.
+		 * @param pos position of the selected experience in the list
+		 */
 		public void upvoteExp(String pos){
 
 			int exp_pos = Integer.parseInt(pos);
@@ -449,6 +454,8 @@ public class SearchExperience extends Activity{
 				}else{
 					searchResults.get(exp_pos).setUpvotedByUser(true);
 				}
+
+				//sets header for http post request
 				StringEntity se = new StringEntity(jsonobj.toString());    
 				se.setContentType("application/json;charset=UTF-8");
 				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
@@ -465,20 +472,21 @@ public class SearchExperience extends Activity{
 				responseText=text;
 
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		}
+
+		/**
+		 * Makes HTTP post request to downvote the selected experience.
+		 * @param pos position of the selected experience in the list
+		 */
 		public void downvoteExp(String pos){
 			int exp_pos = Integer.parseInt(pos);
 			position = exp_pos;
@@ -503,6 +511,8 @@ public class SearchExperience extends Activity{
 				}else{
 					searchResults.get(exp_pos).setDownvotedByUser(true);
 				}
+
+				//sets header for http post request
 				StringEntity se = new StringEntity(jsonobj.toString());    
 				se.setContentType("application/json;charset=UTF-8");
 				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
@@ -519,20 +529,21 @@ public class SearchExperience extends Activity{
 				responseText=text;
 
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		}
+
+		/**
+		 * Makes HTTP post request to delete the selected experience.
+		 * @param pos position of the selected experience in the list
+		 */
 		public void deleteExp(String pos){
 
 			int exp_pos = Integer.parseInt(pos);
@@ -554,7 +565,7 @@ public class SearchExperience extends Activity{
 
 				jsonobj.put("params", innerJson);
 
-
+				//sets header for http post request
 				StringEntity se = new StringEntity(jsonobj.toString());    
 				se.setContentType("application/json;charset=UTF-8");
 				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
@@ -571,22 +582,21 @@ public class SearchExperience extends Activity{
 				responseText=text;
 
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
+		/**
+		 * Makes HTTP post request to report the selected experience as a spam.
+		 * @param pos position of the selected experience in the list
+		 */
 		public void spamExp(String pos){
-
 			int exp_pos = Integer.parseInt(pos);
 			position = exp_pos;
 			// Create a new HttpClient and Post Header
@@ -606,15 +616,13 @@ public class SearchExperience extends Activity{
 				searchResults.get(exp_pos).setUserMarkedSpam(true);
 			}
 			try {
-
 				JSONObject jsonobj = new JSONObject();
 				jsonobj.put("username",session.getUserDetails().get("name"));
 
 				jsonobj.put("IsLoggedIn", session.isLoggedIn());
 				jsonobj.put("id",searchResults.get(exp_pos).getId());
 
-
-
+				//sets header for http post request
 				StringEntity se = new StringEntity(jsonobj.toString());    
 				se.setContentType("application/json;charset=UTF-8");
 				se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
@@ -631,16 +639,12 @@ public class SearchExperience extends Activity{
 				responseText=text;
 
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
