@@ -284,7 +284,16 @@ public class ExperienceController {
 		}
 		return map;
 	}
-	
+	/**
+	 * This method gets tag list according to search query. Query comes from search box in tag option mode, 
+	 * and results are shown in dropdown.
+	 * @author Setenay Ronael
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/searchTag", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> searchTag(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -293,6 +302,15 @@ public class ExperienceController {
 		return map;
 	}
 	
+	/**
+	 * This method gets experiences with selected tags.
+	 * @author Setenay Ronael
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="searchExperienceTag", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> searchExperienceTag(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -306,6 +324,15 @@ public class ExperienceController {
 		return map;
 	}
 	
+	/**
+	 * This method gets experiences which explanation contains query.
+	 * @author Setenay Ronael
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="searchExperienceText", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String,Object> searchExperienceText(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -406,6 +433,15 @@ public class ExperienceController {
 		return map;
 	}
 	
+	/**
+	 * This method updates experiences explanation.
+	 * @author Setenay Ronael
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/editText", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> updateText(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
