@@ -52,7 +52,7 @@ public class Comment implements Serializable {
 	/**
 	 * To be used by a BeanPropertyRowMapper
 	 * 
-	 * @param authorId author ID for new experience
+	 * @param author ID for new experience
 	 */
 	public Comment setAuthor(User author) {
 		this.author = author;

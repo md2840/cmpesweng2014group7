@@ -91,7 +91,7 @@ public class User implements Serializable {
 	 * 
 	 * floor(log(karma = alpha * expPoints + beta * commentPoints + 1)) + 1
 	 * 
-	 * where alpha and beta are coefficients and value in log is >= 1 so that
+	 * where alpha and beta are coefficients and value in log is greater or equal to 1 so that
 	 * karma is positive.
 	 * 
 	 * @return karma of the user.
