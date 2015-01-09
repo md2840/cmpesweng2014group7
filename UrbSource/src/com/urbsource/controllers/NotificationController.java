@@ -23,19 +23,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.urbsource.db.*;
 import com.urbsource.models.*;
-
+/**
+ * Controller class to expose Comment CRUD functionalities via web APIs.
+ * 
+ * @author Mustafa Demirel
+ */
 @Controller
 @RequestMapping("/notification/*")
 public class NotificationController {
 	
 	JDBCUserDAO userDao;
 	JDBCNotificationDAO notDao;
-	
+	/**
+	 * Default constructor. Called by Spring framework to initialize controller.
+	 */
 	public NotificationController(){
 		userDao = new JDBCUserDAO();
 		notDao = new JDBCNotificationDAO(userDao);
 	}
-	
+	/**
+	 * Return a combination of recent notifications as a JSON object. JSON object conversion is done by Spring.
+	 * 
+	 * @author Mustafa Demirel
+	 * @param request HTTP request to this address
+	 * @param response HTTP response object that this method will affect
+	 * @return A {@link HashMap} that will be converted to a JSON object containing result and error messages.
+	 */
 	@RequestMapping(value="/recent", method=RequestMethod.GET)
 	public @ResponseBody HashMap<String,Object> recent(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -51,7 +64,12 @@ public class NotificationController {
 		map.put("notifications", notDao.getNotifications(u, new Timestamp(json.getLong("time"))));
 		return map;
 	}
-	
+	/**
+	 * Return a all notifications as a JSON object. 
+	 * 
+	 * @author Mustafa Demirel
+	 * @return A {@link HashMap} that will be converted to a JSON object containing result and error messages.
+	 */
 	@RequestMapping(value="/all", method=RequestMethod.GET)
 	public @ResponseBody HashMap<String,Object> all(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -66,7 +84,14 @@ public class NotificationController {
 		map.put("notifications", notDao.getNotifications(u));
 		return map;
 	}
-	
+	/**
+	 * Delete a notification. Notification ID is extracted from {@link request}
+	 * parameter.
+	 * 
+	 * @param request HTTP request to this address
+	 * @param response HTTP response object that this method will affect
+	 * @return A {@link HashMap} that will be converted to a JSON object containing result and error messages.
+	 */
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> delete(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
 		HashMap<String, Object> map = new HashMap<String, Object>();

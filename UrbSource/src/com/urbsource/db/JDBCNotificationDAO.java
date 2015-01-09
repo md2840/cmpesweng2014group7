@@ -18,7 +18,11 @@ import org.springframework.stereotype.Repository;
 
 import com.urbsource.models.Notification;
 import com.urbsource.models.User;
-
+/**
+ * Data Access Object to do notification-related tasks via communicating with DB.
+ * 
+ * @author Mustafa Demirel
+ */
 @Repository
 public class JDBCNotificationDAO {
 
@@ -52,7 +56,7 @@ public class JDBCNotificationDAO {
 	
 	/**
 	 * Get a specific notification.
-	 * 
+	 * @author Mustafa Demirel
 	 * @param id ID of the notification
 	 * @return Queried {@link Notification}
 	 */
@@ -76,7 +80,7 @@ public class JDBCNotificationDAO {
 	
 	/**
 	 * 
-	 * 
+	 * @author Mustafa Demirel
 	 * @param u The user of all notifications
 	 * @return List of notifications of u
 	 */
@@ -100,7 +104,7 @@ public class JDBCNotificationDAO {
 	
 	/**
 	 * Get all notifications of a user.
-	 * 
+	 * @author Mustafa Demirel
 	 * @param u The user of all notifications
 	 * @return List of notifications of u
 	 */
@@ -126,7 +130,7 @@ public class JDBCNotificationDAO {
 	/**
 	 * Create a new Notification. Use this *if and only if* you are creating
 	 * a new notification, *never* use this to update an existing Notification!
-	 * 
+	 * @author Mustafa Demirel
 	 * @param not The notification to be created.
 	 * @return true if success, false if failure
 	 */
@@ -143,8 +147,12 @@ public class JDBCNotificationDAO {
 		return true;
 	}
 
-	
-	
+	/**
+	 * Delete a Notification.
+	 * @author Mustafa Demirel
+	 * @param not The notification to be deleted.
+	 * @return true if success, false if failure
+	 */
 	public boolean deleteNotification(Notification not) {
 		if (not.getId() < 0)
 			return false;

@@ -180,7 +180,7 @@ public class ExperienceController {
 	/**
 	 * Delete an experience. Experience ID is extracted from {@link request}
 	 * parameter.
-	 * 
+	 * @author Admir Nurkovic
 	 * @param request HTTP request to this address
 	 * @param response HTTP response object that this method will affect
 	 * @return A {@link HashMap} that will be converted to a JSON object containing result and error messages.
